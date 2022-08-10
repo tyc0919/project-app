@@ -18,17 +18,17 @@
 
             <!-- 把你寫的Component放在這裡測試，要上github前這個檔案更動要discard掉-->
             <div ud="bottomContainer" class="mx-8">
-                <div id="options" class="inline-flex justify-between my-[6px]">
+                <div id="options" class="inline-flex justify-between my-8 w-full">
                     <div id="optionsLeft" class="inline-flex justify-around">
 
                         <div id="radios">
                             <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1"
                                 checked />
-                            <label class="radioLable" for="radio1">完成</label>
+                            <label class="radioLable text-base" for="radio1">完成</label>
                             <input id="radio2" class="radioInput hidden " type="radio" name="radio" value="radio2" />
-                            <label class="radioLable" for="radio2">未完成</label>
+                            <label class="radioLable text-base" for="radio2">未完成</label>
                             <input id="radio3" class="radioInput hidden " type="radio" name="radio" value="radio3" />
-                            <label class="radioLable" for="radio3">全部</label>
+                            <label class="radioLable text-base" for="radio3">全部</label>
                         </div>
 
                         <form id="search" class="flex items-center shadow:focus mr-10">
@@ -58,63 +58,120 @@
                     </div>
                 </div>
 
-                <div id="workContainer" class="py-2 px-2">
-                    <div class="work">
-                        <div class="workTop">
-                            <div class="workTitle"></div>
-                            <div class="workContent"></div>
-                        </div>
-                        <div class="workBottom">
+                <div id="workContainer" class="py-8 px-8 rounded-2xl bg-white shadow ">
 
-                        </div>
-                    </div>
-                    <div class="work">
-                        <div class="workTop">
-                            <div class="workTitle"></div>
-                            <div class="workContent"></div>
-                        </div>
-                        <div class="workBottom">
+                    <div class="work px-2 py-2 flex flex-column justify-between rounded-2xl shadow">
+                        <div class="workTop flex flex-column justify-between">
 
-                        </div>
-                    </div>
-                    <div class="work">
-                        <div class="workTop">
-                            <div class="workTitle"></div>
-                            <div class="workContent"></div>
-                        </div>
-                        <div class="workBottom">
-
-                        </div>
-                    </div>
+                            <div class="flex align-center">
+                                <div class="avatar"></div>
+                                <div class="text-base ellipsis  italic ml-2">負責人名稱</div>
+                            </div>
+                            <div class="workTitle text-xl font-bold mb-8 ellipsis">
+                                一起支持「身心障礙兒爸爸」 ► 他想學習自立，希望有能力，幫爸爸換一打新襪子！
+                            </div>
 
 
-                    <div class="work">
-                        <div class="workTop">
-                            <div class="workTitle"></div>
-                            <div class="workContent"></div>
+                            <div class="workContent text-base ellipsis mb-8">
+                                對於身心障礙兒的父親來說，要基本溫飽已是勉強，襪子總是最後一個考量、破了也繼續穿。今年父親節，您買一雙襪，將協助今年父親節，您買一雙襪，將協助今年父親節，您買一雙襪，將協助今年父親節，您買一雙襪，將協助
+                            </div>
                         </div>
-                        <div class="workBottom">
 
+                        <div class="workBottom inline-flex justify-between text-base pt-2 h-2">
+
+                            <div class="workBottomLeft inline-flex">
+                                完成
+                                <div class="mx-2 text-[#c70000]">5</div>
+                                /
+                                <div class="mx-2">10</div>
+                            </div>
+
+                            <div class="workBottomRight inline-flex">
+                                還剩
+                                <div class="mx-2 text-[#c70000]">100</div>
+                                天
+                            </div>
                         </div>
                     </div>
 
-                    <div class="work">
-                        <div class="workTop">
-                            <div class="workTitle"></div>
-                            <div class="workContent"></div>
-                        </div>
-                        <div class="workBottom">
+                    <div class="work px-2 py-2 flex flex-column justify-between rounded-2xl shadow">
+                        <div class="workTop flex flex-column justify-between">
 
+                            <div class="flex align-center">
+                                <div class="avatar"></div>
+                                <div class="text-base ellipsis  italic ml-2">負責人名稱</div>
+                            </div>
+                            <div class="workTitle text-xl font-bold mb-8 ellipsis">
+                                一起支持「身心障礙兒爸爸」 ► 他想學習自立，希望有能力，幫爸爸換一打新襪子！
+                            </div>
+
+
+                            <div class="workContent text-base ellipsis mb-8">
+                                對於身心障礙兒的父親來說，要基本溫飽已是勉強，襪子總是最後一個考量、破了也繼續穿。今年父親節，您買一雙襪，將協助今年父親節，您買一雙襪，將協助今年父親節，您買一雙襪，將協助今年父親節，您買一雙襪，將協助
+                            </div>
+                        </div>
+
+                        <div class="workBottom inline-flex justify-between text-base pt-2 h-2">
+
+                            <div class="workBottomLeft inline-flex">
+                                完成
+                                <div class="mx-2 text-[#c70000]">5</div>
+                                /
+                                <div class="mx-2">10</div>
+                            </div>
+
+                            <div class="workBottomRight inline-flex">
+                                還剩
+                                <div class="mx-2 text-[#c70000]">100</div>
+                                天
+                            </div>
                         </div>
                     </div>
+
+                    <div class="work px-2 py-2 flex flex-column justify-between rounded-2xl shadow">
+                        <div class="workTop flex flex-column justify-between">
+
+                            <div class="flex align-center">
+                                <div class="avatar"></div>
+                                <div class="text-base ellipsis  italic ml-2">負責人名稱</div>
+                            </div>
+                            <div class="workTitle text-xl font-bold mb-8 ellipsis">
+                                一起支持「身心障礙兒爸爸」 ► 他想學習自立，希望有能力，幫爸爸換一打新襪子！
+                            </div>
+
+
+                            <div class="workContent text-base ellipsis mb-8">
+                                對於身心障礙兒的父親來說，要基本溫飽已是勉強，襪子總是最後一個考量、破了也繼續穿。今年父親節，您買一雙襪，將協助今年父親節，您買一雙襪，將協助今年父親節，您買一雙襪，將協助今年父親節，您買一雙襪，將協助
+                            </div>
+                        </div>
+
+                        <div class="workBottom inline-flex justify-between text-base pt-2 h-2">
+
+                            <div class="workBottomLeft inline-flex">
+                                完成
+                                <div class="mx-2 text-[#c70000]">5</div>
+                                /
+                                <div class="mx-2">10</div>
+                            </div>
+
+                            <div class="workBottomRight inline-flex">
+                                還剩
+                                <div class="mx-2 text-[#c70000]">100</div>
+                                天
+                            </div>
+                        </div>
+                    </div>
+
+
+
                 </div>
 
+
             </div>
-
-
         </div>
     </div>
 </template>
+
 
 <style scoped>
 .wrapper {
@@ -127,6 +184,35 @@
 
 .bg-\[CEE5F2\] {
     background-color: #CEE5F2;
+}
+
+.text-\[\#c70000\] {
+    color: #c70000;
+}
+
+.avatar {
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 1px solid #000000;
+    vertical-align: middle;
+    border-radius: 50%;
+}
+
+.shadow {
+    box-shadow: 0 0 30px 2px rgb(0 0 0 / 10%);
+}
+
+.pt-2 {
+    padding-top: 0.5rem;
+}
+
+.h-2 {
+    height: 20%;
+}
+
+.my-8 {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 }
 
 /*  */
@@ -154,29 +240,62 @@ body {
     width: auto;
 }
 
-/* works */
 
+/* works */
+.ellipsis {
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+}
+
+#workTop {
+    height: 9.5rem;
+}
+
+/* bg-white pt-8 px-4 overflow-hidden  shadow-6 relative js-restricted  */
 #workContainer {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    border: 1px solid #000000;
     grid-row-gap: 1rem;
     grid-column-gap: 1rem;
 }
 
 .work {
-    height: 300px;
-    border: 2px solid #006B56;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
+    height: 20rem;
+    border: 1px solid#2b6cb0;
 }
+
+.workBottom {
+    border-top: 2px solid #2b6cb0;
+}
+
+.workTitle {
+    /* line-height: 1.75rem; */
+    height: calc(1.75rem * 3);
+    -webkit-line-clamp: 3;
+}
+
+
+.workContent {
+    /* line-height: 1.5rem; */
+    height: auto;
+    -webkit-line-clamp: 4;
+    /* font color */
+    --tw-text-opacity: 1;
+    color: rgb(82 82 82/var(--tw-text-opacity));
+
+}
+
+
+
+
 
 
 /* containers */
 #options {
-    width: 100%;
     flex-flow: row nowrap;
 }
 
@@ -192,10 +311,6 @@ body {
     background-color: #2b6cb0;
     color: #ffffff;
 }
-
-
-
-
 
 /* radios */
 #radios {
