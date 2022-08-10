@@ -58,9 +58,10 @@
                     </div>
                 </div>
 
-                <div id="workContainer" class="py-8 px-8 rounded-2xl bg-white shadow ">
+                <div id="workContainer" class="grid grid-col3 grid-gap-1rem py-8 px-8 rounded-2xl bg-white shadow ">
 
-                    <div class="work px-2 py-2 flex flex-column justify-between rounded-2xl shadow">
+                    <div
+                        class="work h-20rem border-[#2b6cb0] hover:card-float-up px-2 py-2 flex flex-column justify-between rounded-2xl shadow ">
                         <div class="workTop flex flex-column justify-between">
 
                             <div class="flex align-center">
@@ -94,7 +95,8 @@
                         </div>
                     </div>
 
-                    <div class="work px-2 py-2 flex flex-column justify-between rounded-2xl shadow">
+                    <div
+                        class="work h-20rem border-[#24a700] hover:card-float-up px-2 py-2 flex flex-column justify-between rounded-2xl shadow">
                         <div class="workTop flex flex-column justify-between">
 
                             <div class="flex align-center">
@@ -128,7 +130,8 @@
                         </div>
                     </div>
 
-                    <div class="work px-2 py-2 flex flex-column justify-between rounded-2xl shadow">
+                    <div
+                        class="work h-20rem border-[#2b6cb0] hover:card-float-up px-2 py-2 flex flex-column justify-between rounded-2xl shadow">
                         <div class="workTop flex flex-column justify-between">
 
                             <div class="flex align-center">
@@ -215,6 +218,30 @@
     margin-bottom: 2rem;
 }
 
+
+
+.hover\:card-float-up:hover {
+    border-color: #eee;
+    transition: all .2s ease-in-out;
+    box-shadow: 0 16px 32px 0 rgba(48, 55, 66, 0.15);
+    transform: translate(0, -5px);
+    transition-delay: 0s !important;
+    cursor: pointer;
+}
+
+.grid {
+    display: grid;
+}
+
+.grid-col3 {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.grid-gap-1rem {
+    grid-row-gap: 1rem;
+    grid-column-gap: 1rem;
+}
+
 /*  */
 body {
     height: 100%;
@@ -255,16 +282,18 @@ body {
     height: 9.5rem;
 }
 
-/* bg-white pt-8 px-4 overflow-hidden  shadow-6 relative js-restricted  */
-#workContainer {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-row-gap: 1rem;
-    grid-column-gap: 1rem;
+
+.h-20rem {
+    height: 20rem;
 }
 
-.work {
-    height: 20rem;
+/* finished */
+.border-\[\#24a700\] {
+    border: 1px solid#24a700;
+}
+
+/* underway */
+.border-\[\#2b6cb0\] {
     border: 1px solid#2b6cb0;
 }
 
