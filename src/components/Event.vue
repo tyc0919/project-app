@@ -61,12 +61,14 @@
                 <div id="workContainer" class="grid grid-col3 grid-gap-1rem py-8 px-8 rounded-2xl bg-white shadow ">
 
                     <div
-                        class="work h-20rem border-[#2b6cb0] hover:card-float-up px-2 py-2 flex flex-column justify-between rounded-2xl shadow ">
+                        class="work card h-22rem border-[#2b6cb0] hover:card-float-up px-2 py-2 flex flex-column justify-between rounded-2xl shadow ">
+
+
                         <div class="workTop flex flex-column justify-between">
 
-                            <div class="flex align-center">
+                            <div class="flex align-center mb-2 items-center">
                                 <div class="avatar"></div>
-                                <div class="text-base ellipsis  italic ml-2">負責人名稱</div>
+                                <div class="text-sm text-[#1D5E9F] ellipsis italic ml-2">負責人名稱</div>
                             </div>
                             <div class="workTitle text-xl font-bold mb-8 ellipsis">
                                 一起支持「身心障礙兒爸爸」 ► 他想學習自立，希望有能力，幫爸爸換一打新襪子！
@@ -93,77 +95,38 @@
                                 天
                             </div>
                         </div>
-                    </div>
 
-                    <div
-                        class="work h-20rem border-[#24a700] hover:card-float-up px-2 py-2 flex flex-column justify-between rounded-2xl shadow">
-                        <div class="workTop flex flex-column justify-between">
 
-                            <div class="flex align-center">
-                                <div class="avatar"></div>
-                                <div class="text-base ellipsis  italic ml-2">負責人名稱</div>
+                        <div class="back hidden flex flex-column pt-6">
+                            <div class="backTitle text-2xl font-bold mb-10 text-center ">進度</div>
+                            <div class="backBody h-full w-full y-scroll">
+                                <div
+                                    class="backText text-base font-bold mb-8 ml-8 inline-flex justify-start items-center">
+                                    <div class="nowrap">完成項目</div>
+                                    <div class="text-base ml-20 italic">
+                                        5 / 10
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="backText text-base font-bold mb-8 ml-8 inline-flex justify-start items-center">
+                                    <div class="nowrap">預算規劃</div>
+                                    <div class="text-base ml-20 italic">
+                                        $90000000 / $90000000000000
+                                    </div>
+                                </div>
+                                <div
+                                    class="backText text-base font-bold mb-8 ml-8 inline-flex justify-start items-center">
+                                    <div class="nowrap">活動日期</div>
+                                    <div class="text-base ml-20 italic">
+                                        2023/10/01 ~ 2023/12/31
+                                    </div>
+                                </div>
                             </div>
-                            <div class="workTitle text-xl font-bold mb-8 ellipsis">
-                                一起支持「身心障礙兒爸爸」 ► 他想學習自立，希望有能力，幫爸爸換一打新襪子！
-                            </div>
 
-
-                            <div class="workContent text-base ellipsis mb-8">
-                                對於身心障礙兒的父親來說，要基本溫飽已是勉強，襪子總是最後一個考量、破了也繼續穿。今年父親節，您買一雙襪，將協助今年父親節，您買一雙襪，將協助今年父親節，您買一雙襪，將協助今年父親節，您買一雙襪，將協助
-                            </div>
-                        </div>
-
-                        <div class="workBottom inline-flex justify-between text-base pt-2 h-2">
-
-                            <div class="workBottomLeft inline-flex">
-                                完成
-                                <div class="mx-2 text-[#c70000]">5</div>
-                                /
-                                <div class="mx-2">10</div>
-                            </div>
-
-                            <div class="workBottomRight inline-flex">
-                                還剩
-                                <div class="mx-2 text-[#c70000]">100</div>
-                                天
-                            </div>
                         </div>
                     </div>
 
-                    <div
-                        class="work h-20rem border-[#2b6cb0] hover:card-float-up px-2 py-2 flex flex-column justify-between rounded-2xl shadow">
-                        <div class="workTop flex flex-column justify-between">
-
-                            <div class="flex align-center">
-                                <div class="avatar"></div>
-                                <div class="text-base ellipsis  italic ml-2">負責人名稱</div>
-                            </div>
-                            <div class="workTitle text-xl font-bold mb-8 ellipsis">
-                                一起支持「身心障礙兒爸爸」 ► 他想學習自立，希望有能力，幫爸爸換一打新襪子！
-                            </div>
-
-
-                            <div class="workContent text-base ellipsis mb-8">
-                                對於身心障礙兒的父親來說，要基本溫飽已是勉強，襪子總是最後一個考量、破了也繼續穿。今年父親節，您買一雙襪，將協助今年父親節，您買一雙襪，將協助今年父親節，您買一雙襪，將協助今年父親節，您買一雙襪，將協助
-                            </div>
-                        </div>
-
-                        <div class="workBottom inline-flex justify-between text-base pt-2 h-2">
-
-                            <div class="workBottomLeft inline-flex">
-                                完成
-                                <div class="mx-2 text-[#c70000]">5</div>
-                                /
-                                <div class="mx-2">10</div>
-                            </div>
-
-                            <div class="workBottomRight inline-flex">
-                                還剩
-                                <div class="mx-2 text-[#c70000]">100</div>
-                                天
-                            </div>
-                        </div>
-                    </div>
 
 
 
@@ -177,6 +140,49 @@
 
 
 <style scoped>
+.nowrap {
+    white-space: nowrap;
+}
+
+.work .back {
+    overflow-y: scroll;
+}
+
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.06);
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08);
+}
+
+
+::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.12);
+    -webkit-box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+
+.work:hover .back {
+    display: flex;
+    position: static;
+    transition: all 2s ease-in-out;
+    transition-delay: 3s;
+
+}
+
+.work:hover .workTop,
+.work:hover .workBottom {
+    display: none;
+}
+
+
+
 .wrapper {
     height: calc(100% - 7rem)
 }
@@ -282,9 +288,12 @@ body {
     height: 9.5rem;
 }
 
+.text-\[\#1D5E9F\] {
+    color: #1D5E9F;
+}
 
-.h-20rem {
-    height: 20rem;
+.h-22rem {
+    height: 22rem;
 }
 
 /* finished */
