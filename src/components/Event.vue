@@ -1,5 +1,4 @@
 <script setup>
-import invitec from './invitec.vue';
 </script>
 
 <template>
@@ -15,40 +14,20 @@ import invitec from './invitec.vue';
         </div>
         <div class="content bg-[CEE5F2]">
             <!-- 把你寫的Component放在這裡測試，要上github前這個檔案更動要discard掉-->
-           <invitec></invitec>
         </div>
     </div>
 </template>
 
 <style scoped>
 .wrapper {
-    height: calc(100% - 7rem)
+    height: calc(100% - 7rem);
 }
 
 .content {
-    height: calc(100% - 3rem)
+    height: calc(100% - 3rem);
 }
 
 .bg-\[CEE5F2\] {
-    background-color: #CEE5F2;
-}
-
-.file-sec-wrapper {
-    position: fixed;
-    right: 25px;
-    bottom: 20px;
-    height: 40%;
-    background: #FFFFFF;
-    border: 1px solid rgba(0, 0, 0, 0.16);
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 2px;
-}
-
-.file-shadow {
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-
-.file>div>div>span {
-    display: block;
+    background-color: #cee5f2;
 }
 </style>
