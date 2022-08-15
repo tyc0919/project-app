@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Main from './components/Main.vue'
 import Event from './components/Event.vue'
+
+
 const routes = [
     {
         path: '/',
