@@ -1,5 +1,5 @@
  <script setup>
- import File from './invite.vue';
+import Invite from './invite.vue';
 </script>
 
 <template>
@@ -7,12 +7,11 @@
         <input type="text" placeholder="搜尋" class="w-full border-2 border-black mb-4">
         <button class="w-full bg-sky-700 text-white p-2 rounded-md file-shadow">邀請+</button>
         <div class="file w-full overflow-auto">
-            <File></File>
-            <File></File>
-            <File></File>
-            <File></File>
-            <File></File>
-            <File></File>
+            <Invite></Invite>
+            <Invite></Invite>
+            <Invite></Invite>
+            <Invite></Invite>
+            <Invite></Invite>
         </div>
     </div>
 </template>
