@@ -52,17 +52,17 @@
             <!--編輯、刪除工作，關閉分頁-->
             <div>
                 <button
-                    class="py-3 px-1 border-btn rounded-lg text-base font-bold border-[3491d9] bg-[ffffff] text-blue shadow"
+                    class="py-3 px-1 border-btn rounded-lg text-base font-bold border-[3491d9] bg-[ffffff] text-blue shadow-btn"
                 >
                     編輯工作
                 </button>
                 <button
-                    class="mx-2 py-3 px-1 border-btn rounded-lg text-base font-bold bg-[ffffff] border-[ff0000] text-red shadow"
+                    class="mx-2 py-3 px-1 border-btn rounded-lg text-base font-bold bg-[ffffff] border-[ff0000] text-red shadow-btn"
                 >
                     刪除工作
                 </button>
                 <button
-                    class="py-3 px-1 border-btn rounded-lg text-base font-bold bg-[ffffff] border-[ff0000] text-red shadow"
+                    class="py-3 px-1 border-btn rounded-lg text-base font-bold bg-[ffffff] border-[ff0000] text-red shadow-btn"
                 >
                     關閉分頁
                 </button>
@@ -111,17 +111,17 @@
 
                 <!--三顆按鈕-->
                 <button
-                    class="w-full items-center bg-white rounded-lg border-btn border-[3491d9] py-[10px] text-blue shadow mb-[20px]"
+                    class="w-full items-center bg-white rounded-lg border-btn border-[3491d9] py-[10px] text-blue shadow-btn mb-[20px]"
                 >
                     新增細項 +
                 </button>
                 <button
-                    class="w-full items-center bg-[1d5e9f] rounded-lg border-btn border-[006eaf] py-[10px] text-white shadow mb-[20px]"
+                    class="w-full items-center bg-[1d5e9f] rounded-lg border-btn border-[006eaf] py-[10px] text-white shadow-btn mb-[20px]"
                 >
                     完成
                 </button>
                 <button
-                    class="w-full items-center bg-[ffcccc] rounded-lg border-btn border-[ff0000] py-[10px] text-red shadow"
+                    class="w-full items-center bg-[ffcccc] rounded-lg border-btn border-[ff0000] py-[10px] text-red shadow-btn"
                 >
                     取消完成
                 </button>
@@ -141,12 +141,12 @@
                             </div>
                             <div class="w-2/4 inline-flex justify-end align-middle my-1">
                                 <button
-                                    class="rounded-lg border-btn border-[3491d9] font-bold text-base text-blue py-0 px-3 shadow"
+                                    class="rounded-lg border-btn border-[3491d9] font-bold text-base text-blue py-0 px-3 shadow-btn"
                                 >
                                     編輯
                                 </button>
                                 <button
-                                    class="mx-4 rounded-lg border-btn border-[ff0000] font-bold text-base text-red py-0 px-3 shadow"
+                                    class="mx-4 rounded-lg border-btn border-[ff0000] font-bold text-base text-red py-0 px-3 shadow-btn"
                                 >
                                     刪除
                                 </button>
@@ -174,12 +174,12 @@
                             </div>
                             <div class="w-2/4 inline-flex justify-end align-middle my-1">
                                 <button
-                                    class="rounded-lg border-btn border-[3491d9] font-bold text-base text-blue py-0 px-3 shadow"
+                                    class="rounded-lg border-btn border-[3491d9] font-bold text-base text-blue py-0 px-3 shadow-btn"
                                 >
                                     編輯
                                 </button>
                                 <button
-                                    class="mx-4 rounded-lg border-btn border-[ff0000] font-bold text-base text-red py-0 px-3 shadow"
+                                    class="mx-4 rounded-lg border-btn border-[ff0000] font-bold text-base text-red py-0 px-3 shadow-btn"
                                 >
                                     刪除
                                 </button>
