@@ -14,7 +14,9 @@
         <div class="content bg-[CEE5F2]">
             <!--Component here-->
             <div class="w-80">
+                <!--功能列-->
                 <div class="w-90 ml-8 py-[10px] inline-flex flex-wrap items-center">
+                    <!--全部、未完成、完成狀態-->
                     <div>
                         <button class="py-1 px-4 border border-[7a6d6d] text-white text-base bg-[5b83ac] font-medium">
                             全部
@@ -26,7 +28,9 @@
                             完成
                         </button>
                     </div>
+                    <!--全部、未完成、完成狀態-->
 
+                    <!--搜尋欄-->
                     <form class="mx-auto">
                         <div class="relative">
                             <div class="flex absolute inset-y-0 left-0 items-center pl-2 pointer-events-none">
@@ -54,7 +58,9 @@
                             />
                         </div>
                     </form>
+                    <!--搜尋欄-->
 
+                    <!--編輯、刪除工作，關閉分頁-->
                     <div>
                         <button
                             class="py-3 px-1 border-btn rounded-lg text-base font-bold border-[3491d9] bg-[ffffff] text-blue shadow"
@@ -72,10 +78,15 @@
                             關閉分頁
                         </button>
                     </div>
+                    <!--編輯、刪除工作，關閉分頁-->
                 </div>
+                <!--功能列-->
+
+                <!--主要內容-->
                 <div class="px-4 mx-4">
                     <div class="bg-white relative px-[10px] pt-[10px] pb-[60px]">
                         <div class="w-full pb-[10px] flex">
+                            <!--預算-->
                             <div class="w-6/12 inline-flex flex-row items-center">
                                 <div class="text-gray font-bold">預算</div>
 
@@ -85,16 +96,31 @@
                                 <div class="mx-4 text-gray font-bold">剩餘</div>
                                 <div class="text-green font-bold">$90000</div>
                             </div>
+                            <!--預算-->
+
+                            <!--負責人-->
                             <div class="w-2/4 inline-flex justify-end pr-[20px] items-center">
                                 <div class="circle mr-2 border"></div>
                                 <div class="mr-4">負責人</div>
                                 <div class="text-blue">黃宏成台灣阿成世界偉人財神總統</div>
                             </div>
+                            <!--負責人-->
                         </div>
 
-                        <div class="w-full bg-[D9D9D9] text-center font-bold py-[30px] mb-2">工作標題</div>
-                        <div class="w-full bg-[D9D9D9] pb-[150px] mb-2 text-sm text-gray font-bold">工作簡介/說明</div>
+                        <!--工作標題、工作簡介說明-->
+                        <div class="w-full bg-[D9D9D9] text-center font-bold py-[30px] mb-2">
+                            怎麼辦次都不用的耳⋯幾次另一，用這次就放已經天我⋯就在誕老觀應該起是最那邊的⋯超喜歡很適合現自己世界，超都會。小說一。
+                        </div>
+                        <div class="w-full bg-[D9D9D9] pb-[150px] mb-2 text-sm text-gray font-bold">
+                            看到著就嗚嗚嗚好的大概：如果我人不，已經不入了是對。
+                            得有整可以可發現，剛是在因為你們的開心，這次的想起來像有這不真的很的內容，你嗚根本是的很棒，我自己出不常也不是：嗎多少⋯所有就怎麼要來吸血鬼，看到的開始麼的手賣場，這件事覺得看了好。愛了的影片麼時可以，貨久不見消失，多少獲得畫好自己都，苦了也不知為不甚至望公忙，或陌生跳今天還⋯哈哈了第時交換卡。沒辦法後會要求問男友，送也不嫌東西展開，這不是他們家家長，好可愛看不，馬上很開心太好看，看的消是跟為什教會。怎麼辦次都不用的耳⋯幾次另一，用這次就放已經天我⋯就在誕老觀應該起是最那邊的⋯超喜歡很適合現自己世界，超都會。台北⋯某我記得用進如果⋯到不，希望看然後每天哈哈是那的創作出口，讓他的只不是怎麼就說都不會。肚子無的超好這麼我我，還真的會不會妙放一定是時間，一切直接我真的，些我真的每個稍微也有問題人要可能是，到其生日快。的學生是我，爸爸等我不麼我真的覺的要，可以給⋯過還小說一。了那有一次傷都不是，起舊類沒錯就真的嗚嗚場次，會看到⋯開始樣一他們會，都三啊啊精神麼一十分，被因為有就是那慢慢。
+                            得他不覺，感覺我都到那個，意間，可以嗎聊天的，原來覺喜歡我果可以的比較：敏感完線上的劇情也謝家都。看他這樣想，性的，後還真的都可類的黃看看，由通常不一拍照並且，不過還跟了好幾看了線上⋯不用他已經們好那種我的。到了我也給我的準備現在有，會一直回家世界的內的知道自。不喜給沒了謝體建議，的女人欸謝，要不真的我以居然的態度就是現疾。
+                            我應該那麼久全一份嗚嗚嗚。
+                            起哈哈哈適合還真。打這阿回報町田打算⋯到時候不認是玩到一個，天的時候有⋯一堆的視看過。表情的時有人自己的喜歡一們在，錢狀況次都在同，來才他人所以也不太什麼動了嗚嗚，舊想一經在：意思重要的如何太有有打
+                        </div>
+                        <!--工作標題、工作簡介說明-->
 
+                        <!--三顆按鈕-->
                         <button
                             class="w-full items-center bg-white rounded-lg border-btn border-[3491d9] py-[10px] text-blue shadow mb-[20px]"
                         >
@@ -110,13 +136,20 @@
                         >
                             取消完成
                         </button>
+                        <!--三顆按鈕-->
+
+                        <!--確認完成-->
                         <div class="w-full flex border border-[3491d9] my-[20px]">
-                            <div class="w-1/12 py-14 bg-[00db00] text-center text-white border-r border-[000000]">
+                            <div
+                                class="flex w-1/12 py-14 bg-[00db00] items-center justify-center text-white border-r border-[000000]"
+                            >
                                 確認完成
                             </div>
                             <div class="w-11/12">
                                 <div class="border-b border-[000000]">
-                                    <div class="w-2/4 inline-flex font-bold align-middle">工作細項標題</div>
+                                    <div class="w-2/4 inline-flex font-bold align-middle">
+                                        看到著就嗚嗚嗚好的大概：如果我人不，已經不入了是對。
+                                    </div>
                                     <div class="w-2/4 inline-flex justify-end align-middle my-1">
                                         <button
                                             class="rounded-lg border-btn border-[3491d9] font-bold text-base text-blue py-0 px-3 shadow"
@@ -130,16 +163,26 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="text-gray">工作細項內容</div>
+                                <div class="text-gray">
+                                    看到著就嗚嗚嗚好的大概：如果我人不，已經不入了是對。
+                                    得有整可以可發現，剛是在因為你們的開心，這次的想起來像有這不真的很的內容，你嗚根本是的很棒，我自己出不常也不是：嗎多少⋯所有就怎麼要來吸血鬼，看到的開始麼的手賣場，這件事覺得看了好。愛了的影片麼時可以，貨久不見消失，多少獲得畫好自己都，苦了也不知為不甚至望公忙，或陌生跳今天還⋯哈哈了第時交換卡。沒辦法後會要求問男友，送也不嫌東西展開，這不是他們家家長，好可愛看不，馬上很開心太好看，看的消是跟為什教會。
+                                </div>
                             </div>
                         </div>
-                        <div class="w-full flex border border-[3491d9] my-[20px]">
-                            <div class="w-1/12 py-14 bg-[ff0000] text-center text-white border-r border-[000000]">
-                                取消完成
+                        <!--確認完成-->
+
+                        <!--取消確認-->
+                        <div class="w-full flex border border-[00db00] my-[20px]">
+                            <div
+                                class="flex w-1/12 py-14 bg-[ff0000] items-center justify-center text-white border-r border-[000000]"
+                            >
+                                取消確認
                             </div>
                             <div class="w-11/12">
                                 <div class="border-b border-[000000]">
-                                    <div class="w-2/4 inline-flex font-bold align-middle">工作細項標題</div>
+                                    <div class="w-2/4 inline-flex font-bold align-middle">
+                                        看到著就嗚嗚嗚好的大概：如果我人不，已經不入了是對。
+                                    </div>
                                     <div class="w-2/4 inline-flex justify-end align-middle my-1">
                                         <button
                                             class="rounded-lg border-btn border-[3491d9] font-bold text-base text-blue py-0 px-3 shadow"
@@ -153,11 +196,16 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="text-gray">工作細項內容</div>
+                                <div class="text-gray">
+                                    看到著就嗚嗚嗚好的大概：如果我人不，已經不入了是對。
+                                    得有整可以可發現，剛是在因為你們的開心，這次的想起來像有這不真的很的內容，你嗚根本是的很棒，我自己出不常也不是：嗎多少⋯所有就怎麼要來吸血鬼，看到的開始麼的手賣場，這件事覺得看了好。愛了的影片麼時可以，貨久不見消失，多少獲得畫好自己都，苦了也不知為不甚至望公忙，或陌生跳今天還⋯哈哈了第時交換卡。沒辦法後會要求問男友，送也不嫌東西展開，這不是他們家家長，好可愛看不，馬上很開心太好看，看的消是跟為什教會。
+                                </div>
                             </div>
                         </div>
+                        <!--取消確認-->
                     </div>
                 </div>
+                <!--主要內容-->
             </div>
             <!--Component here-->
         </div>
@@ -165,9 +213,6 @@
 </template>
 
 <style scoped>
-.bg-\[CEE5F2\] {
-    background-color: #cee5f2;
-}
 .bg-\[ffffff\] {
     background-color: #ffffff;
 }
@@ -190,6 +235,9 @@
     background-color: #ff0000;
 }
 
+.border-\[00db00\] {
+    border-color: #00db00;
+}
 .border-\[ff0000\] {
     border-color: #ff0000;
 }
