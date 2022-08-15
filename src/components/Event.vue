@@ -1,4 +1,6 @@
-<script></script>
+<script setup>
+import WorkSection from './WorkSection.vue'
+</script>
 
 <template>
     <div class="wrapper">
@@ -13,6 +15,7 @@
         </div>
         <div class="content bg-[CEE5F2]">
             <!-- 把你寫的Component放在這裡測試，要上github前這個檔案更動要discard掉-->
+            <WorkSection></WorkSection>
         </div>
     </div>
 </template>
