@@ -12,7 +12,7 @@ const routes = [
         path: '/events',
         component: Event
     },
-    ,{
+    {
         path: '/:pathMatch(.*)*',
         redirect: '/',
     }
