@@ -1,5 +1,4 @@
 <script setup>
-import WorksPage from './WorksPage.vue'
 </script>
 
 <template>
@@ -15,21 +14,20 @@ import WorksPage from './WorksPage.vue'
         </div>
         <div class="content bg-[CEE5F2]">
             <!-- 把你寫的Component放在這裡測試，要上github前這個檔案更動要discard掉-->
-            <WorksPage></WorksPage>
         </div>
     </div>
 </template>
 
 <style scoped>
 .wrapper {
-    height: calc(100% - 7rem)
+    height: calc(100% - 7rem);
 }
 
 .content {
-    height: calc(100% - 3rem)
+    height: calc(100% - 3rem);
 }
 
 .bg-\[CEE5F2\] {
-    background-color: #CEE5F2;
+    background-color: #cee5f2;
 }
 </style>
