@@ -12,10 +12,6 @@ const routes = [
         component: Event
     },
     {
-        path: '/firstpart',
-        component: FirstPart
-    },
-    {
         path: '/:pathMatch(.*)*',
         redirect: '/',
     }
