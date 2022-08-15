@@ -1,5 +1,4 @@
 <script setup>
-import WorkSection from './WorkSection.vue'
 </script>
 
 <template>
@@ -10,12 +9,11 @@ import WorkSection from './WorkSection.vue'
                 <div class="budget w-half px-4 bg-zinc-300 h-full flex items-center">預算編輯</div>
             </div>
             <div class="flex items-center pr-4">
-                <img src="/src/assets/images/home.svg" class="h-8" />
+                <img src="/src/assets/images/home.svg" class="h-8">
             </div>
         </div>
         <div class="content bg-[CEE5F2]">
             <!-- 把你寫的Component放在這裡測試，要上github前這個檔案更動要discard掉-->
-            <WorkSection></WorkSection>
         </div>
     </div>
 </template>
@@ -28,6 +26,7 @@ import WorkSection from './WorkSection.vue'
 .content {
     height: calc(100% - 3rem);
 }
+
 .bg-\[CEE5F2\] {
     background-color: #cee5f2;
 }
