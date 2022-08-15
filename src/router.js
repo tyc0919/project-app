@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Main from './components/Main.vue'
 import Event from './components/Event.vue'
+import FirstPart from './components/FirstPart.vue'
 const routes = [
     {
         path: '/',
@@ -9,8 +10,12 @@ const routes = [
     {
         path: '/events',
         component: Event
-    }
-    ,{
+    },
+    {
+        path: '/firstpart',
+        component: FirstPart
+    },
+    {
         path: '/:pathMatch(.*)*',
         redirect: '/',
     }

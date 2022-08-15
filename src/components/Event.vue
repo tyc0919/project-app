@@ -22,7 +22,6 @@
 .wrapper {
     height: calc(100% - 7rem)
 }
-
 .content {
     height: calc(100% - 3rem)
 }
