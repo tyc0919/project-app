@@ -1,80 +1,5 @@
 <script setup>
-</script>
-
-<script defer>
-document.addEventListener("DOMContentLoaded", function () {
-
-    // trace stages
-    let tracePercentageEls = document.querySelectorAll('.trace-percentage');
-    let traceContainerEls = document.querySelectorAll('.trace-container');
-
-    let traceEls = [];
-    for (let i = 0; i < traceContainerEls.length; i++) {
-        let objTraceEl = {
-            container: traceContainerEls[i],
-            percentage: tracePercentageEls[i]
-        };
-        traceEls.push(objTraceEl)
-    }
-
-    traceEls.forEach(function (traceEl) {
-        let percentageEl = traceEl['percentage'];
-        let containerEl = traceEl['container'];
-        // each trace element -- 80% 
-        let containerClass = containerEl.classList;
-        let percentageText = percentageEl.innerText;
-        // percentage -- 80 -> Number
-        let percentage = Number(percentageText.substring(0, percentageText.length - 1));
-        // width 
-        containerEl.style.width = percentage + '%';
-        containerEl.style.transition = '2s';
-        // background-color
-        if (percentage > 90) {
-            containerClass.add("bg-emerald-400");
-        } else if (percentage > 50) {
-            containerClass.add("bg-blue-400");
-        } else {
-            containerClass.add("bg-stone-600");
-        }
-    });
-
-    // cost stages
-    let costMoneyEl = document.querySelectorAll('.cost');
-    let budgetMoneyEl = document.querySelectorAll('.budget');
-    let costContainerEls = document.querySelectorAll('.cost-container');
-
-    let costEls = [];
-    for (let i = 0; i < costContainerEls.length; i++) {
-        // calculate the cost percentage of the budget 
-        let costMoney = costMoneyEl[i].innerText;
-        let budgetMoney = budgetMoneyEl[i].innerText;
-        let costMoneyAmount = costMoney.substring(1, costMoney.length - 1);
-        let budgetMoneyAmount = budgetMoney.substring(1, budgetMoney.length - 1);
-        let costPercentage = Math.round(costMoneyAmount / budgetMoneyAmount * 100);
-        // put into the object 
-        let objCostEl = {
-            percentage: costPercentage,
-            container: costContainerEls[i],
-        };
-        console.log(costContainerEls[i]);
-        costEls.push(objCostEl);
-    }
-
-    costEls.forEach(function (costEl) {
-        let percentage = costEl['percentage'];
-        let containerEl = costEl['container'];
-
-        containerEl.style.width = percentage + '%';
-        containerEl.style.transition = '2s';
-        containerEl.style.transitionDelay = '.5s';
-        if (percentage > 85) {
-            containerEl.classList.add('bg-red-400');
-        } else {
-            containerEl.classList.add('bg-yellow-400');
-        }
-    })
-
-}, false);
+import EventCard from './EventCard.vue';
 </script>
 
 
@@ -100,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         <!-- cards -->
         <div class="grid grid-cols-3 grid-gap-1rem ">
+            <EventCard></EventCard>
             <!-- card1 -->
             <div
                 class="shadow bg-white flex flex-col justify-between px-4 py-4 card h-96 align-start hover:card-float-up    ">
@@ -137,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             </div>
                         </div>
                         <div
-                            class="cost-container rounded-full text-white h-10 w-0 flex items-center justify-between px-4 text-sm shadow">
+                            class="cost-container rounded-full h-10 w-0 flex items-center justify-between px-4 text-sm ">
 
                         </div>
                     </div>
