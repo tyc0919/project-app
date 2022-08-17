@@ -65,23 +65,14 @@ document.addEventListener("DOMContentLoaded", function () {
         let containerEl = costEl['container'];
 
         containerEl.style.width = percentage + '%';
-        containerEl.style.transition = '4s';
+        containerEl.style.transition = '2s';
+        containerEl.style.transitionDelay = '.5s';
         if (percentage > 85) {
             containerEl.classList.add('bg-red-400');
         } else {
             containerEl.classList.add('bg-yellow-400');
         }
     })
-
-
-
-
-
-
-
-
-
-
 
 }, false);
 </script>
@@ -104,6 +95,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             </div>
         </div>
+
+
+
         <!-- cards -->
         <div class="grid grid-cols-3 grid-gap-1rem ">
             <!-- card1 -->
@@ -118,21 +112,21 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                 </div>
 
-                <div class="cardBottom border-t border-black pt-2 flex flex-col justify-between items-start ">
+                <div class="cardBottom border-t border-black pt-2 flex flex-col justify-between items-start r">
 
-                    <div
-                        class="relative h-fit w-full rounded-full border-gray-300 border-black border-2 mb-1 bg-slate-300">
+                    <div class="relative h-fit w-full rounded-full mb-1 bg-slate-300 shadow-inset">
                         <div
                             class="absolute text-black font-bold text-sm h-10 w-full px-4 flex items-center justify-between">
                             <span class="ellipsis">完成進度</span>
                             <span class="trace-percentage">70%</span>
                         </div>
-                        <div class="trace-container rounded-full text-white text-sm h-10 w-full px-4 w-0">
+                        <div
+                            class="trace-container rounded-full text-white text-sm h-10 w-full px-4 w-0 border-2 border-black">
 
                         </div>
                     </div>
 
-                    <div class="relative h-fit w-full rounded-full border-gray-300 border-2 bg-slate-300 shadow-inner">
+                    <div class="relative h-fit w-full rounded-full bg-slate-300 shadow-inset">
                         <div
                             class="absolute text-black font-bold h-10 w-full flex items-center justify-between px-4 text-sm">
                             <span class="ellipsis">預算花費</span>
@@ -143,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             </div>
                         </div>
                         <div
-                            class="cost-container rounded-full text-white h-10 w-0 flex items-center justify-between px-4 text-sm">
+                            class="cost-container rounded-full text-white h-10 w-0 flex items-center justify-between px-4 text-sm shadow">
 
                         </div>
                     </div>
@@ -165,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="cardBottom border-t border-black pt-2 flex flex-col justify-between items-start ">
 
                     <div
-                        class="relative h-fit w-full rounded-full border-gray-300 border-black border-2 mb-1 bg-slate-300">
+                        class="relative h-fit w-full rounded-full border-gray-300 border-black border-2 mb-1 bg-slate-300 shadow-inset">
                         <div
                             class="absolute text-black font-bold text-sm h-10 w-full px-4 flex items-center justify-between">
                             <span class="ellipsis">完成進度</span>
@@ -176,7 +170,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                     </div>
 
-                    <div class="relative h-fit w-full rounded-full border-gray-300 border-2 bg-slate-300 shadow-inner">
+                    <div class="relative h-fit w-full rounded-full border-gray-300 border-2 bg-slate-300 shadow-inset">
                         <div
                             class="absolute text-black font-bold h-10 w-full flex items-center justify-between px-4 text-sm">
                             <span class="ellipsis">預算花費</span>
@@ -209,7 +203,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="cardBottom border-t border-black pt-2 flex flex-col justify-between items-start ">
 
                     <div
-                        class="relative h-fit w-full rounded-full border-gray-300 border-black border-2 mb-1 bg-slate-300">
+                        class="relative h-fit w-full rounded-full border-gray-300 border-black border-2 mb-1 bg-slate-300 shadow-inset">
                         <div
                             class="absolute text-black font-bold text-sm h-10 w-full px-4 flex items-center justify-between">
                             <span class="ellipsis">完成進度</span>
@@ -220,7 +214,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                     </div>
 
-                    <div class="relative h-fit w-full rounded-full border-gray-300 border-2 bg-slate-300 shadow-inner">
+                    <div class="relative h-fit w-full rounded-full border-gray-300 border-2 bg-slate-300 shadow-inset">
                         <div
                             class="absolute text-black font-bold h-10 w-full flex items-center justify-between px-4 text-sm">
                             <span class="ellipsis">預算花費</span>
@@ -241,7 +235,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
+            <!-- cards end -->
         </div>
     </div>
 </template>
@@ -249,6 +243,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 <style>
+.shadow-inset {
+    box-shadow: inset 4px 4px 4px 0 rgb(157 157 157);
+}
+
 .shadow {
     box-shadow: 0 0 30px 2px rgb(0 0 0 / 10%);
 }
