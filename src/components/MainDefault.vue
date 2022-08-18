@@ -21,144 +21,13 @@ import EventCard from './EventCard.vue';
             </div>
         </div>
 
-
-
         <!-- cards -->
         <div class="grid grid-cols-3 grid-gap-1rem ">
-            <EventCard></EventCard>
-            <!-- card1 -->
-            <div
-                class="shadow bg-white flex flex-col justify-between px-4 py-4 card h-96 align-start hover:card-float-up    ">
-                <div class="cardTop mb-4">
-                    <div class="mb-2 text-center pic">pic</div>
-                    <div class="text-xl font-bold title ellipsis-2">一起支持「身心障礙兒爸爸」 ► 他想學習自立，希望有能力，幫爸爸換一打新襪子！</div>
-                    <div class="inline-flex justify-start w-full text-sm italic person">
-                        <span class="">By</span>
-                        <span class="ml-2  person-name text-blue ellipsis">籌畫人名稱</span>
-                    </div>
-                </div>
-
-                <div class="cardBottom border-t border-black pt-2 flex flex-col justify-between items-start r">
-
-                    <div class="relative h-fit w-full rounded-full mb-1 bg-slate-300 shadow-inset">
-                        <div
-                            class="absolute text-black font-bold text-sm h-10 w-full px-4 flex items-center justify-between">
-                            <span class="ellipsis">完成進度</span>
-                            <span class="trace-percentage">70%</span>
-                        </div>
-                        <div
-                            class="trace-container rounded-full text-white text-sm h-10 w-full px-4 w-0 border-2 border-black">
-
-                        </div>
-                    </div>
-
-                    <div class="relative h-fit w-full rounded-full bg-slate-300 shadow-inset">
-                        <div
-                            class="absolute text-black font-bold h-10 w-full flex items-center justify-between px-4 text-sm">
-                            <span class="ellipsis">預算花費</span>
-                            <div>
-                                <span class="cost ml-1">$200000</span>
-                                <span class="ml-1">/</span>
-                                <span class="budget ml-1">$985214</span>
-                            </div>
-                        </div>
-                        <div
-                            class="cost-container rounded-full h-10 w-0 flex items-center justify-between px-4 text-sm ">
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- card1 -->
-            <div
-                class="shadow bg-white flex flex-col justify-between px-4 py-4 card h-96 align-start hover:card-float-up    ">
-                <div class="cardTop mb-4">
-                    <div class="mb-2 text-center pic">pic</div>
-                    <div class="text-xl font-bold title ellipsis-2">一起支持「身心障礙兒爸爸」 ► 他想學習自立，希望有能力，幫爸爸換一打新襪子！</div>
-                    <div class="inline-flex justify-start w-full text-sm italic person">
-                        <span class="">By</span>
-                        <span class="ml-2  person-name text-blue ellipsis">籌畫人名稱</span>
-                    </div>
-                </div>
-
-                <div class="cardBottom border-t border-black pt-2 flex flex-col justify-between items-start ">
-
-                    <div
-                        class="relative h-fit w-full rounded-full border-gray-300 border-black border-2 mb-1 bg-slate-300 shadow-inset">
-                        <div
-                            class="absolute text-black font-bold text-sm h-10 w-full px-4 flex items-center justify-between">
-                            <span class="ellipsis">完成進度</span>
-                            <span class="trace-percentage">100%</span>
-                        </div>
-                        <div class="trace-container rounded-full text-white text-sm h-10 w-full px-4 w-0">
-
-                        </div>
-                    </div>
-
-                    <div class="relative h-fit w-full rounded-full border-gray-300 border-2 bg-slate-300 shadow-inset">
-                        <div
-                            class="absolute text-black font-bold h-10 w-full flex items-center justify-between px-4 text-sm">
-                            <span class="ellipsis">預算花費</span>
-                            <div>
-                                <span class="cost ml-1">$500000</span>
-                                <span class="ml-1">/</span>
-                                <span class="budget ml-1">$900800</span>
-                            </div>
-                        </div>
-                        <div
-                            class="cost-container rounded-full text-white h-10 w-0 flex items-center justify-between px-4 text-sm">
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- card1 -->
-            <div
-                class="shadow bg-white flex flex-col justify-between px-4 py-4 card h-96 align-start hover:card-float-up    ">
-                <div class="cardTop mb-4">
-                    <div class="mb-2 text-center pic">pic</div>
-                    <div class="text-xl font-bold title ellipsis-2">一起支持「身心障礙兒爸爸」 ► 他想學習自立，希望有能力，幫爸爸換一打新襪子！</div>
-                    <div class="inline-flex justify-start w-full text-sm italic person">
-                        <span class="">By</span>
-                        <span class="ml-2  person-name text-blue ellipsis">籌畫人名稱</span>
-                    </div>
-                </div>
-
-                <div class="cardBottom border-t border-black pt-2 flex flex-col justify-between items-start ">
-
-                    <div
-                        class="relative h-fit w-full rounded-full border-gray-300 border-black border-2 mb-1 bg-slate-300 shadow-inset">
-                        <div
-                            class="absolute text-black font-bold text-sm h-10 w-full px-4 flex items-center justify-between">
-                            <span class="ellipsis">完成進度</span>
-                            <span class="trace-percentage">20%</span>
-                        </div>
-                        <div class="trace-container rounded-full text-white text-sm h-10 w-full px-4 w-0">
-
-                        </div>
-                    </div>
-
-                    <div class="relative h-fit w-full rounded-full border-gray-300 border-2 bg-slate-300 shadow-inset">
-                        <div
-                            class="absolute text-black font-bold h-10 w-full flex items-center justify-between px-4 text-sm">
-                            <span class="ellipsis">預算花費</span>
-                            <div>
-                                <span class="cost ml-1">$800000</span>
-                                <span class="ml-1">/</span>
-                                <span class="budget ml-1">$900800</span>
-                            </div>
-                        </div>
-                        <div
-                            class="cost-container rounded-full text-white h-10 w-0 flex items-center justify-between px-4 text-sm">
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
+            <EventCard tracePercentage=100 costMoney=300000 budgetMoney=987541></EventCard>
+            <EventCard tracePercentage=40 costMoney=800000 budgetMoney=987541></EventCard>
+            <EventCard tracePercentage=60 costMoney=1000000 budgetMoney=987541></EventCard>
+            <EventCard tracePercentage=80 costMoney=200000 budgetMoney=987541></EventCard>
+            <EventCard tracePercentage=20 costMoney=900000 budgetMoney=987541></EventCard>
 
 
             <!-- cards end -->
@@ -169,6 +38,10 @@ import EventCard from './EventCard.vue';
 
 
 <style>
+.shadow-out {
+    box-shadow: 2px 2px 3px 1px rgb(157 157 157);
+}
+
 .shadow-inset {
     box-shadow: inset 4px 4px 4px 0 rgb(157 157 157);
 }

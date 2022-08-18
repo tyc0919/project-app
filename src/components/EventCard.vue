@@ -1,7 +1,26 @@
-<scrips setup>
-</scrips>
+<scripts setup>
+  
+</scripts>
+
 
 <script defer>
+export default {
+    props: {
+        tracePercentage: {
+            type: Number, //規定只能傳字串型態
+            default: 0 //可設定預設值
+        },
+        costMoney: {
+            type: Number,
+            default: 0
+        },
+        budgetMoney: {
+            type: Number,
+            default: 0
+        }
+    },
+}
+
 document.addEventListener("DOMContentLoaded", function () {
 
     // trace stages
@@ -29,6 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (percentage > 100) {
             percentage = 100;
         }
+        containerEl.classList.add('shadow-out');
         containerEl.style.width = percentage + '%';
         containerEl.style.transition = '2s';
         // background-color
@@ -72,6 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
         containerEl.style.width = percentage + '%';
         containerEl.style.transition = '2s';
         containerEl.style.transitionDelay = '.5s';
+        containerEl.classList.add('shadow-out');
         // color
         if (percentage > 85) {
             containerEl.classList.add('bg-red-400');
@@ -97,10 +118,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         <div class="cardBottom border-t border-black pt-2 flex flex-col justify-between items-start">
 
-            <div class="relative h-fit w-full rounded-full mb-1 bg-slate-300 shadow-inset">
+            <div class="relative h-fit w-full rounded-full mb-2 bg-slate-300 shadow-inset">
                 <div class="absolute text-black font-bold text-sm h-10 w-full px-4 flex items-center justify-between">
                     <span class="ellipsis">完成進度</span>
-                    <span class="trace-percentage">150%</span>
+                    <span class="trace-percentage">{{ tracePercentage }}%</span>
                 </div>
                 <div class="trace-container rounded-full h-10 w-0 px-4">
 
@@ -111,12 +132,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="absolute text-black font-bold h-10 w-full flex items-center justify-between px-4 text-sm">
                     <span class="ellipsis">預算花費</span>
                     <div>
-                        <span class="cost ml-1">$200000</span>
+                        <span class="cost ml-1">${{ costMoney }}</span>
                         <span class="ml-1">/</span>
-                        <span class="budget ml-1">$985214</span>
+                        <span class="budget ml-1">${{ budgetMoney }}</span>
                     </div>
                 </div>
-                <div class="cost-container rounded-full h-10 w-0 flex items-center justify-between px-4 text-sm ">
+                <div class="cost-container rounded-full h-10 w-0 flex items-center justify-between px-4 text-sm">
 
                 </div>
             </div>
