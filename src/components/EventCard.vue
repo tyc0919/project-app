@@ -1,14 +1,12 @@
 <scripts setup>
-  
 </scripts>
 
-
-<script defer>
+<script>
 export default {
     props: {
         tracePercentage: {
-            type: Number, //規定只能傳字串型態
-            default: 0 //可設定預設值
+            type: Number,
+            default: 0
         },
         costMoney: {
             type: Number,
@@ -80,6 +78,9 @@ document.addEventListener("DOMContentLoaded", function () {
             container: costContainerEls[i],
         };
         costEls.push(objCostEl);
+        // 顯示資料時，加上千分位符號
+        costMoneyEl[i].innerText = costMoneyEl[i].innerText.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
+        budgetMoneyEl[i].innerText = budgetMoneyEl[i].innerText.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
     }
 
     costEls.forEach(function (costEl) {
@@ -101,14 +102,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     })
 
+
 }, false);
 </script>
 
 <template>
     <!-- card1 -->
     <div class="shadow bg-white flex flex-col justify-between px-4 py-4 card h-96 align-start hover:card-float-up">
-        <div class="cardTop mb-4">
-            <div class="mb-2 text-center pic">pic</div>
+        <div class="cardTop mb-4 ">
+            <div class="mb-2 text-center flex flex-col justify-start items-center">
+                <img class="h-36 w-96 " src="src\assets\images\FirstPart.png">
+            </div>
             <div class="text-xl font-bold title ellipsis-2">一起支持「身心障礙兒爸爸」 ► 他想學習自立，希望有能力，幫爸爸換一打新襪子！</div>
             <div class="inline-flex justify-start w-full text-sm italic person">
                 <span class="">By</span>
