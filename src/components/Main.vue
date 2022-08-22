@@ -1,5 +1,4 @@
 <script setup>
-import MainWorks from './MainWorks.vue';
 </script>
 
 <template>

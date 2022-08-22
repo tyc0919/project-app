@@ -9,7 +9,7 @@
                 <router-link :to="{name: 'event-default'}" class="main-switch w-half px-4 h-full flex items-center bg-zinc-300">北商大母親節活動</router-link>
                 <router-link :to="{name: 'budget'}" class="main-switch w-half px-4 h-full flex items-center bg-zinc-300">預算編輯</router-link>
             </div>
-           <router-link :to="{name: 'main'}" class="flex items-center pr-4">
+           <router-link :to="{name: 'main-default'}" class="flex items-center pr-4">
             <img src="/src/assets/images/home.svg" class="h-8" />
            </router-link> 
         </div>
