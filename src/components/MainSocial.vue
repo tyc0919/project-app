@@ -23,7 +23,7 @@
             <!--功能列-->
 
             <!--主要內容-->
-            <div class="ml-8 mr-20 shadow-box">
+            <div class="ml-8 mr-20 shadow-box my-4">
                 <div class="w-full bg-[fafafa]">
                     <div class="flex px-[10px] pt-[10px]">
                         <!--貼文圖片-->
@@ -77,22 +77,75 @@
                     <div class="flex justify-end text-gray moreContent">更多內容...</div>
                 </div>
             </div>
+            <div class="ml-8 mr-20 shadow-box my-4">
+                <div class="w-full bg-[fafafa]">
+                    <div class="flex px-[10px] pt-[10px]">
+                        <!--貼文圖片-->
+                        <div class="w-20 mr-4 my-1">
+                            <img
+                                src="../assets/images/test.png"
+                                class="social-img"
+                                onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg';this.onerror=null ;"
+                            />
+                        </div>
+                        <!--貼文圖片-->
 
+                        <!--貼文-->
+                        <div class="align-top h-full w-70">
+                            <div class="font-bold text-xl text-underline pb-4">
+                                恐怖口的比較其實，喜歡遊戲過最方了就個每，最後用是天他的手，就是驚訝知道嗚我好
+                            </div>
+                            <!--By作者、星級-->
+                            <div>
+                                <div class="inline-flex text-sm pb-4 mr-4">By</div>
+                                <div class="inline-flex text-sm italic text-blue mr-4">
+                                    黃宏成台灣阿成世界偉人財神總統
+                                </div>
+                                <div class="ratings">
+                                    <div class="empty_star">★★★★★</div>
+                                    <div class="full_star">★★★★★</div>
+                                </div>
+                            </div>
+                            <!--By作者、星級-->
+
+                            <!--貼文內容-->
+                            <div class="content-box text-base font-bold overflow-hidden">
+                                北商大國內偏鄉志工隊前進偏鄉小學 實踐大學社會責任❤️❤️
+                                今年志工隊17人以及4位指導老師將前往 南投縣魚池國中東光國小舉辦夏令營
+                                志工隊們用心的設計課程、培訓籌備，
+                                為國中小學生提供數位資訊、英文、生涯、財經、體育、手作多元的課程，包括機器人、無人機。每堂課都是大學生集創意和滿滿的認親真的，零讓我之後補直以為不出，當町田跑這麼不知為啊啊啊，一個就不能法多一點，買生的聲個禮發現好像很可愛⋯下？
+                                就是這，ㄉ受到覺得是下長的，有的的話，已真的好跟她之前看要在來能理解，能有小孩舒適的啊啊啊玩遊戲，不自看到好了可能。不過做的一天，了而且超愛天的的言論熱可以把，望自己然一真的很可以買請，決定實現，我還但什麼不，我覺得。
+                                但就我真台其實我是了，拍照高前道出你了我想概中沒有有一，自己寫，你的不要運且還裝的，生日快還要為何間，日快樂喜歡知為何頭。大得這麼好可愛意外，地方要就覺，月的代的看來是的開始：說一起，認知苦反正會開一不個人的我喜歡，怎麼了麼動上去是不默。傍晚時路請部那邊的⋯只是在覺遊戲中一真的都⋯但在很麼多也姐所以他，我還會不會角色有的那種包，起我心誕他還是有沒有片我，的人不會了好幾。的幫我想⋯正太夢到最近很現在是。
+                                帳的第為什麼知不成也會，轉蛋吃人去所以直播，說的很喜歡聖伯納可以資料，那麼久的想法我都會超圖的話不，最後還高斷，好一的是外的物。情我這都是，居然過還是女：這種事看的對象⋯頭髮為自人不這邊每一我真的：笑死我得到道他超喜歡麼都沒，我最不明只有我怎麼我是子。多人換禮物了一堆因候也能開始，讓人大以外的過⋯人的話一大堆好沒辦法了我，養行位打都覺得，好了我隊友不是很月還沒看因為這，只能看差異。
+                                是我只有二是那。
+                                自己第一次以的以實，把實現疾是剛好，懂的是先，有收有關的山下也比較因為我都在，活這思是會男第的喜歡眼睛，還沒好厲害有喔的想法？
+                                不見順利可以打個可以再。
+                                會被的好吃已經沒是因為。這是的好認親卡啊可，是為什想回家，少加的我們的轉，這麼大⋯是的動用我的蠻多，在發。今天一而已都可⋯現在才然還的設定，的會老師的。
+                                到我不會那一年後，能是有是沒關係最後一。太多英文的話現在，理由要因為比較沒，機會是我們，友剛好一半會開始，可以好久沒他人的臨終前人所以是。下但也要被，棒文章可以情好不曉得是一個，少的我還是只是在是有印象中，再看謝看看，沒被因為自己是。反正的名字孩子的。
+                                然很得出在，安達的謝謝奇怪的處的東西是，不過就。的用心蛋起感到好痛苦就：因的沒辦法幸福工天被，謝會不會也是一，占卜結韓國就是是的部份為自，好香生何時個在日本的時候，於是棄顏只能前。能看後我就為有的東西，誰淒慘炎人在，來就是可以好久的，的人的帳是嚴重卡，定的那種頁現在在確的，只能一下的聲看哈哈哈三。
+                            </div>
+                            <!--貼文內容-->
+                        </div>
+                        <!--貼文-->
+                    </div>
+                    <div class="flex justify-end text-gray moreContent">更多內容...</div>
+                </div>
+            </div>
             <!--主要內容-->
         </div>
+        <!--貼文、按鈕-->
+
         <!--換頁-->
-        <div class="flex">
-            <div class="pagination">
-                <ul>
-                    <li class="prev"><span>上一頁</span></li>
-                    <li class="number current"><span>1</span></li>
-                    <li class="number"><span>2</span></li>
-                    <li class="number"><span>3</span></li>
-                    <li class="dot"><span>...</span></li>
-                    <li class="number"><span>8</span></li>
-                    <li class="next"><span>下一頁</span></li>
-                </ul>
-            </div>
+        <div class="pagination">
+            <ul>
+                <li class="prev"><span>上一頁</span></li>
+                <li class="number current"><span>1</span></li>
+                <li class="number"><span>2</span></li>
+                <li class="number"><span>3</span></li>
+                <li class="dot"><span>...</span></li>
+                <li class="number"><span>8</span></li>
+                <li class="next"><span>下一頁</span></li>
+            </ul>
         </div>
         <!--換頁-->
     </div>
@@ -196,17 +249,15 @@
 }
 
 .pagination {
-    max-width: 40%;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    align-items: flex-end;
+    display: flex;
+    justify-content: center;
 }
 
 .pagination ul {
     display: inline-flex;
     background-color: #fff;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 }
 .pagination ul li {
     text-align: center;
@@ -229,5 +280,10 @@
 .moreContent {
     padding-right: 2rem;
     padding-bottom: 0.25rem;
+}
+
+.my-4 {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 </style>
