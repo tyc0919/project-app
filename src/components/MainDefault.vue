@@ -1,5 +1,5 @@
 <script setup>
-import EventCard from './EventCard.vue';
+import MainDeFaultCard from './MainDefaultCard.vue';
 </script>
 
 
@@ -34,11 +34,11 @@ import EventCard from './EventCard.vue';
 
         <div class="grid grid-cols-3 grid-gap-1rem items-center justify-center">
             <!-- cards -->
-            <EventCard tracePercentage=100 costMoney=300000 budgetMoney=987541></EventCard>
-            <EventCard tracePercentage=40 costMoney=800000 budgetMoney=987541></EventCard>
-            <EventCard tracePercentage=60 costMoney=1000000 budgetMoney=987541></EventCard>
-            <EventCard tracePercentage=80 costMoney=200000 budgetMoney=987541></EventCard>
-            <EventCard tracePercentage=20 costMoney=900000 budgetMoney=987541></EventCard>
+            <MainDeFaultCard tracePercentage=100 costMoney=300000 budgetMoney=987541></MainDeFaultCard>
+            <MainDeFaultCard tracePercentage=40 costMoney=800000 budgetMoney=987541></MainDeFaultCard>
+            <MainDeFaultCard tracePercentage=60 costMoney=1000000 budgetMoney=987541></MainDeFaultCard>
+            <MainDeFaultCard tracePercentage=80 costMoney=200000 budgetMoney=987541></MainDeFaultCard>
+            <MainDeFaultCard tracePercentage=20 costMoney=900000 budgetMoney=987541></MainDeFaultCard>
             <!-- cards end -->
         </div>
 

@@ -1,156 +1,36 @@
 <script setup>
+import MainWorksCard from './MainWorksCard.vue';    
 </script>
 
 <template>
-    <div class="flex-col w-auto h-auto ">
-        <div class=" flex w-auto h-auto justify-evenly ">
-            <div class="bg-white flex-col item-center m-20 w-72 h-96 rounded shadow-md ">
-                <div class="flex-col ml-8 m-4">
-                    <div class="underline">工作標題</div>
-                    <div class="flex mt-2">
-                        <p class="text-sm">in</p>
-                        <P class="text-blue-400 italic ml-8 text-sm">活動標題</P>
-                    </div>
-                </div>
-                <div class="bg-gray-600	 flex mt-0 m-8 w-56 h-36 text-xs text-white">工作內容</div>
-                <div class="bg-slate-400 h-0.5 ml-2 mr-2"></div>
-                <div class="">
-                    <div class="relative bg-gray-200 rounded-full mt-4 m-auto w-52 h-9 text-left dark:bg-gray-700">
-                        <div class="absolute bg-red-600 rounded-full  px-2 text-sm h-9 whitespace-nowrap p-2"
-                            style="width: 69%">完成進度 </div>
-                        <div class="abdolute text-right text-sm p-2">72%</div>
+    <div class="container w-full px-8 py-8">
 
-                    </div>
-                    <div class="relative bg-gray-200 rounded-full  mt-4 m-auto w-52 h-9 text-right dark:bg-gray-700">
-                        <div class="absolute bg-yellow-400 rounded-full  px-2 text-sm h-9 whitespace-nowrap p-2"
-                            style="width: 15%">預算花費</div>
-                        <div class="abdolute text-right text-sm p-2"> 100000/9099999</div>
-                    </div>
-                </div>
-            </div>
-             <div class="bg-white flex-col item-center m-20 w-72 h-96 rounded shadow-md ">
-                <div class="flex-col ml-8 m-4">
-                    <div class="underline">工作標題</div>
-                    <div class="flex mt-2">
-                        <p class="text-sm">in</p>
-                        <P class="text-blue-400 italic ml-8 text-sm">活動標題</P>
-                    </div>
-                </div>
-                <div class="bg-gray-600	 flex mt-0 m-8 w-56 h-36 text-xs text-white">工作內容</div>
-                <div class="bg-slate-400 h-0.5 ml-2 mr-2"></div>
-                <div class="">
-                    <div class="relative bg-gray-200 rounded-full mt-4 m-auto w-52 h-9 text-left dark:bg-gray-700">
-                        <div class="absolute bg-red-600 rounded-full  px-2 text-sm h-9 whitespace-nowrap p-2"
-                            style="width: 69%">完成進度 </div>
-                        <div class="abdolute text-right text-sm p-2">72%</div>
+        <!-- options -->
+        <div id="options" class="inline-flex justify-between items-center my-4 w-full ">
+            <div class="inline-flex justify-around">
 
-                    </div>
-                    <div class="relative bg-gray-200 rounded-full  mt-4 m-auto w-52 h-9 text-right dark:bg-gray-700">
-                        <div class="absolute bg-yellow-400 rounded-full  px-2 text-sm h-9 whitespace-nowrap p-2"
-                            style="width: 15%">預算花費</div>
-                        <div class="abdolute text-right text-sm p-2"> 100000/9099999</div>
-                    </div>
+                <div id="radios">
+                    <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" checked />
+                    <label class="radioLable text-base" for="radio1">完成</label>
+                    <input id="radio2" class="radioInput hidden" type="radio" name="radio" value="radio2" />
+                    <label class="radioLable text-base" for="radio2">未完成</label>
+                    <input id="radio3" class="radioInput hidden" type="radio" name="radio" value="radio3" />
+                    <label class="radioLable text-base" for="radio3">全部</label>
                 </div>
-            </div>
-         <div class="bg-white flex-col item-center m-20 w-72 h-96 rounded shadow-md ">
-                <div class="flex-col ml-8 m-4">
-                    <div class="underline">工作標題</div>
-                    <div class="flex mt-2">
-                        <p class="text-sm">in</p>
-                        <P class="text-blue-400 italic ml-8 text-sm">活動標題</P>
-                    </div>
-                </div>
-                <div class="bg-gray-600	 flex mt-0 m-8 w-56 h-36 text-xs text-white">工作內容</div>
-                <div class="bg-slate-400 h-0.5 ml-2 mr-2"></div>
-                <div class="">
-                    <div class="relative bg-gray-200 rounded-full mt-4 m-auto w-52 h-9 text-left dark:bg-gray-700">
-                        <div class="absolute bg-red-600 rounded-full  px-2 text-sm h-9 whitespace-nowrap p-2"
-                            style="width: 69%">完成進度 </div>
-                        <div class="abdolute text-right text-sm p-2">72%</div>
 
-                    </div>
-                    <div class="relative bg-gray-200 rounded-full  mt-4 m-auto w-52 h-9 text-right dark:bg-gray-700">
-                        <div class="absolute bg-yellow-400 rounded-full  px-2 text-sm h-9 whitespace-nowrap p-2"
-                            style="width: 15%">預算花費</div>
-                        <div class="abdolute text-right text-sm p-2"> 100000/9099999</div>
-                    </div>
-                </div>
+
             </div>
+
+
         </div>
-        <div class=" flex w-auto h-auto justify-evenly ">
-            <div class="bg-white flex-col item-center m-20 w-72 h-96 rounded shadow-md ">
-                <div class="flex-col ml-8 m-4">
-                    <div class="underline">工作標題</div>
-                    <div class="flex mt-2">
-                        <p class="text-sm">in</p>
-                        <P class="text-blue-400 italic ml-8 text-sm">活動標題</P>
-                    </div>
-                </div>
-                <div class="bg-gray-600	 flex mt-0 m-8 w-56 h-36 text-xs text-white">工作內容</div>
-                <div class="bg-slate-400 h-0.5 ml-2 mr-2"></div>
-                <div class="">
-                    <div class="relative bg-gray-200 rounded-full mt-4 m-auto w-52 h-9 text-left dark:bg-gray-700">
-                        <div class="absolute bg-red-600 rounded-full  px-2 text-sm h-9 whitespace-nowrap p-2"
-                            style="width: 69%">完成進度 </div>
-                        <div class="abdolute text-right text-sm p-2">72%</div>
 
-                    </div>
-                    <div class="relative bg-gray-200 rounded-full  mt-4 m-auto w-52 h-9 text-right dark:bg-gray-700">
-                        <div class="absolute bg-yellow-400 rounded-full  px-2 text-sm h-9 whitespace-nowrap p-2"
-                            style="width: 15%">預算花費</div>
-                        <div class="abdolute text-right text-sm p-2"> 100000/9099999</div>
-                    </div>
-                </div>
-            </div>
-             <div class="bg-white flex-col item-center m-20 w-72 h-96 rounded shadow-md ">
-                <div class="flex-col ml-8 m-4">
-                    <div class="underline">工作標題</div>
-                    <div class="flex mt-2">
-                        <p class="text-sm">in</p>
-                        <P class="text-blue-400 italic ml-8 text-sm">活動標題</P>
-                    </div>
-                </div>
-                <div class="bg-gray-600	 flex mt-0 m-8 w-56 h-36 text-xs text-white">工作內容</div>
-                <div class="bg-slate-400 h-0.5 ml-2 mr-2"></div>
-                <div class="">
-                    <div class="relative bg-gray-200 rounded-full mt-4 m-auto w-52 h-9 text-left dark:bg-gray-700">
-                        <div class="absolute bg-red-600 rounded-full  px-2 text-sm h-9 whitespace-nowrap p-2"
-                            style="width: 69%">完成進度 </div>
-                        <div class="abdolute text-right text-sm p-2">72%</div>
-
-                    </div>
-                    <div class="relative bg-gray-200 rounded-full  mt-4 m-auto w-52 h-9 text-right dark:bg-gray-700">
-                        <div class="absolute bg-yellow-400 rounded-full  px-2 text-sm h-9 whitespace-nowrap p-2"
-                            style="width: 15%">預算花費</div>
-                        <div class="abdolute text-right text-sm p-2"> 100000/9099999</div>
-                    </div>
-                </div>
-            </div>
-         <div class="bg-white flex-col item-center m-20 w-72 h-96 rounded shadow-md ">
-                <div class="flex-col ml-8 m-4">
-                    <div class="underline">工作標題</div>
-                    <div class="flex mt-2">
-                        <p class="text-sm">in</p>
-                        <P class="text-blue-400 italic ml-8 text-sm">活動標題</P>
-                    </div>
-                </div>
-                <div class="bg-gray-600	 flex mt-0 m-8 w-56 h-36 text-xs text-white">工作內容</div>
-                <div class="bg-slate-400 h-0.5 ml-2 mr-2"></div>
-                <div class="">
-                    <div class="relative bg-gray-200 rounded-full mt-4 m-auto w-52 h-9 text-left dark:bg-gray-700">
-                        <div class="absolute bg-red-600 rounded-full  px-2 text-sm h-9 whitespace-nowrap p-2"
-                            style="width: 69%">完成進度 </div>
-                        <div class="abdolute text-right text-sm p-2">72%</div>
-
-                    </div>
-                    <div class="relative bg-gray-200 rounded-full  mt-4 m-auto w-52 h-9 text-right dark:bg-gray-700">
-                        <div class="absolute bg-yellow-400 rounded-full  px-2 text-sm h-9 whitespace-nowrap p-2"
-                            style="width: 15%">預算花費</div>
-                        <div class="abdolute text-right text-sm p-2"> 100000/9099999</div>
-                    </div>
-                </div>
-            </div>
+        <div class="grid grid-cols-3 grid-gap-1rem items-center justify-center">
+            <MainWorksCard tracePercentage=70 costMoney=300000 budgetMoney=987541></MainWorksCard>
+            <MainWorksCard tracePercentage=100 costMoney=300000 budgetMoney=987541></MainWorksCard>
+            <MainWorksCard tracePercentage=100 costMoney=300000 budgetMoney=987541></MainWorksCard>
+            <MainWorksCard tracePercentage=100 costMoney=300000 budgetMoney=987541></MainWorksCard>
         </div>
+
         <div class="flex justify-center">
             <nav aria-label="Page navigation example">
                 <ul class="inline-flex -space-x-px">
