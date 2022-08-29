@@ -1,5 +1,14 @@
 <script setup>
+import { ref } from 'vue';
 import EventBudgetFile from './EventBudgetFile.vue';
+import Modal from './Modal.vue';
+
+const showModal = ref(false)
+const toggleModal = () => {
+    showModal.value = !showModal.value
+}
+
+const modalContent = ref('測試內容')
 
 </script>
 
@@ -19,10 +28,30 @@ import EventBudgetFile from './EventBudgetFile.vue';
         </div>
         <div class="flex justify-center w-full mb-8 ">
             <input type="number" class="w-1/3 mr-4" />
-            <button class="bg-sky-700 text-white px-4 py-2 rounded shadow-md">預算更新</button>
+            <button class="bg-sky-700 text-white px-4 py-2 rounded shadow-md" @click="toggleModal()">預算更新</button>
         </div>
 
         <!-- budget box end -->
+
+
+        <!-- test block start -->
+        <Teleport to="body">
+            <!-- use the modal component, pass in the prop -->
+            <modal :show="showModal" @close="toggleModal()">
+                <template #header>
+                    <h3>自訂標題</h3>
+                </template>
+                <template #body>
+                    {{modalContent}}
+                </template>
+                <template #footer>
+                    <button class="bg-sky-700 text-white px-4 py-2 mx-1 rounded shadow-md">確認</button>
+                    <button class="bg-gray-400 text-white px-4 py-2 mx-1 rounded shadow-md" @click="toggleModal()">取消</button>
+                </template>
+            </modal>
+        </Teleport>
+        <!-- test block end -->
+
 
         <!-- analysis start -->
         <!-- analysis end -->
