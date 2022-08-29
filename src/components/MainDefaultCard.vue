@@ -4,6 +4,7 @@ const props = defineProps({
     costMoney: Number,
     budgetMoney: Number,
 })
+
 document.addEventListener("DOMContentLoaded", function () {
     // trace stages
     let tracePercentageEls = document.querySelectorAll('.trace-percentage');
@@ -110,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="relative h-fit w-full rounded-full mb-2 bg-slate-300 shadow-inset py-1 px-1">
                 <div class="absolute text-black font-bold text-sm h-8 w-full px-4 flex items-center justify-between">
                     <span class="ellipsis">完成進度</span>
-                    <span class="trace-percentage">{{ tracePercentage }}%</span>
+                    <span class="trace-percentage">{{  tracePercentage  }}%</span>
                 </div>
                 <div class="trace-container rounded-full h-8 w-0 px-4">
                 </div>
@@ -120,9 +121,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="absolute text-black font-bold h-8 w-full flex items-center justify-between px-4 text-sm">
                     <span class="ellipsis">預算花費</span>
                     <div>
-                        <span class="cost ml-1">${{ costMoney }}</span>
+                        <span class="cost ml-1">${{  costMoney  }}</span>
                         <span class="ml-1">/</span>
-                        <span class="budget ml-1">${{ budgetMoney }}</span>
+                        <span class="budget ml-1">${{  budgetMoney  }}</span>
                     </div>
                 </div>
                 <div class="cost-container rounded-full h-8 w-0 flex items-center justify-between px-4 text-sm">
@@ -133,5 +134,5 @@ document.addEventListener("DOMContentLoaded", function () {
     </div>
 </template>
 
-<style>
+<style scoped>
 </style>
