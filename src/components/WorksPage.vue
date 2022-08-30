@@ -1,10 +1,72 @@
 <script setup>
 import FileSection from './FileSection.vue';
+import Modal from './Modal.vue';
+
+
 </script>
 
 <template>
+
+    <Modal show="true">
+        <template v-slot:header>
+            <div class="border-b-4 w-full px-4 py-4">
+                <div class="font-bold text-2xl">新增工作</div>
+            </div>
+        </template>
+
+        <template v-slot:body>
+            <div class="overflow-y-auto max-h-96 pr-4">
+                <div class="flex-row justify-between space-y-3">
+                    <div class="text-base font-bold">工作名稱</div>
+                    <input type="text" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                        placeholder="超棒的活動">
+                    <div class="text-base font-bold">工作日期</div>
+                    <input type="date" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                        placeholder="超棒的活動">
+                    <div class="text-base font-bold">分配工作預算</div>
+                    <div class="flex items-center justify-start space-x-3">
+                        <span class="italic font-bold">$</span>
+                        <input type="number" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                            placeholder="10000">
+                    </div>
+
+                    <div class="text-base font-bold">工作說明</div>
+                    <textarea class=" px-1 py-1 text-base font-bold border border-2 border-slate-400 w-full"
+                        placeholder="這次的活動，我們將要帶領大家..."></textarea>
+
+                    <div class="text-base font-bold ">負責人</div>
+                    <select class="px-1 py-1 w-full font-bold border border-2 border-slate-500">
+                        <option class="italic font-bold">--請選擇一位負責人--</option>
+                        <option class="text-red-400 font-bold">未定</option>
+                        <option>--------------------------------</option>
+                        <option>曾侑成</option>
+                        <option>胡家境</option>
+                        <option>黃紹齊</option>
+                        <option>柯丞駿</option>
+                        <option>魏心平</option>
+                    </select>
+                </div>
+            </div>
+        </template>
+
+        <template v-slot:footer>
+            <div class="border-t-2 pt-2">
+                <button class=" btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500
+                    bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    新增
+                </button>
+                <button class=" btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border
+                    border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                    取消
+                </button>
+            </div>
+
+        </template>
+    </Modal>
+
+
     <!-- 把你寫的Component放在這裡測試，要上github前這個檔案更動要discard掉-->
-    <div id="bottomContainer" class="w-full">
+    <div id=" bottomContainer" class="w-full">
         <div class="bookmark2 m-1.5 mx-8 relative">
             <div class="bookmark2-box text-xl bg-[C0C0C0]">
                 所有工作
@@ -65,8 +127,7 @@ import FileSection from './FileSection.vue';
                         </button>
                     </div>
                 </div>
-                <div id="workContainer"
-                    class="grid grid-col3 grid-gap-1rem py-8 px-8 rounded-2xl bg-white shadow">
+                <div id="workContainer" class="grid grid-col3 grid-gap-1rem py-8 px-8 rounded-2xl bg-white shadow">
 
                     <div
                         class="work card h-22rem border-[#2b6cb0] hover:card-float-up px-2 py-2 flex flex-column justify-between rounded-2xl shadow ">
@@ -410,6 +471,8 @@ import FileSection from './FileSection.vue';
 
 
 <style scoped>
+select {}
+
 .text-\[\#c70000\] {
     color: #c70000;
 }
