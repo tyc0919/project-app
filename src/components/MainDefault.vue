@@ -1,13 +1,17 @@
 <script setup>
+import { ref } from 'vue';
 import MainDeFaultCard from './MainDefaultCard.vue';
 import Modal from './Modal.vue';
+
+const modalProps = ref({
+    "buttonsTrigger": true
+})
 
 </script>
 
 
 <template>
-    <!-- create new activity modal -->
-    <Modal show="true">
+    <Modal :show="modalProps.buttonsTrigger">
         <template v-slot:header>
             <div class="border-b-4 w-full px-4 py-4">
                 <div class="font-bold text-2xl">新增活動</div>
@@ -39,11 +43,11 @@ import Modal from './Modal.vue';
         </template>
 
         <template v-slot:footer>
-            <button
+            <button @click="modalProps.buttonsTrigger = false"
                 class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
                 新增
             </button>
-            <button
+            <button @click="modalProps.buttonsTrigger = false"
                 class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
                 取消
             </button>
@@ -71,7 +75,7 @@ import Modal from './Modal.vue';
             </div>
 
             <div id="optionsRight" class="flex justify-end align-center">
-                <button
+                <button @click="modalProps.buttonsTrigger = true"
                     class="btnCreateEvent bg-transparent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
                     新增活動
                 </button>

@@ -1,8 +1,11 @@
 <script setup>
+import { ref } from 'vue';
 import FileSection from './FileSection.vue';
 import Modal from './Modal.vue';
 
-
+const modalProps = ref({
+    "buttonsTrigger": true
+})
 </script>
 
 <template>
@@ -51,12 +54,12 @@ import Modal from './Modal.vue';
 
         <template v-slot:footer>
             <div class="border-t-2 pt-2">
-                <button class=" btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500
-                    bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                <button @click="modalProps.buttonsTrigger = false"
+                    class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
                     新增
                 </button>
-                <button class=" btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border
-                    border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                <button @click="modalProps.buttonsTrigger = false"
+                    class=" btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
                     取消
                 </button>
             </div>
@@ -121,7 +124,7 @@ import Modal from './Modal.vue';
                     </div>
 
                     <div id="optionsRight" class="flex justify-end align-center">
-                        <button id="addNewWorkButton"
+                        <button id="addNewWorkButton" @click="modalProps.buttonsTrigger = false"
                             class="bg-transparent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
                             新增工作
                         </button>
