@@ -10,7 +10,7 @@ const modalProps = ref({
 
 <template>
 
-    <Modal show="true">
+    <Modal :show="modalProps.buttonsTrigger">
         <template v-slot:header>
             <div class="border-b-4 w-full px-4 py-4">
                 <div class="font-bold text-2xl">新增工作</div>
@@ -124,7 +124,7 @@ const modalProps = ref({
                     </div>
 
                     <div id="optionsRight" class="flex justify-end align-center">
-                        <button id="addNewWorkButton" @click="modalProps.buttonsTrigger = false"
+                        <button id="addNewWorkButton" @click="modalProps.buttonsTrigger = true"
                             class="bg-transparent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
                             新增工作
                         </button>
