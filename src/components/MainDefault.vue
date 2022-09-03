@@ -3,23 +3,23 @@ import { ref } from 'vue';
 import MainDeFaultCard from './MainDefaultCard.vue';
 import Modal from './Modal.vue';
 
-const modalProps = ref({
-    "buttonsTrigger": true
-})
-
+const showModal = ref(false);
+const toggleModal = () => {
+    showModal.value = !showModal.value
+}
 </script>
 
 
 <template>
-    <Modal :show="modalProps.buttonsTrigger">
-        <template v-slot:header>
+    <Modal :show="showModal">
+        <template #header>
             <div class="border-b-4 w-full px-4 py-4">
                 <div class="font-bold text-2xl">新增活動</div>
             </div>
 
         </template>
 
-        <template v-slot:body>
+        <template #body>
             <div class="overflow-y-auto max-h-96 pr-4">
                 <div class="flex-row justify-between space-y-3">
                     <div class="text-base font-bold">活動名稱</div>
@@ -42,20 +42,21 @@ const modalProps = ref({
             </div>
         </template>
 
-        <template v-slot:footer>
-            <button @click="modalProps.buttonsTrigger = false"
-                class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
-                新增
-            </button>
-            <button @click="modalProps.buttonsTrigger = false"
-                class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
-                取消
-            </button>
+        <template #footer>
+            <div class="border-t-2 pt-2">
+                <button @click="toggleModal()"
+                    class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    新增
+                </button>
+                <button @click="toggleModal()"
+                    class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                    取消
+                </button>
+            </div>
         </template>
     </Modal>
 
     <!-- content -->
-    <!-- <Modal show=true></Modal> -->
 
     <div class="contain er w-full px-8 py-8">
         <!-- options -->
@@ -75,7 +76,7 @@ const modalProps = ref({
             </div>
 
             <div id="optionsRight" class="flex justify-end align-center">
-                <button @click="modalProps.buttonsTrigger = true"
+                <button @click="toggleModal()"
                     class="btnCreateEvent bg-transparent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
                     新增活動
                 </button>
