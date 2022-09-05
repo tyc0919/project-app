@@ -1,4 +1,21 @@
 <script setup>
+import { ref } from 'vue';
+import Modal from './Modal.vue';
+
+const showModal = ref(false)
+const showModal2 = ref(false)
+
+const toggleModal = () => {
+    showModal.value = !showModal.value
+}
+
+const toggleModal2 = () => {
+    showModal2.value = !showModal2.value
+}
+
+
+const modalContent = ref('測試內容')
+
 </script>
 
 <template>
@@ -10,13 +27,13 @@
 
                 <form action="">
                     <div class="flex justify-around w-full">
-                        <div class="button">
+                        <div class="button hover">
                             <input type="button" value="新增活動">
                         </div>
-                        <div class="button">
+                        <div class="button hover" @click="toggleModal()">
                             <input type="button" value="編輯活動">
                         </div>
-                        <div class="button">
+                        <div class="button hover" @click="toggleModal2()">
                             <input type="button" value="刪除活動">
                         </div>
                     </div>
@@ -38,10 +55,77 @@
 
             </div>
         </div>
-
-
     </div>
     <!--FirstPart End-->
+
+    <!-- test block start -->
+    <Teleport to="body">
+        <!-- use the modal component, pass in the prop -->
+        <modal :show="showModal" @close="toggleModal()">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">編輯活動</div>
+                </div>
+            </template>
+            <template #body>
+                <div class="overflow-y-auto max-h-96 pr-4">
+                    <div class="flex-row justify-between space-y-3">
+                        <div class="text-base font-bold">活動名稱</div>
+                        <input type="text" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                            placeholder="原本的活動名稱">
+                        <div class="text-base font-bold">活動運算</div>
+                        <div class="flex items-center justify-start space-x-3">
+                            <span class="italic font-bold">$</span>
+                            <input type="number" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                                placeholder="原本的活動運算">
+                        </div>
+
+                        <div class="text-base font-bold">活動圖片</div>
+                        <input type="file">
+                        <div class="text-base font-bold ">活動簡介</div>
+                        <textarea class="text-base font-bold border border-2 border-slate-400 w-full"
+                            placeholder="原本的活動簡介"></textarea>
+
+                    </div>
+                </div>
+            </template>
+            <template #footer>
+                <button @click="toggleModal()"
+                    class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    更改
+                </button>
+                <button @click="toggleModal()"
+                    class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                    取消
+                </button>
+            </template>
+        </modal>
+    </Teleport>
+
+    <Teleport to="body">
+        <!-- use the modal component, pass in the prop -->
+        <modal :show="showModal2" @close="toggleModal2()">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">警告視窗</div>
+                </div>
+            </template>
+            <template #body>
+                你確定要刪除此活動嗎，按下確定後就不能返回了
+            </template>
+            <template #footer>
+                <button @click="toggleModal2()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    確定
+                </button>
+                <button @click="toggleModal2()"
+                    class="py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                    取消
+                </button>
+            </template>
+        </modal>
+    </Teleport>
+    <!-- test block end -->
 </template>
 
 <style scoped>
@@ -128,7 +212,17 @@
     text-align: center;
     font-size: 1.5rem;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    cursor: s-resize;
+}
+
+.hover:hover {
+    background-color: white;
+    color: #1D5E9F;
+}
+
+.hover:nth-of-type(3):hover{
+    background-color: #FF0000;
+    color: white;
+
 }
 
 .button:nth-of-type(3) {

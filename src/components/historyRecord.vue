@@ -8,29 +8,41 @@
             <div class="expense normal-square text-xl">支出金額</div>
             <div class="represent normal-square text-xl">報銷人員</div>
             <div class="work-name normal-square text-xl">工作名稱</div>
-            <div class="upload-time normal-square text-xl">上傳時間</div>
+            <div class="upload-time normal-square text-xl">上傳日期</div>
         </div>
         <hr>
         <div class="normal-row">
-            <div class="expense normal-square text-xl">-$5,622</div>
+            <div class="expense normal-square text-xl flex">
+                <div class="flex-1 text-left pl-10">$</div>
+                <div class="flex-2 pr-10 truncate">1235454</div>
+            </div>
             <div class="represent normal-square text-xl">陳莉莉</div>
             <div class="work-name normal-square text-xl">場地安排</div>
             <div class="upload-time normal-square text-xl">2011-08-12</div>
         </div>
         <div class="normal-row">
-            <div class="expense normal-square text-xl">-$69,999</div>
+            <div class="expense normal-square text-xl flex">
+                <div class="flex-1 text-left pl-10">$</div>
+                <div class="flex-2 pr-10 truncate">1235454</div>
+            </div>
             <div class="represent normal-square text-xl">黃紫紅</div>
             <div class="work-name normal-square text-xl">交通</div>
             <div class="upload-time normal-square text-xl">2011-08-10</div>
         </div>
         <div class="normal-row">
-            <div class="expense normal-square text-xl">-$55,693</div>
+            <div class="expense normal-square text-xl flex">
+                <div class="flex-1 text-left pl-10">$</div>
+                <div class="flex-2 pr-10 truncate">1235454</div>
+            </div>
             <div class="represent normal-square text-xl">Alice</div>
             <div class="work-name normal-square text-xl">food</div>
             <div class="upload-time normal-square text-xl">2012-01-01</div>
         </div>
         <div class="normal-row">
-            <div class="expense normal-square text-xl">-$562</div>
+            <div class="expense normal-square text-xl flex">
+                <div class="flex-1 text-left pl-10">$</div>
+                <div class="flex-2 pr-10 truncate">1235454</div>
+            </div>
             <div class="represent normal-square text-xl">Bob</div>
             <div class="work-name normal-square text-xl">djiojei....</div>
             <div class="upload-time normal-square text-xl">2008-09-08</div>
@@ -42,9 +54,8 @@
 h1 {
     font-size: 1.125rem;
     line-height: 1.75rem;
-    margin-left: 13rem;
-    margin-bottom: 1.5rem;
-    font-weight: 400;
+    margin-left: 2.75rem;
+    font-weight: 900;
 }
 
 hr {
@@ -53,10 +64,11 @@ hr {
 }
 
 .wrapper {
-    width: 75%;
+    width: 95%;
     margin: 0 auto;
+    margin-bottom: 1rem;
+    padding: 1rem 0;
     background-color: white;
-    padding: 0.5rem 0;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
