@@ -1,4 +1,26 @@
-<script></script>
+<script setup>
+import { ref } from 'vue'
+import Modal from './Modal.vue'
+
+const showModal = ref(false)
+const toggleModal = () => {
+    showModal.value = !showModal.value
+}
+
+let mode = ref(null)
+const addNewWorkDetail = () => {
+    mode.value = 1
+    toggleModal()
+}
+const deleteWorkDetail = () => {
+    mode.value = 2
+    toggleModal()
+}
+const deleteWork = () => {
+    mode.value = 3
+    toggleModal()
+}
+</script>
 
 <template>
     <!--Component here-->
@@ -58,6 +80,7 @@
                 </button>
                 <button
                     class="mx-2 py-3 px-1 border-w-3 rounded-lg text-base font-bold bg-white border-[#ff0000] text-[#ff0000] shadow-btn"
+                    @click="deleteWork()"
                 >
                     刪除工作
                 </button>
@@ -109,23 +132,26 @@
                 </div>
                 <!--工作標題、工作簡介說明-->
 
-                <!--三顆按鈕-->
-                <button
-                    class="w-full items-center bg-white rounded-lg border-w-3 border-[#3491d9] py-[10px] text-[#3491d9] shadow-btn mb-[20px]"
-                >
-                    新增細項 +
-                </button>
-                <button
-                    class="w-full items-center bg-[#1d5e9f] rounded-lg border-w-3 border-[#006eaf] py-[10px] text-white shadow-btn mb-[20px]"
-                >
-                    完成
-                </button>
-                <button
-                    class="w-full items-center bg-[#ffcccc] rounded-lg border-w-3 border-[#ff0000] py-[10px] text-[#ff0000] shadow-btn"
-                >
-                    取消完成
-                </button>
-                <!--三顆按鈕-->
+                <!--新增細項、完成、取消完成-->
+                <div>
+                    <button
+                        class="w-full items-center bg-white rounded-lg border-w-3 border-[#3491d9] py-[10px] text-[#3491d9] shadow-btn mb-[20px]"
+                    >
+                        新增細項 +
+                    </button>
+                    <button
+                        class="w-full items-center bg-[#1d5e9f] rounded-lg border-w-3 border-[#006eaf] py-[10px] text-white shadow-btn mb-[20px]"
+                    >
+                        完成
+                    </button>
+                    <button
+                        class="w-full items-center bg-[#ffcccc] rounded-lg border-w-3 border-[#ff0000] py-[10px] text-[#ff0000] shadow-btn"
+                    >
+                        取消完成
+                    </button>
+                </div>
+
+                <!--新增細項、完成、取消完成-->
 
                 <!--確認完成-->
                 <div class="w-full flex border border-[#3491d9] my-[20px]">
@@ -142,11 +168,13 @@
                             <div class="w-2/4 inline-flex justify-end align-middle my-1">
                                 <button
                                     class="rounded-lg border-w-3 border-[#3491d9] font-bold text-base text-[#3491d9] py-0 px-3 shadow-btn"
+                                    @click="addNewWorkDetail()"
                                 >
                                     編輯
                                 </button>
                                 <button
                                     class="mx-4 rounded-lg border-w-3 border-[#ff0000] font-bold text-base text-[#ff0000] py-0 px-3 shadow-btn"
+                                    @click="deleteWorkDetail()"
                                 >
                                     刪除
                                 </button>
@@ -192,6 +220,86 @@
                     </div>
                 </div>
                 <!--取消確認-->
+
+                <!-- 彈出視窗 -->
+
+                <!-- 新增工作細項 -->.
+
+                <Teleport to="body">
+                    <modal :show="showModal" @close="toggleModal()">
+                        <template #header>
+                            <div v-if="mode === 1"><h3>新增工作細項</h3></div>
+                            <div v-else-if="mode === 2"><h3>刪除工作細項</h3></div>
+                            <div v-else-if="mode === 3"><h3>刪除工作</h3></div>
+                        </template>
+                        <template #body>
+                            <form class="flex flex-col">
+                                <div v-if="mode === 1" class="flex flex-col">
+                                    <input type="text" class="border mb-2" placeholder="工作細項標題" />
+                                    <textarea rows="5" class="border" placeholder="工作細項內容"></textarea>
+                                </div>
+                                <div v-else class="flex flex-col">確定要刪除嗎？</div>
+                            </form>
+                        </template>
+                        <template #footer>
+                            <button class="bg-sky-700 text-white px-4 py-2 mx-1 rounded shadow-md">確認</button>
+                            <button
+                                class="bg-gray-400 text-white px-4 py-2 mx-1 rounded shadow-md"
+                                @click="toggleModal()"
+                            >
+                                取消
+                            </button>
+                        </template>
+                    </modal>
+                </Teleport>
+
+                <!-- 新增工作細項 -->
+
+                <!-- 刪除工作細項 -->
+
+                <!-- <Teleport to="body">
+                    <modal id="deleteWorkDetail" :show="showModal" @close="toggleModal()">
+                        <template #header>
+                            <h3>刪除工作細項</h3>
+                        </template>
+                        <template #body> 確定要刪除嗎？ </template>
+                        <template #footer>
+                            <button class="bg-sky-700 text-white px-4 py-2 mx-1 rounded shadow-md">確認</button>
+                            <button
+                                class="bg-gray-400 text-white px-4 py-2 mx-1 rounded shadow-md"
+                                @click="toggleModal()"
+                            >
+                                取消
+                            </button>
+                        </template>
+                    </modal>
+                </Teleport> -->
+
+                <!-- 刪除工作細項 -->
+
+                <!-- 刪除工作 -->
+
+                <!-- <Teleport to="body">
+                    <modal id="deleteWorkDetail" :show="showModal" @close="toggleModal()">
+                        <template #header>
+                            <h3>刪除工作</h3>
+                        </template>
+                        <template #body> 確定要刪除嗎？ </template>
+                        <template #footer>
+                            <button class="bg-sky-700 text-white px-4 py-2 mx-1 rounded shadow-md">確認</button>
+                            <button
+                                class="bg-gray-400 text-white px-4 py-2 mx-1 rounded shadow-md"
+                                @click="toggleModal()"
+                            >
+                                取消
+                            </button>
+                        </template>
+                    </modal>
+                </Teleport> -->
+
+                <!-- 刪除工作 -->
+
+                <!-- 彈出視窗 -->
             </div>
         </div>
         <!--主要內容-->
