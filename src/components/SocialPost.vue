@@ -1,35 +1,35 @@
 <template>
-    <div class="ml-8 mr-20 shadow-box my-4">
-        <div class="w-full bg-[fafafa]">
+    <div class="ml-8 mr-20 shadow-primary my-4">
+        <div class="w-full bg-zinc-50">
             <div class="flex px-[10px] pt-[10px]">
                 <!--貼文圖片-->
-                <div class="w-20 mr-4 my-1">
+                <div class="w-1/5 mr-4 my-1">
                     <img
-                        src="../assets/images/test.png"
-                        class="social-img"
+                        src="../assets/images/FirstPart.png"
+                        class="img-social"
                         onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg';this.onerror=null ;"
                     />
                 </div>
                 <!--貼文圖片-->
 
                 <!--貼文-->
-                <div class="align-top h-full w-70">
-                    <div class="font-bold text-xl text-underline pb-4">
+                <div class="align-top h-full w-[70%]">
+                    <div class="font-bold text-xl underline pb-4">
                         恐怖口的比較其實，喜歡遊戲過最方了就個每，最後用是天他的手，就是驚訝知道嗚我好
                     </div>
                     <!--By作者、星級-->
                     <div>
                         <div class="inline-flex text-sm pb-4 mr-4">By</div>
-                        <div class="inline-flex text-sm italic text-blue mr-4">黃宏成台灣阿成世界偉人財神總統</div>
-                        <div class="ratings">
-                            <div class="empty_star">★★★★★</div>
+                        <div class="inline-flex text-sm italic text-[#1d5e9f] mr-4">黃宏成台灣阿成世界偉人財神總統</div>
+                        <div class="star_ratings">
+                            <div>★★★★★</div>
                             <div class="full_star">★★★★★</div>
                         </div>
                     </div>
                     <!--By作者、星級-->
 
                     <!--貼文內容-->
-                    <div class="content-box text-base font-bold overflow-hidden">
+                    <div class="post_content text-base font-bold overflow-hidden">
                         北商大國內偏鄉志工隊前進偏鄉小學 實踐大學社會責任❤️❤️ 今年志工隊17人以及4位指導老師將前往
                         南投縣魚池國中東光國小舉辦夏令營 志工隊們用心的設計課程、培訓籌備，
                         為國中小學生提供數位資訊、英文、生涯、財經、體育、手作多元的課程，包括機器人、無人機。每堂課都是大學生集創意和滿滿的認親真的，零讓我之後補直以為不出，當町田跑這麼不知為啊啊啊，一個就不能法多一點，買生的聲個禮發現好像很可愛⋯下？
@@ -47,7 +47,7 @@
                 </div>
                 <!--貼文-->
             </div>
-            <div class="flex justify-end text-gray moreContent">更多內容...</div>
+            <div class="flex justify-end text-[#8a8080] more_content">更多內容...</div>
         </div>
     </div>
 </template>
