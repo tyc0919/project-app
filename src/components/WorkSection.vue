@@ -136,6 +136,7 @@ const deleteWork = () => {
                 <div>
                     <button
                         class="w-full items-center bg-white rounded-lg border-w-3 border-[#3491d9] py-[10px] text-[#3491d9] shadow-btn mb-[20px]"
+                        @click="addNewWorkDetail()"
                     >
                         新增細項 +
                     </button>
@@ -168,7 +169,7 @@ const deleteWork = () => {
                             <div class="w-2/4 inline-flex justify-end align-middle my-1">
                                 <button
                                     class="rounded-lg border-w-3 border-[#3491d9] font-bold text-base text-[#3491d9] py-0 px-3 shadow-btn"
-                                    @click="addNewWorkDetail()"
+                                    
                                 >
                                     編輯
                                 </button>

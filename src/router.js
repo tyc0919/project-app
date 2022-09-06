@@ -6,6 +6,8 @@ import MainSocial from './components/MainSocial.vue'
 import Event from './components/Event.vue'
 import EventBody from './components/EventBody.vue'
 import EventBudget from './components/EventBudget.vue'
+import WorkSection from './components/WorkSection.vue' 
+import WorksPage from './components/WorksPage.vue' 
 
 const routes = [
     {
@@ -37,7 +39,19 @@ const routes = [
             {
                 path: '',
                 name: 'event-default',
-                component: EventBody
+                component: EventBody,
+                children: [
+                    {
+                        path: '',
+                        name: 'event-works',
+                        component: WorksPage
+                    },
+                    {
+                        path: 'works/:WorkId',
+                        name: 'event-work-detail',
+                        component: WorkSection
+                    }
+                ]
             },
             {
                 path: 'budget',
