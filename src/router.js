@@ -8,6 +8,7 @@ import EventBody from './components/EventBody.vue'
 import EventBudget from './components/EventBudget.vue'
 import WorkSection from './components/WorkSection.vue' 
 import WorksPage from './components/WorksPage.vue' 
+import UserProfile from './components/UserProfile.vue'
 
 const routes = [
     {
@@ -59,6 +60,11 @@ const routes = [
                 component: EventBudget,
             }
         ]
+    },
+    {
+        path: '/UserProfile',
+        name: 'user-profile',
+        component: UserProfile
     },
     {
         path: '/:pathMatch(.*)*',

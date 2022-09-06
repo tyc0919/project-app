@@ -1,11 +1,10 @@
 <script setup>
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import { computed } from '@vue/reactivity';
-import Event from './components/Event.vue'
-// import { usePageStore } from './stores/page';
+import { ref } from 'vue';
 
-// let store = usePageStore()
+const showUserMenu = ref(false)
+const toggleUserMenu = () => {
+  showUserMenu.value = !showUserMenu.value
+}
 
 
 </script>
@@ -20,21 +19,15 @@ import Event from './components/Event.vue'
             </div>
           <div class="wrapper flex flex-col justify-between">
               <div class="nav_table">
-                    <a href="event_index.html" class="block text-white p-4 hover:opacity-70">
-                        <i class="icon fa-solid fa-house-user fa-1x w-12"></i>主頁
-                    </a>
-                    <a href="myproposal.html" class="block text-white p-4 hover:opacity-70">
-                        <i class="icon fa-solid fa-list fa-1x w-12"></i>我的企劃
-                    </a>
-                    <a href="mywork.html" class="block text-white p-4 hover:opacity-70">
+                    <router-link :to="{name: 'main-default'}" class="block text-white p-4 hover:opacity-70">
+                      <i class="icon fa-solid fa-house-user fa-1x w-12"></i>主頁
+                    </router-link>
+                    <router-link :to="{name: 'main-works'}" class="block text-white p-4 hover:opacity-70">
                         <i class="icon fa-solid fa-book fa-1x w-12"></i>我的工作
-                    </a>
-                    <a href="colla_index.html" class="block text-white p-4 hover:opacity-70">
-                        <i class="icon fa-solid fa-user-group fa-1x w-12"></i>合作店家
-                    </a>
-                    <a href="social_index.html" class="block text-white p-4 hover:opacity-70">
+                    </router-link>
+                    <router-link :to="{name: 'main-social'}" class="block text-white p-4 hover:opacity-70">
                         <i class="icon fa-solid fa-comment fa-1x w-12"></i>社群
-                    </a>
+                    </router-link>
               </div>
 
               <div class="social_media flex justify-center">
@@ -54,18 +47,15 @@ import Event from './components/Event.vue'
               3個工作
             </div>
             <div class="avatar">
-              <img class="avatar w-12 h-12 rounded-full object-cover" src="/src/assets/images/default_avatar.svg">
-              <div class="dot_list hidden">
-                  <a href="information.html">
+              <img @click="toggleUserMenu" class="avatar w-12 h-12 rounded-full object-cover cursor-pointer" src="/src/assets/images/default_avatar.svg">
+              <div v-if="showUserMenu" class="absolute w-40 h-18 top-16 right-8 py-2 bg-white text-black flex flex-col rounded-lg border-2 ">
+                  <router-link :to="{name: 'user-profile'}" class="mb-2 hover:bg-blue-600 hover:text-white rounded-lg">
                     個人檔案
-                  </a>
-                  <a href="">
-                    設定
-                  </a>
-                  <a href="../tailwind/index.html">
+                  </router-link>
+                  <a href="../tailwind/index.html" class="hover:bg-blue-600 hover:text-white rounded-lg">
                     登出
                   </a>  
-            </div>
+              </div>
             </div>
             
           </div>

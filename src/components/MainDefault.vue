@@ -86,11 +86,11 @@ const toggleModal = () => {
 
         <div class="grid grid-cols-3 grid-gap-1rem items-center justify-center">
             <!-- cards -->
-            <MainDeFaultCard tracePercentage=100 costMoney=300000 budgetMoney=987541></MainDeFaultCard>
-            <MainDeFaultCard tracePercentage=40 costMoney=800000 budgetMoney=987541></MainDeFaultCard>
-            <MainDeFaultCard tracePercentage=60 costMoney=1000000 budgetMoney=987541></MainDeFaultCard>
-            <MainDeFaultCard tracePercentage=80 costMoney=200000 budgetMoney=987541></MainDeFaultCard>
-            <MainDeFaultCard tracePercentage=20 costMoney=900000 budgetMoney=987541></MainDeFaultCard>
+            <MainDeFaultCard :tracePercentage=100 :costMoney=300000 :budgetMoney=987541></MainDeFaultCard>
+            <MainDeFaultCard :tracePercentage=40 :costMoney=800000 :budgetMoney=987541></MainDeFaultCard>
+            <MainDeFaultCard :tracePercentage=60 :costMoney=1000000 :budgetMoney=987541></MainDeFaultCard>
+            <MainDeFaultCard :tracePercentage=80 :costMoney=200000 :budgetMoney=987541></MainDeFaultCard>
+            <MainDeFaultCard :tracePercentage=20 :costMoney=900000 :budgetMoney=987541></MainDeFaultCard>
             <!-- cards end -->
         </div>
 
