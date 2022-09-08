@@ -25,10 +25,10 @@ import MainWorksCard from './MainWorksCard.vue';
         </div>
 
         <div class="grid grid-cols-3 grid-gap-1rem items-center justify-center">
-            <MainWorksCard tracePercentage=70 costMoney=300000 budgetMoney=987541></MainWorksCard>
-            <MainWorksCard tracePercentage=100 costMoney=300000 budgetMoney=987541></MainWorksCard>
-            <MainWorksCard tracePercentage=100 costMoney=300000 budgetMoney=987541></MainWorksCard>
-            <MainWorksCard tracePercentage=100 costMoney=300000 budgetMoney=987541></MainWorksCard>
+            <MainWorksCard :tracePercentage=70 :costMoney=300000 :budgetMoney=987541></MainWorksCard>
+            <MainWorksCard :tracePercentage=100 :costMoney=300000 :budgetMoney=987541></MainWorksCard>
+            <MainWorksCard :tracePercentage=100 :costMoney=300000 :budgetMoney=987541></MainWorksCard>
+            <MainWorksCard :tracePercentage=100 :costMoney=300000 :budgetMoney=987541></MainWorksCard>
         </div>
 
         <div class="flex justify-center">

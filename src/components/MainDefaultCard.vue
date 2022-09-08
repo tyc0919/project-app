@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="relative h-fit w-full rounded-full mb-2 bg-slate-300 shadow-inset py-1 px-1">
                 <div class="absolute text-black font-bold text-sm h-8 w-full px-4 flex items-center justify-between">
                     <span class="ellipsis">完成進度</span>
-                    <span class="trace-percentage">{{  tracePercentage  }}%</span>
+                    <span class="trace-percentage">{{ tracePercentage }}%</span>
                 </div>
                 <div class="trace-container rounded-full h-8 w-0 px-4">
                 </div>
@@ -121,9 +121,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="absolute text-black font-bold h-8 w-full flex items-center justify-between px-4 text-sm">
                     <span class="ellipsis">預算花費</span>
                     <div>
-                        <span class="cost ml-1">${{  costMoney  }}</span>
+                        <span class="cost ml-1">${{ costMoney }}</span>
                         <span class="ml-1">/</span>
-                        <span class="budget ml-1">${{  budgetMoney  }}</span>
+                        <span class="budget ml-1">${{ budgetMoney }}</span>
                     </div>
                 </div>
                 <div class="cost-container rounded-full h-8 w-0 flex items-center justify-between px-4 text-sm">
@@ -135,4 +135,12 @@ document.addEventListener("DOMContentLoaded", function () {
 </template>
 
 <style scoped>
+.hover\:card-float-up:hover {
+    border-color: #eee;
+    transition: all .2s ease-in-out;
+    box-shadow: 0 16px 32px 0 rgba(48, 55, 66, 0.15);
+    transform: translate(0, -5px);
+    transition-delay: 0s;
+    cursor: pointer;
+}
 </style>
