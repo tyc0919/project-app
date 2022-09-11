@@ -4,6 +4,8 @@
 import { Bar } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 
+
+
 const props = defineProps({
     chartId: {
         type: String,
@@ -20,11 +22,11 @@ const props = defineProps({
     },
     width: {
         type: String,
-        default: "100%"
+        default: "400"
     },
     height: {
         type: String,
-        default: "500"
+        default: "400",
     },
     styles: {
         type: Object,

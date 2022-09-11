@@ -2,6 +2,7 @@
 import Invite from "./invite.vue"
 import SocialPageReviewCard from "./SocialPageReviewCard.vue"
 import SocialPageWorkCard from "./SocialPageWorkCard.vue"
+import BarChart from "./BarChart.vue"
 </script>
 
 <template>
@@ -44,26 +45,38 @@ import SocialPageWorkCard from "./SocialPageWorkCard.vue"
             </div>
         </div>
 
-        <!-- ? Expense -->
-        <div class="flex justify-between"></div>
-        <div class="expense"></div>
 
-        <!-- ? all works-->
-        <div class="title w-fit px-4 py-2 rounded-full bg-white text-2xl text-cyan-800 font-bold my-4">
-            所有工作
+        <div class="flex justify-between">
+            <!-- ? Expense -->
+            <div class="flex flex-col ">
+                <div class="title w-fit px-4 py-2 rounded-full bg-white text-2xl text-cyan-800 font-bold my-4">
+                    預算支出
+                </div>
+                <div class="expense h-full">
+                    <BarChart></BarChart>
+                </div>
+            </div>
+            <!-- ? all works-->
+            <div class="flex flex-col w-1/2 h-full">
+                <div class="title w-fit px-4 py-2 rounded-full bg-white text-2xl text-cyan-800 font-bold my-4">
+                    所有工作
+                </div>
+                <div class="works-container px-2 py-2 overflow-y-auto">
+                    <SocialPageWorkCard></SocialPageWorkCard>
+                    <SocialPageWorkCard></SocialPageWorkCard>
+                    <SocialPageWorkCard></SocialPageWorkCard>
+                    <SocialPageWorkCard></SocialPageWorkCard>
+                </div>
+            </div>
         </div>
-        <div class="works-container w-1/2 px-2 py-2 overflow-y-auto">
-            <SocialPageWorkCard></SocialPageWorkCard>
-            <SocialPageWorkCard></SocialPageWorkCard>
-            <SocialPageWorkCard></SocialPageWorkCard>
-            <SocialPageWorkCard></SocialPageWorkCard>
-        </div>
+
 
         <!-- ? Review -->
         <div class="title w-fit px-4 py-2 rounded-full bg-white text-2xl text-cyan-800 font-bold my-4">
             評論
         </div>
         <div class="flex flex-col justify-between mt-4">
+            <SocialPageReviewCard></SocialPageReviewCard>
             <SocialPageReviewCard></SocialPageReviewCard>
             <SocialPageReviewCard></SocialPageReviewCard>
             <SocialPageReviewCard></SocialPageReviewCard>
@@ -85,6 +98,7 @@ import SocialPageWorkCard from "./SocialPageWorkCard.vue"
 
 
 <style scoped>
+
 .works-container {
     height: 60vh;
 }
