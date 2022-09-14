@@ -1,11 +1,66 @@
 <script setup>
+import { ref } from 'vue';
 import Invite from "./invite.vue"
 import SocialPageReviewCard from "./SocialPageReviewCard.vue"
 import SocialPageWorkCard from "./SocialPageWorkCard.vue"
 import BarChart from "./BarChart.vue"
+import Modal from './Modal.vue';
+
+const showModal = ref(false)
+const toggleModal = () => {
+    showModal.value = !showModal.value
+}
 </script>
 
 <template>
+
+    <Teleport to="body">
+        <!-- use the modal component, pass in the prop -->
+        <modal :show="showModal" @close="toggleModal()">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">活動名稱</div>
+                </div>
+            </template>
+
+            <template #body>
+                <div class="overflow-y-auto max-h-96 pr-4">
+                    <div class="reviewer flex justify-start items-center mb-2">
+                        <div class="reviewer-img mr-2"></div>
+                        <div class="reviewer-name text-xl cursor-text">
+                            評論者名稱
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center items-end mb-2">
+                        <!-- ! stars -->
+                        <div class="ratings relative mr-2 text-gray-200 text-2xl">
+                            <div class="empty_star">★★★★★</div>
+                            <div class="full_star absolute text-yellow-400">★★★★★</div>
+                        </div>
+
+                    </div>
+                    <div class="flex center mt-8 ">
+                        <textarea placeholder="寫下你的評論" class=" p-2 w-full h-48 border border-2 border-black"></textarea>
+                    </div>
+                </div>
+            </template>
+
+            <template #footer>
+                <div class="border-t-2 pt-2">
+                    <button @click="toggleModal()"
+                        class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                        新增
+                    </button>
+                    <button @click="toggleModal()"
+                        class=" btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                        取消
+                    </button>
+                </div>
+
+            </template>
+        </modal>
+    </Teleport>
 
     <div class="container px-4 py-4 w-full">
 
@@ -48,20 +103,21 @@ import BarChart from "./BarChart.vue"
 
         <div class="flex justify-between">
             <!-- ? Expense -->
-            <div class="flex flex-col ">
+            <div class="flex flex-col">
                 <div class="title w-fit px-4 py-2 rounded-full bg-white text-2xl text-cyan-800 font-bold my-4">
                     預算支出
                 </div>
-                <div class="expense h-full">
+                <div class="expense h-fit">
                     <BarChart></BarChart>
                 </div>
             </div>
             <!-- ? all works-->
-            <div class="flex flex-col w-1/2 h-full">
+            <div class="flex flex-col w-auto">
                 <div class="title w-fit px-4 py-2 rounded-full bg-white text-2xl text-cyan-800 font-bold my-4">
                     所有工作
                 </div>
                 <div class="works-container px-2 py-2 overflow-y-auto">
+
                     <SocialPageWorkCard></SocialPageWorkCard>
                     <SocialPageWorkCard></SocialPageWorkCard>
                     <SocialPageWorkCard></SocialPageWorkCard>
@@ -76,20 +132,16 @@ import BarChart from "./BarChart.vue"
             評論
         </div>
         <div class="flex flex-col justify-between mt-4">
+            <button @click="toggleModal()"
+                class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                撰寫評論
+            </button>
             <SocialPageReviewCard></SocialPageReviewCard>
             <SocialPageReviewCard></SocialPageReviewCard>
             <SocialPageReviewCard></SocialPageReviewCard>
             <SocialPageReviewCard></SocialPageReviewCard>
         </div>
     </div>
-
-
-
-
-
-
-
-
 </template>
 
 
@@ -98,6 +150,31 @@ import BarChart from "./BarChart.vue"
 
 
 <style scoped>
+.expense {
+    width: 40rem;
+}
+
+.ratings {
+    /*調整字體大小可放大縮小星星*/
+    font-size: 48px;
+    text-shadow: 0px 1px 0 #999;
+}
+
+.full_star {
+    width: 40%;
+    /*調整寬度可變更星等*/
+    left: 0;
+    top: 0;
+    overflow: hidden;
+}
+
+.reviewer-img {
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 1px solid #000000;
+    vertical-align: middle;
+    border-radius: 50%;
+}
 
 .works-container {
     height: 60vh;
