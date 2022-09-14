@@ -1,4 +1,5 @@
 <script setup>
+import WorkDetail from './WorkDetail.vue'
 import { ref } from 'vue'
 import Modal from './Modal.vue'
 
@@ -154,73 +155,9 @@ const deleteWork = () => {
 
                 <!--新增細項、完成、取消完成-->
 
-                <!--確認完成-->
-                <div class="w-full flex border border-[#3491d9] my-[20px]">
-                    <div
-                        class="flex w-[8.3%] py-14 bg-[#00db00] items-center justify-center text-white border-r-3 border-black"
-                    >
-                        確認完成
-                    </div>
-                    <div class="w-[calc(100%-8.3%)]">
-                        <div class="border-b border-black">
-                            <div class="w-2/4 inline-flex font-bold align-middle">
-                                看到著就嗚嗚嗚好的大概：如果我人不，已經不入了是對。
-                            </div>
-                            <div class="w-2/4 inline-flex justify-end align-middle my-1">
-                                <button
-                                    class="rounded-lg border-w-3 border-[#3491d9] font-bold text-base text-[#3491d9] py-0 px-3 shadow-btn"
-                                    
-                                >
-                                    編輯
-                                </button>
-                                <button
-                                    class="mx-4 rounded-lg border-w-3 border-[#ff0000] font-bold text-base text-[#ff0000] py-0 px-3 shadow-btn"
-                                    @click="deleteWorkDetail()"
-                                >
-                                    刪除
-                                </button>
-                            </div>
-                        </div>
-                        <div class="text-[#696969]">
-                            看到著就嗚嗚嗚好的大概：如果我人不，已經不入了是對。
-                            得有整可以可發現，剛是在因為你們的開心，這次的想起來像有這不真的很的內容，你嗚根本是的很棒，我自己出不常也不是：嗎多少⋯所有就怎麼要來吸血鬼，看到的開始麼的手賣場，這件事覺得看了好。愛了的影片麼時可以，貨久不見消失，多少獲得畫好自己都，苦了也不知為不甚至望公忙，或陌生跳今天還⋯哈哈了第時交換卡。沒辦法後會要求問男友，送也不嫌東西展開，這不是他們家家長，好可愛看不，馬上很開心太好看，看的消是跟為什教會。
-                        </div>
-                    </div>
-                </div>
-                <!--確認完成-->
-
-                <!--取消確認-->
-                <div class="w-full flex border border-[#00db00] my-[20px]">
-                    <div
-                        class="flex w-[8.3%] py-14 bg-[#ff0000] items-center justify-center text-white border-r-3 border-black"
-                    >
-                        取消確認
-                    </div>
-                    <div class="w-[calc(100%-8.3%)]">
-                        <div class="border-b border-black">
-                            <div class="w-2/4 inline-flex font-bold align-middle">
-                                看到著就嗚嗚嗚好的大概：如果我人不，已經不入了是對。
-                            </div>
-                            <div class="w-2/4 inline-flex justify-end align-middle my-1">
-                                <button
-                                    class="rounded-lg border-w-3 border-[#3491d9] font-bold text-base text-[#3491d9] py-0 px-3 shadow-btn"
-                                >
-                                    編輯
-                                </button>
-                                <button
-                                    class="mx-4 rounded-lg border-w-3 border-[#ff0000] font-bold text-base text-[#ff0000] py-0 px-3 shadow-btn"
-                                >
-                                    刪除
-                                </button>
-                            </div>
-                        </div>
-                        <div class="text-[#696969]">
-                            看到著就嗚嗚嗚好的大概：如果我人不，已經不入了是對。
-                            得有整可以可發現，剛是在因為你們的開心，這次的想起來像有這不真的很的內容，你嗚根本是的很棒，我自己出不常也不是：嗎多少⋯所有就怎麼要來吸血鬼，看到的開始麼的手賣場，這件事覺得看了好。愛了的影片麼時可以，貨久不見消失，多少獲得畫好自己都，苦了也不知為不甚至望公忙，或陌生跳今天還⋯哈哈了第時交換卡。沒辦法後會要求問男友，送也不嫌東西展開，這不是他們家家長，好可愛看不，馬上很開心太好看，看的消是跟為什教會。
-                        </div>
-                    </div>
-                </div>
-                <!--取消確認-->
+                <!--工作細項-->
+                <WorkDetail></WorkDetail>
+                <!--工作細項-->
 
                 <!-- 彈出視窗 -->
 
@@ -230,7 +167,6 @@ const deleteWork = () => {
                     <modal :show="showModal" @close="toggleModal()">
                         <template #header>
                             <div v-if="mode === 1"><h3>新增工作細項</h3></div>
-                            <div v-else-if="mode === 2"><h3>刪除工作細項</h3></div>
                             <div v-else-if="mode === 3"><h3>刪除工作</h3></div>
                         </template>
                         <template #body>
@@ -254,52 +190,6 @@ const deleteWork = () => {
                     </modal>
                 </Teleport>
 
-                <!-- 新增工作細項 -->
-
-                <!-- 刪除工作細項 -->
-
-                <!-- <Teleport to="body">
-                    <modal id="deleteWorkDetail" :show="showModal" @close="toggleModal()">
-                        <template #header>
-                            <h3>刪除工作細項</h3>
-                        </template>
-                        <template #body> 確定要刪除嗎？ </template>
-                        <template #footer>
-                            <button class="bg-sky-700 text-white px-4 py-2 mx-1 rounded shadow-md">確認</button>
-                            <button
-                                class="bg-gray-400 text-white px-4 py-2 mx-1 rounded shadow-md"
-                                @click="toggleModal()"
-                            >
-                                取消
-                            </button>
-                        </template>
-                    </modal>
-                </Teleport> -->
-
-                <!-- 刪除工作細項 -->
-
-                <!-- 刪除工作 -->
-
-                <!-- <Teleport to="body">
-                    <modal id="deleteWorkDetail" :show="showModal" @close="toggleModal()">
-                        <template #header>
-                            <h3>刪除工作</h3>
-                        </template>
-                        <template #body> 確定要刪除嗎？ </template>
-                        <template #footer>
-                            <button class="bg-sky-700 text-white px-4 py-2 mx-1 rounded shadow-md">確認</button>
-                            <button
-                                class="bg-gray-400 text-white px-4 py-2 mx-1 rounded shadow-md"
-                                @click="toggleModal()"
-                            >
-                                取消
-                            </button>
-                        </template>
-                    </modal>
-                </Teleport> -->
-
-                <!-- 刪除工作 -->
-
                 <!-- 彈出視窗 -->
             </div>
         </div>
@@ -308,10 +198,11 @@ const deleteWork = () => {
     <!--Component here-->
 </template>
 
-<style scoped>
+<style>
 .border-r-3 {
     border-right-width: 3px;
 }
+
 .border-w-3 {
     border-width: 3px;
 }
