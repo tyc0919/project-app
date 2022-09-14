@@ -1,4 +1,16 @@
-<script setup></script>
+<script setup>
+import { ref } from 'vue';
+
+let show = ref(false);
+let triggerMessage = ref("全文")
+const showCompleteContent = () => {
+    show.value = !show.value
+    triggerMessage.value = !show.value ? "全文" : "顯示部分"
+    console.log(show)
+}
+</script>
+
+
 <template>
     <div class="shadow bg-white flex flex-col px-4 py-4 my-2 justify-start items-center hover:card-float-up">
         <div class="review-card w-full h-fit ">
@@ -20,14 +32,17 @@
             </div>
 
             <div class="review-content text-base font-bold ">
-                <span class="ellipsis-4 cursor-text">
+                <span class="content-container cursor-text" :class="{'ellipsis-4' : !show}">
                     2019花在彰化活動將從2月5日到2月19日新春期間，在溪州公園盛大開幕，展出各式的彰化在地花卉，結合彰化縣燈會，邀請全國民眾利用春節期間攜家帶眷，前來彰化參觀走春，並到溪州公園白日看花、晚間遊園賞燈，期間還有各式豐富精采的表演，歡迎來彰化玩！，在溪州公園盛大開幕，展出各，在溪州公園盛大開幕，展出各，在溪州公園盛大開幕，展出各，在溪州公園盛大開幕，展出各，在溪州公園盛大開幕，展出各，在溪州公園盛大開幕，展出各，在溪州公園盛大開幕，展出各，在溪州公園盛大開幕，展出各間攜家帶眷，前來彰化參觀走春，並到溪州公園白日看花、晚間遊園賞燈，期間還有各式豐富精采的表演，歡迎來彰化玩！，在溪州公園盛大開幕，展出各，在溪州公園盛大開幕，展出各，在溪州公園盛大開幕，展出各，在溪州公園盛大開幕，展出各，在溪州公園盛大開幕，展出各，在溪州公園盛大開幕，展出各，在溪州公園盛大開幕，展出各，在溪州公園盛大開幕，展出各
                 </span>
-                <span class="font-bold text-blue-500 hover:underline">全文</span>
+                <div @click="showCompleteContent()"
+                    class="trigger-complete-content font-bold text-blue-500 hover:underline">{{triggerMessage}}</div>
             </div>
         </div>
     </div>
 </template>
+
+
 <style scoped>
 .ratings {
     /*調整字體大小可放大縮小星星*/
