@@ -119,89 +119,6 @@ const toggleModal = () => {
     -webkit-box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.radioLable {
-    padding: 8px 14px;
-    font-size: 14px;
-    font-family: sans-serif;
-    color: #ffffff;
-    background: #5B83AC;
-    cursor: pointer;
-    transition: background 0.1s;
-}
-
-.radioLable:not(:last-of-type) {
-    border-right: 1px solid #52708f;
-}
-
-.radioInput:checked+.radioLable {
-    background: #52708f;
-}
-
-.btnCreateEvent {
-    border-color: #2b6cb0;
-    color: #2b6cb0;
-}
-
-.btnCreateEvent:hover {
-    background-color: #2b6cb0;
-    color: #ffffff;
-}
-
-.shadow-out {
-    box-shadow: 2px 2px 3px 1px rgb(157 157 157);
-}
-
-.shadow-inset {
-    box-shadow: inset 4px 4px 4px 0 rgb(157 157 157);
-}
-
-.shadow {
-    box-shadow: 10px 10px 10px 4px rgb(0 0 0 / 10%);
-}
-
-.ellipsis {
-    overflow: hidden;
-    display: -webkit-box;
-    text-overflow: ellipsis;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    white-space: normal;
-}
-
-.ellipsis-2 {
-    overflow: hidden;
-    display: -webkit-box;
-    text-overflow: ellipsis;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    white-space: normal;
-}
-
-.hover\:card-float-up:hover {
-    border-color: #eee;
-    transition: all .2s ease-in-out;
-    box-shadow: 0 16px 32px 0 rgba(48, 55, 66, 0.15);
-    transform: translate(0, -5px);
-    transition-delay: 0s;
-    cursor: pointer;
-}
-
-.text-blue {
-    color: rgb(60, 60, 240)
-}
-
-.cardBottom {
-    border-color: #000000
-}
-
-.pic {
-    border: 1px solid #000000;
-    height: 8rem;
-}
-
-.container {
-    height: 100%;
-}
 
 .grid-gap-1rem {
     grid-row-gap: 3rem;
@@ -224,6 +141,40 @@ const toggleModal = () => {
 
 .radioInput:checked+.radioLable {
     background: #52708f;
+}
+
+
+
+.btnCreateEvent {
+    border-color: #2b6cb0;
+    color: #2b6cb0;
+}
+
+.btnCreateEvent:hover {
+    background-color: #2b6cb0;
+    color: #ffffff;
+}
+
+.ellipsis {
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+}
+
+.ellipsis-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+}
+
+.container {
+    height: 100%;
 }
 </style>
 

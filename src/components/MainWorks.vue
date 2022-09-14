@@ -68,5 +68,80 @@ import MainWorksCard from './MainWorksCard.vue';
     </div>
 </template>
 
-<style>
+<style scoped>
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.06);
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08);
+}
+
+
+::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.12);
+    -webkit-box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+
+.grid-gap-1rem {
+    grid-row-gap: 3rem;
+    grid-column-gap: 3rem;
+}
+
+.radioLable {
+    padding: 8px 14px;
+    font-size: 14px;
+    font-family: sans-serif;
+    color: #ffffff;
+    background: #5B83AC;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.radioLable:not(:last-of-type) {
+    border-right: 1px solid #52708f;
+}
+
+.radioInput:checked+.radioLable {
+    background: #52708f;
+}
+
+
+
+.btnCreateEvent {
+    border-color: #2b6cb0;
+    color: #2b6cb0;
+}
+
+.btnCreateEvent:hover {
+    background-color: #2b6cb0;
+    color: #ffffff;
+}
+
+.ellipsis {
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+}
+
+.ellipsis-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+}
+
+.container {
+    height: 100%;
+}
 </style>

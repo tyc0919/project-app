@@ -143,4 +143,52 @@ document.addEventListener("DOMContentLoaded", function () {
     transition-delay: 0s;
     cursor: pointer;
 }
+
+
+.shadow-out {
+    box-shadow: 2px 2px 3px 1px rgb(157 157 157);
+}
+
+.shadow-inset {
+    box-shadow: inset 4px 4px 4px 0 rgb(157 157 157);
+}
+
+.shadow {
+    box-shadow: 10px 10px 10px 4px rgb(0 0 0 / 10%);
+}
+
+.ellipsis {
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+}
+
+.ellipsis-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+}
+
+.text-blue {
+    color: rgb(60, 60, 240)
+}
+
+.cardBottom {
+    border-color: #000000
+}
+
+.pic {
+    border: 1px solid #000000;
+    height: 8rem;
+}
+
+.container {
+    height: 100%;
+}
 </style>
