@@ -133,7 +133,29 @@ document.addEventListener("DOMContentLoaded", function () {
     </div>
 </template>
 
-<style>
+<style scoped>
+.hover\:card-float-up:hover {
+    border-color: #eee;
+    transition: all .2s ease-in-out;
+    box-shadow: 0 16px 32px 0 rgba(48, 55, 66, 0.15);
+    transform: translate(0, -5px);
+    transition-delay: 0s;
+    cursor: pointer;
+}
+
+
+.shadow-out {
+    box-shadow: 2px 2px 3px 1px rgb(157 157 157);
+}
+
+.shadow-inset {
+    box-shadow: inset 4px 4px 4px 0 rgb(157 157 157);
+}
+
+.shadow {
+    box-shadow: 10px 10px 10px 4px rgb(0 0 0 / 10%);
+}
+
 .ellipsis {
     overflow: hidden;
     display: -webkit-box;
@@ -159,5 +181,22 @@ document.addEventListener("DOMContentLoaded", function () {
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
     white-space: normal;
+}
+
+.text-blue {
+    color: rgb(60, 60, 240)
+}
+
+.cardBottom {
+    border-color: #000000
+}
+
+.pic {
+    border: 1px solid #000000;
+    height: 8rem;
+}
+
+.container {
+    height: 100%;
 }
 </style>

@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="relative h-fit w-full rounded-full mb-2 bg-slate-300 shadow-inset py-1 px-1">
                 <div class="absolute text-black font-bold text-sm h-8 w-full px-4 flex items-center justify-between">
                     <span class="ellipsis">完成進度</span>
-                    <span class="trace-percentage">{{  tracePercentage  }}%</span>
+                    <span class="trace-percentage">{{ tracePercentage }}%</span>
                 </div>
                 <div class="trace-container rounded-full h-8 w-0 px-4">
                 </div>
@@ -121,9 +121,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="absolute text-black font-bold h-8 w-full flex items-center justify-between px-4 text-sm">
                     <span class="ellipsis">預算花費</span>
                     <div>
-                        <span class="cost ml-1">${{  costMoney  }}</span>
+                        <span class="cost ml-1">${{ costMoney }}</span>
                         <span class="ml-1">/</span>
-                        <span class="budget ml-1">${{  budgetMoney  }}</span>
+                        <span class="budget ml-1">${{ budgetMoney }}</span>
                     </div>
                 </div>
                 <div class="cost-container rounded-full h-8 w-0 flex items-center justify-between px-4 text-sm">
@@ -135,4 +135,60 @@ document.addEventListener("DOMContentLoaded", function () {
 </template>
 
 <style scoped>
+.hover\:card-float-up:hover {
+    border-color: #eee;
+    transition: all .2s ease-in-out;
+    box-shadow: 0 16px 32px 0 rgba(48, 55, 66, 0.15);
+    transform: translate(0, -5px);
+    transition-delay: 0s;
+    cursor: pointer;
+}
+
+
+.shadow-out {
+    box-shadow: 2px 2px 3px 1px rgb(157 157 157);
+}
+
+.shadow-inset {
+    box-shadow: inset 4px 4px 4px 0 rgb(157 157 157);
+}
+
+.shadow {
+    box-shadow: 10px 10px 10px 4px rgb(0 0 0 / 10%);
+}
+
+.ellipsis {
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+}
+
+.ellipsis-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+}
+
+.text-blue {
+    color: rgb(60, 60, 240)
+}
+
+.cardBottom {
+    border-color: #000000
+}
+
+.pic {
+    border: 1px solid #000000;
+    height: 8rem;
+}
+
+.container {
+    height: 100%;
+}
 </style>
