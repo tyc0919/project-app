@@ -1,26 +1,11 @@
-<scripts setup>
-</scripts>
-
-<script>
-export default {
-    props: {
-        tracePercentage: {
-            type: Number,
-            default: 0
-        },
-        costMoney: {
-            type: Number,
-            default: 0
-        },
-        budgetMoney: {
-            type: Number,
-            default: 0
-        }
-    },
-}
+<script setup>
+const props = defineProps({
+    tracePercentage: Number,
+    costMoney: Number,
+    budgetMoney: Number,
+})
 
 document.addEventListener("DOMContentLoaded", function () {
-
     // trace stages
     let tracePercentageEls = document.querySelectorAll('.trace-percentage');
     let traceContainerEls = document.querySelectorAll('.trace-container');
@@ -58,6 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
             containerClass.add("bg-stone-600");
         }
     });
+
 
     // cost stages
     let costMoneyEl = document.querySelectorAll('.cost');
@@ -101,39 +87,38 @@ document.addEventListener("DOMContentLoaded", function () {
             containerEl.classList.add('bg-yellow-400');
         }
     })
+})
 
-
-}, false);
 </script>
+
 
 <template>
     <!-- card1 -->
-    <div class="shadow bg-white flex flex-col justify-between px-4 py-4 card h-96 align-start hover:card-float-up">
-        <div class="cardTop mb-4 ">
+    <div class="shadow bg-white flex flex-col justify-between px-4 py-4 card align-start hover:card-float-up">
+        <div class="cardTop mb-8 ">
             <div class="mb-2 text-center flex flex-col justify-start items-center">
-                <img class="h-36 w-96 " src="src\assets\images\FirstPart.png">
+                <img class="h-64 w-96" src="src\assets\images\FirstPart.png">
             </div>
             <div class="text-xl font-bold title ellipsis-2">一起支持「身心障礙兒爸爸」 ► 他想學習自立，希望有能力，幫爸爸換一打新襪子！</div>
             <div class="inline-flex justify-start w-full text-sm italic person">
                 <span class="">By</span>
-                <span class="ml-2  person-name text-blue ellipsis">籌畫人名稱</span>
+                <span class="ml-2  person-name text-blue font-bold ellipsis">籌畫人名稱</span>
             </div>
         </div>
 
         <div class="cardBottom border-t border-black pt-2 flex flex-col justify-between items-start">
 
-            <div class="relative h-fit w-full rounded-full mb-2 bg-slate-300 shadow-inset">
-                <div class="absolute text-black font-bold text-sm h-10 w-full px-4 flex items-center justify-between">
+            <div class="relative h-fit w-full rounded-full mb-2 bg-slate-300 shadow-inset py-1 px-1">
+                <div class="absolute text-black font-bold text-sm h-8 w-full px-4 flex items-center justify-between">
                     <span class="ellipsis">完成進度</span>
                     <span class="trace-percentage">{{ tracePercentage }}%</span>
                 </div>
-                <div class="trace-container rounded-full h-10 w-0 px-4">
-
+                <div class="trace-container rounded-full h-8 w-0 px-4">
                 </div>
             </div>
 
-            <div class="relative h-fit w-full rounded-full bg-slate-300 shadow-inset">
-                <div class="absolute text-black font-bold h-10 w-full flex items-center justify-between px-4 text-sm">
+            <div class="relative h-fit w-full rounded-full bg-slate-300 shadow-inset py-1 px-1">
+                <div class="absolute text-black font-bold h-8 w-full flex items-center justify-between px-4 text-sm">
                     <span class="ellipsis">預算花費</span>
                     <div>
                         <span class="cost ml-1">${{ costMoney }}</span>
@@ -141,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <span class="budget ml-1">${{ budgetMoney }}</span>
                     </div>
                 </div>
-                <div class="cost-container rounded-full h-10 w-0 flex items-center justify-between px-4 text-sm">
+                <div class="cost-container rounded-full h-8 w-0 flex items-center justify-between px-4 text-sm">
 
                 </div>
             </div>
@@ -149,5 +134,61 @@ document.addEventListener("DOMContentLoaded", function () {
     </div>
 </template>
 
-<style>
+<style scoped>
+.hover\:card-float-up:hover {
+    border-color: #eee;
+    transition: all .2s ease-in-out;
+    box-shadow: 0 16px 32px 0 rgba(48, 55, 66, 0.15);
+    transform: translate(0, -5px);
+    transition-delay: 0s;
+    cursor: pointer;
+}
+
+
+.shadow-out {
+    box-shadow: 2px 2px 3px 1px rgb(157 157 157);
+}
+
+.shadow-inset {
+    box-shadow: inset 4px 4px 4px 0 rgb(157 157 157);
+}
+
+.shadow {
+    box-shadow: 10px 10px 10px 4px rgb(0 0 0 / 10%);
+}
+
+.ellipsis {
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+}
+
+.ellipsis-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+}
+
+.text-blue {
+    color: rgb(60, 60, 240)
+}
+
+.cardBottom {
+    border-color: #000000
+}
+
+.pic {
+    border: 1px solid #000000;
+    height: 8rem;
+}
+
+.container {
+    height: 100%;
+}
 </style>

@@ -1,8 +1,74 @@
 <script setup>
+import { ref } from 'vue';
 import FileSection from './FileSection.vue';
+import Modal from './Modal.vue';
+
+const showModal = ref(false);
+const toggleModal = () => {
+    showModal.value = !showModal.value
+}
 </script>
 
 <template>
+
+    <Modal :show="showModal">
+        <template #header>
+            <div class="border-b-4 w-full px-4 py-4">
+                <div class="font-bold text-2xl">新增工作</div>
+            </div>
+        </template>
+
+        <template #body>
+            <div class="overflow-y-auto max-h-96 pr-4">
+                <div class="flex-row justify-between space-y-3">
+                    <div class="text-base font-bold">工作名稱</div>
+                    <input type="text" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                        placeholder="超棒的活動">
+                    <div class="text-base font-bold">工作日期</div>
+                    <input type="date" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                        placeholder="超棒的活動">
+                    <div class="text-base font-bold">分配工作預算</div>
+                    <div class="flex items-center justify-start space-x-3">
+                        <span class="italic font-bold">$</span>
+                        <input type="number" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                            placeholder="10000">
+                    </div>
+
+                    <div class="text-base font-bold">工作說明</div>
+                    <textarea class=" px-1 py-1 text-base font-bold border border-2 border-slate-400 w-full"
+                        placeholder="這次的活動，我們將要帶領大家..."></textarea>
+
+                    <div class="text-base font-bold ">負責人</div>
+                    <select class="px-1 py-1 w-full font-bold border border-2 border-slate-500">
+                        <option class="italic font-bold">--請選擇一位負責人--</option>
+                        <option class="text-red-400 font-bold">未定</option>
+                        <option>--------------------------------</option>
+                        <option>曾侑成</option>
+                        <option>胡家境</option>
+                        <option>黃紹齊</option>
+                        <option>柯丞駿</option>
+                        <option>魏心平</option>
+                    </select>
+                </div>
+            </div>
+        </template>
+
+        <template #footer>
+            <div class="border-t-2 pt-2">
+                <button @click="toggleModal()"
+                    class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    新增
+                </button>
+                <button @click="toggleModal()"
+                    class=" btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                    取消
+                </button>
+            </div>
+
+        </template>
+    </Modal>
+
+
     <!-- 把你寫的Component放在這裡測試，要上github前這個檔案更動要discard掉-->
     <div id="bottomContainer" class="w-full">
         <div class="flex w-full p-8">
@@ -21,7 +87,7 @@ import FileSection from './FileSection.vue';
                         </div>
 
                         <form id="search" class="flex items-center shadow:focus mr-10">
-                            <label for="simple-search" class="">Search</label>
+                            <label for="simple-search" class=""></label>
                             <div class="relative w-full">
                                 <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
                                     <svg aria-hidden="true" class="w-5 h-5 text-gray-500" fill="currentColor"
@@ -40,14 +106,13 @@ import FileSection from './FileSection.vue';
                     </div>
 
                     <div id="optionsRight" class="flex justify-end align-center">
-                        <button id="addNewWorkButton"
+                        <button id="addNewWorkButton" @click="toggleModal()"
                             class="bg-transparent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
                             新增工作
                         </button>
                     </div>
                 </div>
-                <div id="workContainer"
-                    class="grid grid-col3 grid-gap-1rem py-8 px-8 rounded-2xl bg-white shadow">
+                <div id="workContainer" class="grid grid-col3 grid-gap-1rem py-8 px-8 rounded-2xl bg-white shadow">
 
                     <div
                         class="work card h-22rem border-[#2b6cb0] hover:card-float-up px-2 py-2 flex flex-column justify-between rounded-2xl shadow ">
@@ -391,6 +456,8 @@ import FileSection from './FileSection.vue';
 
 
 <style scoped>
+select {}
+
 .text-\[\#c70000\] {
     color: #c70000;
 }
@@ -640,5 +707,4 @@ body {
 .radioInput:checked+.radioLable {
     background: #52708f;
 }
-
 </style>

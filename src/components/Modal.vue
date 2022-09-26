@@ -9,7 +9,7 @@ const props = defineProps({
         <div v-if="show" class="modal-mask">
             <div class="modal-wrapper">
                 <div class="modal-container">
-                    <div class="modal-header border-b-4 w-full">
+                    <div class="modal-header">
                         <slot name="header">default header</slot>
                     </div>
 
@@ -63,7 +63,7 @@ const props = defineProps({
         font-weight: 400;
         font-size: 24px;
         line-height: 39px;
-        color:black;
+        color: black;
         margin-left: 30px;
         margin-right: 30px;
         padding-top: 1rem;
@@ -77,18 +77,21 @@ const props = defineProps({
     .modal-default-button {
         float: right;
     }
-    .modal-body, .modal-footer {
+    
+    .modal-body,
+    .modal-footer {
         margin-left: 30px;
         margin-right: 30px;
     }
+    
     /*
-         * The following styles are auto-applied to elements with
-         * transition="modal" when their visibility is toggled
-         * by Vue.js.
-         *
-         * You can easily play with the modal transition by editing
-         * these styles.
-         */
+             * The following styles are auto-applied to elements with
+             * transition="modal" when their visibility is toggled
+             * by Vue.js.
+             *
+             * You can easily play with the modal transition by editing
+             * these styles.
+             */
     
     .modal-enter-from {
         opacity: 0;
