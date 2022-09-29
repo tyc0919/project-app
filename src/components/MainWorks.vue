@@ -1,14 +1,15 @@
 <script setup>
-import MainWorksCard from './MainWorksCard.vue';    
+import MainWorksCard from './MainWorksCard.vue'
+import axios from 'axios'
+
+let myJobData = axios.get('http://app.ace.project/api/myjob/')
 </script>
 
 <template>
     <div class="container w-full px-8 py-8">
-
         <!-- options -->
-        <div id="options" class="inline-flex justify-between items-center my-4 w-full ">
+        <div id="options" class="inline-flex justify-between items-center my-4 w-full">
             <div class="inline-flex justify-around">
-
                 <div id="radios">
                     <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" checked />
                     <label class="radioLable text-base" for="radio1">完成</label>
@@ -17,50 +18,68 @@ import MainWorksCard from './MainWorksCard.vue';
                     <input id="radio3" class="radioInput hidden" type="radio" name="radio" value="radio3" />
                     <label class="radioLable text-base" for="radio3">全部</label>
                 </div>
-
-
             </div>
-
-
         </div>
 
         <div class="grid grid-cols-3 grid-gap-1rem items-center justify-center">
-            <MainWorksCard :tracePercentage=70 :costMoney=300000 :budgetMoney=987541></MainWorksCard>
-            <MainWorksCard :tracePercentage=100 :costMoney=300000 :budgetMoney=987541></MainWorksCard>
-            <MainWorksCard :tracePercentage=100 :costMoney=300000 :budgetMoney=987541></MainWorksCard>
-            <MainWorksCard :tracePercentage=100 :costMoney=300000 :budgetMoney=987541></MainWorksCard>
+            <MainWorksCard :tracePercentage="myJobData" :costMoney="300000" :budgetMoney="987541"></MainWorksCard>
+            <MainWorksCard :tracePercentage="100" :costMoney="300000" :budgetMoney="987541"></MainWorksCard>
+            <MainWorksCard :tracePercentage="100" :costMoney="300000" :budgetMoney="987541"></MainWorksCard>
+            <MainWorksCard :tracePercentage="100" :costMoney="300000" :budgetMoney="987541"></MainWorksCard>
         </div>
 
         <div class="flex justify-center">
             <nav aria-label="Page navigation example">
                 <ul class="inline-flex -space-x-px">
                     <li>
-                        <a href="#"
-                            class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 ml-0 rounded-l-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">上一頁</a>
+                        <a
+                            href="#"
+                            class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 ml-0 rounded-l-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                            >上一頁</a
+                        >
                     </li>
                     <li>
-                        <a href="#"
-                            class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
+                        <a
+                            href="#"
+                            class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                            >1</a
+                        >
                     </li>
                     <li>
-                        <a href="#"
-                            class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
+                        <a
+                            href="#"
+                            class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                            >2</a
+                        >
                     </li>
                     <li>
-                        <a href="#" aria-current="page"
-                            class="bg-blue-50 border border-gray-300 text-blue-600 hover:bg-blue-100 hover:text-blue-700  py-2 px-3 dark:border-gray-700 dark:bg-gray-700 dark:text-white">3</a>
+                        <a
+                            href="#"
+                            aria-current="page"
+                            class="bg-blue-50 border border-gray-300 text-blue-600 hover:bg-blue-100 hover:text-blue-700 py-2 px-3 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+                            >3</a
+                        >
                     </li>
                     <li>
-                        <a href="#"
-                            class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">4</a>
+                        <a
+                            href="#"
+                            class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                            >4</a
+                        >
                     </li>
                     <li>
-                        <a href="#"
-                            class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">5</a>
+                        <a
+                            href="#"
+                            class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                            >5</a
+                        >
                     </li>
                     <li>
-                        <a href="#"
-                            class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-r-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">下一頁</a>
+                        <a
+                            href="#"
+                            class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-r-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                            >下一頁</a
+                        >
                     </li>
                 </ul>
             </nav>
@@ -80,13 +99,11 @@ import MainWorksCard from './MainWorksCard.vue';
     -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08);
 }
 
-
 ::-webkit-scrollbar-thumb {
     border-radius: 3px;
     background: rgba(0, 0, 0, 0.12);
     -webkit-box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
 }
-
 
 .grid-gap-1rem {
     grid-row-gap: 3rem;
@@ -98,7 +115,7 @@ import MainWorksCard from './MainWorksCard.vue';
     font-size: 14px;
     font-family: sans-serif;
     color: #ffffff;
-    background: #5B83AC;
+    background: #5b83ac;
     cursor: pointer;
     transition: background 0.1s;
 }
@@ -107,11 +124,9 @@ import MainWorksCard from './MainWorksCard.vue';
     border-right: 1px solid #52708f;
 }
 
-.radioInput:checked+.radioLable {
+.radioInput:checked + .radioLable {
     background: #52708f;
 }
-
-
 
 .btnCreateEvent {
     border-color: #2b6cb0;
