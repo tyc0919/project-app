@@ -1,8 +1,53 @@
 <script setup>
 import MainWorksCard from './MainWorksCard.vue'
 import axios from 'axios'
+import { getCookie } from '../assets/modules'
+import { ref } from 'vue'
 
-let myJobData = axios.get('http://app.ace.project/api/myjob/')
+let workData = ref([])
+let work = ref([])
+let activityData = ref([])
+let activityName = ref([])
+
+let csrftoken = getCookie()
+let config = {
+    headers: {
+        'X-CSRFToken': csrftoken,
+    },
+    mode: 'same-origin',
+}
+
+async function getActivityName() {
+    try {
+        axios
+            .get('http://app.ace.project/api/activity/', config)
+            .then(async function (response) {
+                activityData.value = response.data
+
+                for (let a of activityData.value) {
+                    await axios.get('/api/activity/' + a.id + '/job/', config).then(function (response) {
+                        workData.value.push(response.data)
+                    })
+                }
+            })
+            .finally(function (response) {
+                for (let wd of workData.value) {
+                    for (let w of wd) {
+                        work.value.push(w)
+                        for (let a of activityData.value) {
+                            if (a.id == w.activity) {
+                                activityName.value.push(a.activity_name)
+                            }
+                        }
+                    }
+                }
+                console.log(work)
+            })
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+getActivityName()
 </script>
 
 <template>
@@ -21,14 +66,19 @@ let myJobData = axios.get('http://app.ace.project/api/myjob/')
             </div>
         </div>
 
-        <div class="grid grid-cols-3 grid-gap-1rem items-center justify-center">
-            <MainWorksCard :tracePercentage="myJobData" :costMoney="300000" :budgetMoney="987541"></MainWorksCard>
-            <MainWorksCard :tracePercentage="100" :costMoney="300000" :budgetMoney="987541"></MainWorksCard>
-            <MainWorksCard :tracePercentage="100" :costMoney="300000" :budgetMoney="987541"></MainWorksCard>
-            <MainWorksCard :tracePercentage="100" :costMoney="300000" :budgetMoney="987541"></MainWorksCard>
+        <div class="my-10 grid grid-cols-3 grid-gap-1rem items-center justify-center">
+            <MainWorksCard
+                v-for="(item, index) of work"
+                :work-title="item.title"
+                :activity="activityName[index]"
+                :content="item.content"
+                :tracePercentage="100"
+                :costMoney="item.job_expenditure"
+                :budgetMoney="item.job_budget"
+            ></MainWorksCard>
         </div>
 
-        <div class="flex justify-center">
+        <div class="flex justify-center pb-10">
             <nav aria-label="Page navigation example">
                 <ul class="inline-flex -space-x-px">
                     <li>

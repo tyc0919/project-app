@@ -1,8 +1,7 @@
 <script setup>
-import axios from 'axios'
-import { getCookie } from '../assets/modules'
-
 const props = defineProps({
+    name: String,
+    owner: String,
     tracePercentage: Number,
     costMoney: Number,
     budgetMoney: Number,
@@ -90,49 +89,49 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     })
 })
-
-let csrftoken = getCookie()
-let config = {
-    headers: {
-        'X-CSRFToken': csrftoken,
-    },
-    mode: 'same-origin',
-}
 </script>
 
 <template>
     <!-- card1 -->
     <div class="shadow bg-white flex flex-col justify-between px-4 py-4 card align-start hover:card-float-up">
-        <div class="cardTop mb-8">
-            <div class="mb-2 text-center flex flex-col justify-start items-center">
-                <img class="h-64 w-96" src="src\assets\images\FirstPart.png" />
-            </div>
-            <div class="text-xl font-bold title ellipsis-2">test</div>
-            <div class="inline-flex justify-start w-full text-sm italic person">
-                <span class="">By</span>
-                <span class="ml-2 person-name text-blue font-bold ellipsis">籌畫人名稱</span>
-            </div>
-        </div>
-
-        <div class="cardBottom border-t border-black pt-2 flex flex-col justify-between items-start">
-            <div class="relative h-fit w-full rounded-full mb-2 bg-slate-300 shadow-inset py-1 px-1">
-                <div class="absolute text-black font-bold text-sm h-8 w-full px-4 flex items-center justify-between">
-                    <span class="ellipsis">完成進度</span>
-                    <span class="trace-percentage">{{ tracePercentage }}%</span>
+        <div>
+            <div class="cardTop mb-8">
+                <div class="mb-2 text-center flex flex-col justify-start items-center">
+                    <img class="h-64 w-96" src="src\assets\images\FirstPart.png" />
                 </div>
-                <div class="trace-container rounded-full h-8 w-0 px-4"></div>
+                <div class="text-xl font-bold title ellipsis-2">{{ name }}</div>
+                <div class="inline-flex justify-start w-full text-sm italic person">
+                    <span class="">By</span>
+                    <span class="ml-2 person-name text-blue font-bold ellipsis">{{ owner }} </span>
+                </div>
             </div>
 
-            <div class="relative h-fit w-full rounded-full bg-slate-300 shadow-inset py-1 px-1">
-                <div class="absolute text-black font-bold h-8 w-full flex items-center justify-between px-4 text-sm">
-                    <span class="ellipsis">預算花費</span>
-                    <div>
-                        <span class="cost ml-1">${{ costMoney }}</span>
-                        <span class="ml-1">/</span>
-                        <span class="budget ml-1">${{ budgetMoney }}</span>
+            <div class="cardBottom border-t border-black pt-2 flex flex-col justify-between items-start">
+                <div class="relative h-fit w-full rounded-full mb-2 bg-slate-300 shadow-inset py-1 px-1">
+                    <div
+                        class="absolute text-black font-bold text-sm h-8 w-full px-4 flex items-center justify-between"
+                    >
+                        <span class="ellipsis">完成進度</span>
+                        <span class="trace-percentage">{{ tracePercentage }}%</span>
                     </div>
+                    <div class="trace-container rounded-full h-8 w-0 px-4"></div>
                 </div>
-                <div class="cost-container rounded-full h-8 w-0 flex items-center justify-between px-4 text-sm"></div>
+
+                <div class="relative h-fit w-full rounded-full bg-slate-300 shadow-inset py-1 px-1">
+                    <div
+                        class="absolute text-black font-bold h-8 w-full flex items-center justify-between px-4 text-sm"
+                    >
+                        <span class="ellipsis">預算花費</span>
+                        <div>
+                            <span class="cost ml-1">${{ costMoney }}</span>
+                            <span class="ml-1">/</span>
+                            <span class="budget ml-1">${{ budgetMoney }}</span>
+                        </div>
+                    </div>
+                    <div
+                        class="cost-container rounded-full h-8 w-0 flex items-center justify-between px-4 text-sm"
+                    ></div>
+                </div>
             </div>
         </div>
     </div>

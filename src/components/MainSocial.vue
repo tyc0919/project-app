@@ -6,18 +6,26 @@ import SocialPost from './SocialPost.vue'
     <!--Component here-->
     <div class="h-full">
         <!--貼文、按鈕-->
-        <div>
+        <div class="px-8 py-8">
             <!--按鈕列-->
-            <div class="ml-8 my-7 inline-flex flex items-center">
-                <div>
-                    <button class="py-1 px-4 border border-[#7a6d6d] bg-[#7a6d6d] text-white text-base font-medium">
-                        全部
-                    </button>
-                    <button class="py-1 px-4 border border-[#7a6d6d] bg-[#95a2aa] text-white text-base font-medium">
-                        我的
-                    </button>
-                    <button class="py-1 px-4 border border-[#7a6d6d] bg-[#95a2aa] text-white text-base font-medium">
-                        其他
+            <div id="options" class="inline-flex justify-between items-center my-4 w-full">
+                <div class="inline-flex justify-around">
+                    <div id="radios">
+                        <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" checked />
+                        <label class="radioLable text-base" for="radio1">完成</label>
+                        <input id="radio2" class="radioInput hidden" type="radio" name="radio" value="radio2" />
+                        <label class="radioLable text-base" for="radio2">未完成</label>
+                        <input id="radio3" class="radioInput hidden" type="radio" name="radio" value="radio3" />
+                        <label class="radioLable text-base" for="radio3">全部</label>
+                    </div>
+                </div>
+
+                <div id="optionsRight" class="flex justify-end align-center">
+                    <button
+                        @click="toggleModal()"
+                        class="btnCreateEvent bg-transparent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                    >
+                        新增活動
                     </button>
                 </div>
             </div>
@@ -112,5 +120,23 @@ import SocialPost from './SocialPost.vue'
 }
 .pagination ul li.current {
     background-color: #dbd8d4;
+}
+
+.radioLable {
+    padding: 8px 14px;
+    font-size: 14px;
+    font-family: sans-serif;
+    color: #ffffff;
+    background: #5b83ac;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.radioLable:not(:last-of-type) {
+    border-right: 1px solid #52708f;
+}
+
+.radioInput:checked + .radioLable {
+    background: #52708f;
 }
 </style>

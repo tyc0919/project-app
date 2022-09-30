@@ -1,14 +1,27 @@
 <script setup>
-import { ref } from 'vue';
-import MainDeFaultCard from './MainDefaultCard.vue';
-import Modal from './Modal.vue';
+import { ref } from 'vue'
+import MainDeFaultCard from './MainDefaultCard.vue'
+import Modal from './Modal.vue'
+import { getCookie } from '../assets/modules'
+import axios from 'axios'
 
-const showModal = ref(false);
+let activityData = ref([])
+let csrftoken = getCookie()
+let config = {
+    headers: {
+        'X-CSRFToken': csrftoken,
+    },
+    mode: 'same-origin',
+}
+const showModal = ref(false)
 const toggleModal = () => {
     showModal.value = !showModal.value
 }
-</script>
 
+axios.get('http://app.ace.project/api/activity/', config).then(function (response) {
+    activityData.value = response.data
+})
+</script>
 
 <template>
     <Modal :show="showModal">
@@ -16,40 +29,50 @@ const toggleModal = () => {
             <div class="border-b-4 w-full px-4 py-4">
                 <div class="font-bold text-2xl">新增活動</div>
             </div>
-
         </template>
 
         <template #body>
             <div class="overflow-y-auto max-h-96 pr-4">
                 <div class="flex-row justify-between space-y-3">
                     <div class="text-base font-bold">活動名稱</div>
-                    <input type="text" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                        placeholder="超棒的活動">
+                    <input
+                        type="text"
+                        class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                        placeholder="超棒的活動"
+                    />
                     <div class="text-base font-bold">活動預算</div>
                     <div class="flex items-center justify-start space-x-3">
                         <span class="italic font-bold">$</span>
-                        <input type="number" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                            placeholder="10000">
+                        <input
+                            type="number"
+                            class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                            placeholder="10000"
+                        />
                     </div>
 
                     <div class="text-base font-bold">活動圖片</div>
-                    <input type="file">
-                    <div class="text-base font-bold ">活動簡介</div>
-                    <textarea class="text-base font-bold border border-2 border-slate-400 w-full"
-                        placeholder="這次的活動，我們將要帶領大家..."></textarea>
-
+                    <input type="file" />
+                    <div class="text-base font-bold">活動簡介</div>
+                    <textarea
+                        class="text-base font-bold border border-2 border-slate-400 w-full"
+                        placeholder="這次的活動，我們將要帶領大家..."
+                    ></textarea>
                 </div>
             </div>
         </template>
 
         <template #footer>
             <div class="border-t-2 pt-2">
-                <button @click="toggleModal()"
-                    class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                <button
+                    @click="toggleModal()"
+                    class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
+                >
                     新增
                 </button>
-                <button @click="toggleModal()"
-                    class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                <button
+                    @click="toggleModal()"
+                    class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold"
+                >
                     取消
                 </button>
             </div>
@@ -60,9 +83,8 @@ const toggleModal = () => {
 
     <div class="contain er w-full px-8 py-8">
         <!-- options -->
-        <div id="options" class="inline-flex justify-between items-center my-4 w-full ">
+        <div id="options" class="inline-flex justify-between items-center my-4 w-full">
             <div class="inline-flex justify-around">
-
                 <div id="radios">
                     <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" checked />
                     <label class="radioLable text-base" for="radio1">完成</label>
@@ -71,34 +93,32 @@ const toggleModal = () => {
                     <input id="radio3" class="radioInput hidden" type="radio" name="radio" value="radio3" />
                     <label class="radioLable text-base" for="radio3">全部</label>
                 </div>
-
-
             </div>
 
             <div id="optionsRight" class="flex justify-end align-center">
-                <button @click="toggleModal()"
-                    class="btnCreateEvent bg-transparent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                <button
+                    @click="toggleModal()"
+                    class="btnCreateEvent bg-transparent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                >
                     新增活動
                 </button>
             </div>
         </div>
 
-
         <div class="grid grid-cols-3 grid-gap-1rem items-center justify-center">
             <!-- cards -->
-            <MainDeFaultCard :tracePercentage=100 :costMoney=300000 :budgetMoney=987541></MainDeFaultCard>
-            <MainDeFaultCard :tracePercentage=40 :costMoney=800000 :budgetMoney=987541></MainDeFaultCard>
-            <MainDeFaultCard :tracePercentage=60 :costMoney=1000000 :budgetMoney=987541></MainDeFaultCard>
-            <MainDeFaultCard :tracePercentage=80 :costMoney=200000 :budgetMoney=987541></MainDeFaultCard>
-            <MainDeFaultCard :tracePercentage=20 :costMoney=900000 :budgetMoney=987541></MainDeFaultCard>
+            <MainDeFaultCard
+                v-for="item in activityData"
+                :name="item.activity_name"
+                :owner="item.owner"
+                :tracePercentage="100"
+                :costMoney="400"
+                :budgetMoney="item.activity_budget"
+            ></MainDeFaultCard>
             <!-- cards end -->
         </div>
-
-
     </div>
 </template>
-
-
 
 <style scoped>
 ::-webkit-scrollbar {
@@ -112,13 +132,11 @@ const toggleModal = () => {
     -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08);
 }
 
-
 ::-webkit-scrollbar-thumb {
     border-radius: 3px;
     background: rgba(0, 0, 0, 0.12);
     -webkit-box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
 }
-
 
 .grid-gap-1rem {
     grid-row-gap: 3rem;
@@ -130,7 +148,7 @@ const toggleModal = () => {
     font-size: 14px;
     font-family: sans-serif;
     color: #ffffff;
-    background: #5B83AC;
+    background: #5b83ac;
     cursor: pointer;
     transition: background 0.1s;
 }
@@ -139,11 +157,9 @@ const toggleModal = () => {
     border-right: 1px solid #52708f;
 }
 
-.radioInput:checked+.radioLable {
+.radioInput:checked + .radioLable {
     background: #52708f;
 }
-
-
 
 .btnCreateEvent {
     border-color: #2b6cb0;
@@ -177,6 +193,3 @@ const toggleModal = () => {
     height: 100%;
 }
 </style>
-
-
-

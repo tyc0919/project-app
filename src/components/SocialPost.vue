@@ -1,5 +1,5 @@
 <template>
-    <div class="ml-8 mr-20 shadow-primary my-4">
+    <div class="mr-20 shadow-primary my-4">
         <div class="w-full bg-zinc-50">
             <div class="flex px-[10px] pt-[10px]">
                 <!--貼文圖片-->
