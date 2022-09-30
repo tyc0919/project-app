@@ -112,7 +112,7 @@ axios.get('http://app.ace.project/api/activity/', config).then(function (respons
                 :name="item.activity_name"
                 :owner="item.owner"
                 :tracePercentage="100"
-                :costMoney="400"
+                :costMoney="item.activity_expenditure"
                 :budgetMoney="item.activity_budget"
             ></MainDeFaultCard>
             <!-- cards end -->
