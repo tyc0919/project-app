@@ -3,7 +3,8 @@
 import { ref } from 'vue';
 import { getCookie } from '../assets/modules'
 import axios from "axios";
-import { useRoute } from 'vue-router'
+import { useRoute } from 'vue-router';
+
 // components
 import Modal from './Modal.vue';
 
@@ -20,6 +21,7 @@ const activityId = route.params.EventId
 
 
 
+
 // modal
 const showModal = ref(false)
 const toggleModal = () => {
@@ -27,38 +29,26 @@ const toggleModal = () => {
 }
 const modalContent = ref('測試內容')
 
+
 // DATA
 // GET budget 
-let budgetData = ref("");
-let activityExpense = ref(0);
-axios.get('/api/activity/' + activityId + '/budget/', config)
-    .then(response => {
-        budgetData.value = response.data;
-        console.log("GET budget data");
-        console.log(response.data);
+// let budget = ref("");
 
-        // total activity expense
-        for (let i = 0; i < budgetData.value.jobs.length; i++) {
-            activityExpense.value = budgetData.value.jobs[i].job_expenditure;
-        }
+// function getBudgetData() {
+//     axios.get('/api/activity/' + activityId + '/budget/', config)
+//         .then(response => {
+//             budget.value = response.data;
+//             console.log("GET budget data");
+//             console.log(response.data);
 
-        // append jobs data
-        for (let i = 0; i < budgetData.value.expenditures.length; i++) {
-            budgetData.value.expenditures[i].expenditure_uploaded_time = new Date(
-                budgetData.value.expenditures[i].expenditure_uploaded_time).toLocaleDateString();
-            for (let j = 0; j < budgetData.value.jobs.length; j++) {
-                if (budgetData.value.expenditures[i].job_serial_number ==
-                    budgetData.value.jobs[j].serial_number) {
-                    budgetData.value.expenditures[i]["job_title"] = budgetData.value.jobs[j].title;
-                    budgetData.value.expenditures[i]["person_in_charge_email"] = budgetData.value.jobs[j].person_in_charge_email;
-                }
-            }
-        }
-        console.log(budgetData.value);
-    });
+
+//         });
+// }
+// getBudgetData();
 
 
 let budget = ref([]);
+let activityExpense = ref(0);
 async function getData() {
     try {
         axios.get('/api/activity/' + activityId + '/budget/', config)
@@ -81,22 +71,61 @@ async function getData() {
                 }
                 budget.value["user_jobs"] = userJobs.value;
 
-                console.log("budget.value");
+
+
+                // add activity expense
+                for (let i = 0; i < budget.value.jobs.length; i++) {
+                    activityExpense.value = budget.value.jobs[i].job_expenditure;
+                }
+
+                // append jobs data
+                for (let i = 0; i < budget.value.expenditures.length; i++) {
+                    // adjust date style
+                    budget.value.expenditures[i].expenditure_uploaded_time = new Date(
+                        budget.value.expenditures[i].expenditure_uploaded_time).toLocaleDateString();
+                    // append job data
+                    for (let j = 0; j < budget.value.jobs.length; j++) {
+                        if (budget.value.expenditures[i].job_serial_number ==
+                            budget.value.jobs[j].serial_number) {
+                            budget.value.expenditures[i]["job_title"] = budget.value.jobs[j].title;
+                            budget.value.expenditures[i]["person_in_charge_email"] = budget.value.jobs[j].person_in_charge_email;
+                        }
+                    }
+                }
+
                 console.log(budget.value);
             });
     } catch (error) {
         throw new Error(error);
     }
+
+
 }
 getData()
 
 // post
+
+const updateActivityBudget = async () => {
+    let budgetEl = document.querySelector('#budget-el');
+    await axios.post('/api/activity/budget/update/',
+        {
+            "activity_id": activityId,
+            "activity_budget": budgetEl.value
+        },
+        config)
+        .then(response => {
+            console.log(response)
+        });
+    getData();
+}
+
 let fileEl = ref(null);
-const expenditureUpload = () => {
+
+const uploadExpenditure = () => {
     let expenseEl = document.querySelector('#expense-el');
     let jobEl = document.querySelector('#job-el');
     let jobSerialNumber = null;
-    let activityId = null;
+
 
     for (let job of budget.value.jobs) {
         if (job.title == jobEl.value) {
@@ -104,9 +133,13 @@ const expenditureUpload = () => {
         }
     }
 
+    console.log(expenseEl.value);
+    console.log(jobSerialNumber);
+    console.log(activityId);
+
     let formData = new FormData();
     formData.append('file', fileEl.value.files[0]);
-    formData.append('serial_number', jobSerialNumber.value); //工作序號
+    formData.append('serial_number', jobSerialNumber); //工作序號
     formData.append('activity_id', activityId); //活動ID
     formData.append('expense', expenseEl.value); //花費
 
@@ -129,7 +162,7 @@ const expenditureUpload = () => {
         <div class="flex justify-around mt-8 mb-16">
             <div class="bg-green-400 flex flex-col items-center p-2 rounded shadow-md">
                 <p class="m-2 text-center">預算</p>
-                <p class="mb-2 text-2xl w-56 text-center">$ {{budgetData.activity_budget}}</p>
+                <p class="mb-2 text-2xl w-56 text-center">$ {{budget.activity_budget}}</p>
             </div>
             <div class="bg-red-400 flex flex-col items-center p-2 rounded shadow-md">
                 <p class="m-2 text-center">支出</p>
@@ -137,8 +170,9 @@ const expenditureUpload = () => {
             </div>
         </div>
         <div class="flex justify-center w-full mb-8 ">
-            <input type="number" class="w-1/3 mr-4" />
-            <button class="bg-sky-700 text-white px-4 py-2 rounded shadow-md">預算更新</button>
+            <input id="budget-el" type="number" class="w-1/3 mr-4" />
+            <button @click="updateActivityBudget()"
+                class="bg-sky-700 text-white px-4 py-2 rounded shadow-md">預算更新</button>
         </div>
 
         <!-- budget box end -->
@@ -167,8 +201,8 @@ const expenditureUpload = () => {
                                     placeholder="10000">
                             </div>
 
-                            <div @change="expenditureUpload()" ref="fileEl" class="text-base font-bold">收據圖片證明</div>
-                            <input id="file-el" type="file">
+                            <div class="text-base font-bold">收據圖片證明</div>
+                            <input ref="fileEl" type="file">
                             <div class="text-base font-bold ">所屬工作</div>
                             <select id="job-el" class="px-1 py-1 w-full font-bold border border-2 border-slate-500">
                                 <option class="italic font-bold">--請選擇一個工作--</option>
@@ -180,7 +214,7 @@ const expenditureUpload = () => {
 
                 <template #footer>
                     <div class="border-t-2 pt-2">
-                        <button @click="[toggleModal(),expenditureUpload()]"
+                        <button @click="[toggleModal(),uploadExpenditure()]"
                             class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
                             新增
                         </button>
@@ -206,12 +240,17 @@ const expenditureUpload = () => {
             <button @click="toggleModal()" class="w-auto border-sky-700 border mx-8 mb-4 rounded text-sky-700">
                 上傳</button>
             <div class="overflow-y-auto">
-                <div v-for="item in budgetData.expenditures"
+                <div v-for="item in budget.expenditures"
                     class="flex justify-between w-auto mt-4 mx-8 border-2 rounded-md py-2 pl-4 pr-2 border-gray-300 file-shadow">
 
                     <div class="w-full whitespace-nowrap">
                         <p class="font-bold">{{item.expenditure_receipt_path}}</p>
                         <div class="w-full text-sm text-gray-500">
+                            <div class="text-red-500">
+                                <span>支出金額: </span>
+                                <span>$ </span>
+                                <span>{{item.expense}}</span>
+                            </div>
                             <div>
                                 <span>上傳日期: </span>
                                 <span>{{item.expenditure_uploaded_time}}</span>
@@ -220,6 +259,7 @@ const expenditureUpload = () => {
                                 <span>上傳者: </span>
                                 <span>{{item.person_in_charge_email}}</span>
                             </div>
+
                         </div>
 
 
@@ -249,7 +289,7 @@ const expenditureUpload = () => {
         </div>
         <hr>
 
-        <div class="normal-row" v-for="item in budgetData.expenditures">
+        <div class="normal-row" v-for="item in budget.expenditures">
             <div class="expense normal-square text-xl flex">
                 <div class="flex-1 text-left pl-10">$</div>
                 <div class="flex-2 pr-10 truncate">{{item.expense}}</div>
@@ -259,15 +299,6 @@ const expenditureUpload = () => {
             <div class="upload-time normal-square text-xl">{{item.expenditure_uploaded_time}}</div>
         </div>
 
-        <div class="normal-row">
-            <div class="expense normal-square text-xl flex">
-                <div class="flex-1 text-left pl-10">$</div>
-                <div class="flex-2 pr-10 truncate">1235454</div>
-            </div>
-            <div class="represent normal-square text-xl">黃紫紅</div>
-            <div class="work-name normal-square text-xl">交通</div>
-            <div class="upload-time normal-square text-xl">2011-08-10</div>
-        </div>
 
     </div>
 
