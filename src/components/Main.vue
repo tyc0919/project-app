@@ -22,7 +22,7 @@
             <router-view />
         </div>
     </div>
-    <router-link to="/events/1" class="text-sky-500">點擊前往Event.vue</router-link>
+    <router-link to="/events/2" class="text-sky-500">點擊前往Event.vue</router-link>
 </template>
 
 <style scoped>
