@@ -19,15 +19,6 @@ import SocialPost from './SocialPost.vue'
                         <label class="radioLable text-base" for="radio3">全部</label>
                     </div>
                 </div>
-
-                <div id="optionsRight" class="flex justify-end align-center">
-                    <button
-                        @click="toggleModal()"
-                        class="btnCreateEvent bg-transparent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                    >
-                        新增活動
-                    </button>
-                </div>
             </div>
             <!--按鈕列-->
 

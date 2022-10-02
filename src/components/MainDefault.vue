@@ -6,6 +6,7 @@ import { getCookie } from '../assets/modules'
 import axios from 'axios'
 
 let activityData = ref([])
+let activityOwner = ''
 let csrftoken = getCookie()
 let config = {
     headers: {
@@ -13,6 +14,7 @@ let config = {
     },
     mode: 'same-origin',
 }
+
 const showModal = ref(false)
 const toggleModal = () => {
     showModal.value = !showModal.value
@@ -21,6 +23,32 @@ const toggleModal = () => {
 axios.get('http://app.ace.project/api/activity/', config).then(function (response) {
     activityData.value = response.data
 })
+axios.get('http://app.ace.project/api/userprofile/', config).then(function (response) {
+    let temp = response.data
+    activityOwner = temp.user_email
+})
+
+function addActivity() {
+    let title = document.getElementById('activityTitle').value
+    let budget = document.getElementById('activityBudget').value
+    let description = document.getElementById('activityContent').value
+    axios
+        .post(
+            'http://app.ace.project/api/activity/create/',
+            {
+                owner: activityOwner,
+                activity_name: title,
+                activity_description: description,
+                activity_budget: budget,
+            },
+            config
+        )
+        .then(function (res) {
+            axios.get('http://app.ace.project/api/activity/', config).then(function (response) {
+                activityData.value = response.data
+            })
+        })
+}
 </script>
 
 <template>
@@ -36,14 +64,16 @@ axios.get('http://app.ace.project/api/activity/', config).then(function (respons
                 <div class="flex-row justify-between space-y-3">
                     <div class="text-base font-bold">活動名稱</div>
                     <input
+                        id="activityTitle"
                         type="text"
                         class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                        placeholder="超棒的活動"
+                        placeholder="超棒的活動 (需至少三個字)"
                     />
-                    <div class="text-base font-bold">活動預算</div>
-                    <div class="flex items-center justify-start space-x-3">
+                    <div class="text-base font-bold"></div>
+                    <div class="flex items-center justify活動預算-start space-x-3">
                         <span class="italic font-bold">$</span>
                         <input
+                            id="activityBudget"
                             type="number"
                             class="px-1 py-1 w-full text-base border border-2 border-slate-400"
                             placeholder="10000"
@@ -51,9 +81,10 @@ axios.get('http://app.ace.project/api/activity/', config).then(function (respons
                     </div>
 
                     <div class="text-base font-bold">活動圖片</div>
-                    <input type="file" />
+                    <input id="activityImage" type="file" />
                     <div class="text-base font-bold">活動簡介</div>
                     <textarea
+                        id="activityContent"
                         class="text-base font-bold border border-2 border-slate-400 w-full"
                         placeholder="這次的活動，我們將要帶領大家..."
                     ></textarea>
@@ -64,7 +95,7 @@ axios.get('http://app.ace.project/api/activity/', config).then(function (respons
         <template #footer>
             <div class="border-t-2 pt-2">
                 <button
-                    @click="toggleModal()"
+                    @click="toggleModal(), addActivity()"
                     class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
                 >
                     新增
