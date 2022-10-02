@@ -129,7 +129,7 @@ function addActivity() {
             <div id="optionsRight" class="flex justify-end align-center">
                 <button
                     @click="toggleModal()"
-                    class="btnCreateEvent bg-transparent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                    class="btnCreateEvent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
                 >
                     新增活動
                 </button>
@@ -193,13 +193,14 @@ function addActivity() {
 }
 
 .btnCreateEvent {
-    border-color: #2b6cb0;
-    color: #2b6cb0;
+    color: #ffffff;
+    background-color: #2b6cb0;
 }
 
 .btnCreateEvent:hover {
-    background-color: #2b6cb0;
-    color: #ffffff;
+    background-color: transparent;
+    color: #2b6cb0;
+    border-color: #2b6cb0;
 }
 
 .ellipsis {

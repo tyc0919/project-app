@@ -41,7 +41,6 @@ async function getActivityName() {
                         }
                     }
                 }
-                console.log(work)
             })
     } catch (error) {
         throw new Error(error)
