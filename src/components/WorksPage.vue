@@ -19,18 +19,45 @@ const router = useRouter()
 
 let A_job_data = ref("")
 let colla = ref("")
+let temp = ref("")
 let respon_gmail
 
 /*  取出活動相關工作 */
 
-axios.get("/api/activity/" + route.params.EventId + "/job/")
-    .then(response => {
-        A_job_data.value = response.data
-        Object.values(A_job_data.value).forEach((test) => {
-            let temp = new Date(test.dead_line)
-            test.time = temp.toLocaleDateString()
+async function job_take() {
+    await axios.get("/api/activity/" + route.params.EventId + "/job/")
+        .then(response => {
+            A_job_data.value = response.data
+            A_job_data.value.forEach((job) => {
+                let temp = new Date(job.dead_line)
+                job.time = temp.toLocaleDateString()
+
+
+                let temp2 = new Date()
+                let x = parseInt(Math.abs(temp.getTime()-temp2.getTime()) / 1000 / 60 / 60 / 24)
+                Object.assign(job,{'Finish_dead_line' : x})
+            })
         })
-    })
+
+    for (let i = 0; i < A_job_data.value.length; i++) {
+        axios.get("/api/activity/" + route.params.EventId + "/job/" + A_job_data.value[i].serial_number + "/job_detail/")
+            .then(response => {
+                let count = 0
+                let countY = 0
+                temp.value = response.data
+                temp.value.forEach(function (test) {
+                    if (test.status === 1){
+                        countY ++
+                    }
+                    count++
+                })              
+                Object.assign(A_job_data.value[i], { 'count': count })
+                Object.assign(A_job_data.value[i], { 'countY': countY })
+            })
+    }
+}
+
+job_take()
 
 /*  取出活動相關工作 */
 
@@ -206,14 +233,14 @@ const toggleModal = () => {
 
                                 <div class="workBottomLeft inline-flex">
                                     完成
-                                    <div class="mx-2 text-[#c70000]">5</div>
+                                    <div class="mx-2 text-[#c70000]">{{item.countY}}</div>
                                     /
-                                    <div class="mx-2">10</div>
+                                    <div class="mx-2">{{item.count}}</div>
                                 </div>
 
                                 <div class="workBottomRight inline-flex">
                                     還剩
-                                    <div class="mx-2 text-[#c70000]">100</div>
+                                    <div class="mx-2 text-[#c70000]">{{item.Finish_dead_line}}</div>
                                     天
                                 </div>
                             </div>
@@ -225,7 +252,7 @@ const toggleModal = () => {
                                         class="backText text-base font-bold mb-8 ml-8 inline-flex justify-start items-center">
                                         <div class="nowrap">完成項目</div>
                                         <div class="text-base ml-20 italic">
-                                            5 / 10
+                                            {{item.countY}} / {{item.count}}
                                         </div>
                                     </div>
 

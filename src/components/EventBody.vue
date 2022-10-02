@@ -31,7 +31,6 @@ axios.get("/api/userprofile/")
 axios.get("/api/activity/" + route.params.EventId + "/")
     .then(response => {
         activity_data.value = response.data
-        console.log(activity_data.value.post_time)
         let temp = new Date(activity_data.value.post_time)
         activity_data.value.post_time = temp.toLocaleDateString()
     })
