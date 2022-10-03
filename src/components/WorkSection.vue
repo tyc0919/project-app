@@ -1,4 +1,5 @@
 <script setup>
+
 import Modal from './Modal.vue'
 import axios from "axios";
 import JobDetail from "./JobDetail.vue";
@@ -432,7 +433,7 @@ function newJobDetail() {
     <!--Component here-->
 </template>
 
-<style scoped>
+<style>
 .border-r-3 {
     border-right-width: 3px;
 }
