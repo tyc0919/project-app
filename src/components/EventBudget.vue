@@ -69,8 +69,8 @@ async function getData() {
                         budget.value.expenditures[i].expenditure_uploaded_time).toLocaleDateString();
                     // append job data
                     for (let j = 0; j < budget.value.jobs.length; j++) {
-                        if (budget.value.expenditures[i].job_serial_number ==
-                            budget.value.jobs[j].serial_number) {
+                        if (budget.value.expenditures[i].job ==
+                            budget.value.jobs[j].id) {
                             budget.value.expenditures[i]["job_title"] = budget.value.jobs[j].title;
                             budget.value.expenditures[i]["person_in_charge_email"] = budget.value.jobs[j].person_in_charge_email;
                         }
@@ -138,23 +138,15 @@ const uploadExpenditure = async () => {
 
     let expenseEl = document.querySelector('#expense-el');
     let jobEl = document.querySelector('#job-el');
-    let jobSerialNumber = null;
 
     try {
-        for (let job of budget.value.jobs) {
-            if (job.title == jobEl.value) {
-                jobSerialNumber = job.serial_number;
-            }
-        }
-
-        // do post api
+        // append data of POST api 
         let formData = new FormData();
         formData.append('file', fileEl.value.files[0]);
-        formData.append('serial_number', jobSerialNumber); //工作序號
-        formData.append('activity_id', activityId); //活動ID
+        formData.append('job_id', jobEl.value) //工作序號
         formData.append('expense', expenseEl.value); //花費
 
-
+        // do POST api
         await axios.post('/api/upload/expenditure/', formData, config)
             .then(function (response) {
                 console.log(response);
@@ -162,7 +154,7 @@ const uploadExpenditure = async () => {
         getData()
         toggleModal()
     } catch (error) {
-
+        console.log("error")
     }
 
 }
@@ -226,7 +218,7 @@ const uploadExpenditure = async () => {
                             <div class="text-base font-bold ">所屬工作</div>
                             <select id="job-el" class="px-1 py-1 w-full font-bold border border-2 border-slate-500">
                                 <option class="italic font-bold">--請選擇一個工作--</option>
-                                <option v-for="item in budget.user_jobs">{{item.title}}</option>
+                                <option v-for="item in budget.user_jobs" :value="item.id">{{item.title}}</option>
                             </select>
                         </div>
                     </div>
