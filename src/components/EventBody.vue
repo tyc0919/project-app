@@ -172,12 +172,13 @@ async function delete_Activity() {
 /* 刪除活動 */
 
 /* 彈出視窗 */
-const showModal_finish = ref(false)
+const showModal_publish = ref(false)
 const showModal_update = ref(false)
 const showModal_delete = ref(false)
+const showModal_finish = ref(false)
 
-const toggleModal_finish = () => {
-    showModal_finish.value = !showModal_finish.value
+const toggleModal_publish = () => {
+    showModal_publish.value = !showModal_publish.value
 }
 
 const toggleModal_update = () => {
@@ -186,6 +187,9 @@ const toggleModal_update = () => {
 
 const toggleModal_delete = () => {
     showModal_delete.value = !showModal_delete.value
+}
+const toggleModal_finish = () => {
+    showModal_finish.value = !showModal_finish.value
 }
 /* 彈出視窗 */
 
@@ -202,7 +206,10 @@ const toggleModal_delete = () => {
 
                 <form action="">
                     <div class="flex justify-around w-full">
-                        <div class="button hover" @click="toggleModal_finish()">
+                        <div class="button hover" @click="toggleModal_finish()()">
+                            <input type="button" value="完成活動">
+                        </div>
+                        <div class="button hover" @click="toggleModal_publish()">
                             <input type="button" value="發布活動">
                         </div>
                         <div class="button hover" @click="toggleModal_update()">
@@ -244,7 +251,8 @@ const toggleModal_delete = () => {
 
     <!-- activityHead end-->
 
-    <!-- 發布視窗 -->
+
+    <!-- 完成視窗 -->
     <Teleport to="body">
         <!-- use the modal component, pass in the prop -->
         <modal :show="showModal_finish" @close="toggleModal_finish()">
@@ -255,7 +263,6 @@ const toggleModal_delete = () => {
             </template>
             <template #body>
                 <div class="overflow-y-auto max-h-96 pr-4">
-
                     <div class="flex-row justify-between space-y-3 px-1 py-1 check">
                         <div class="text-base font-bold">活動狀態</div>
                         <form name="test1">
@@ -267,7 +274,34 @@ const toggleModal_delete = () => {
                             <br>
                         </form>
                     </div>
+                </div>
+            </template>
+            <template #footer>
+                <button @click="toggleModal_finish()"
+                    class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    確定
+                </button>
+                <button @click="toggleModal_finish()"
+                    class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                    取消
+                </button>
+            </template>
+        </modal>
+    </Teleport>
 
+    <!-- 完成視窗 -->
+
+    <!-- 發布視窗 -->
+    <Teleport to="body">
+        <!-- use the modal component, pass in the prop -->
+        <modal :show="showModal_publish" @close="toggleModal_publish()">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">完成活動</div>
+                </div>
+            </template>
+            <template #body>
+                <div class="overflow-y-auto max-h-96 pr-4">
                     <div class="flex-row justify-between space-y-3 px-1 py-1 check">
                         <div class="text-base font-bold">是否要發布此活動到社群上?</div>
                         <form name="test2">
@@ -282,11 +316,11 @@ const toggleModal_delete = () => {
                 </div>
             </template>
             <template #footer>
-                <button @click="toggleModal_finish(), test_Activity()"
+                <button @click="toggleModal_publish(), test_Activity()"
                     class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
                     確定
                 </button>
-                <button @click="toggleModal_finish()"
+                <button @click="toggleModal_publish()"
                     class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
                     取消
                 </button>
