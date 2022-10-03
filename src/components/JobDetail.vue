@@ -6,6 +6,11 @@ import { getCookie } from '../assets/modules'
 import { useRoute } from "vue-router";
 import { useRouter } from "vue-router";
 
+const emit = defineEmits(["refresh"])
+
+function refresh(){
+    emit('refresh')
+}
 
 
 let csrftoken = getCookie()
@@ -76,6 +81,8 @@ function statusJobDetail() {
         .catch(function (error) {
             console.log(error);
         })
+    
+    refresh()
 }
 /* 工作細項狀態 */
 
@@ -202,6 +209,7 @@ const toggleModal_status_job_detail = () => {
                         class=" btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
                         取消
                     </button>
+                    
                 </div>
 
             </template>

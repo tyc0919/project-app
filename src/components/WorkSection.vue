@@ -138,10 +138,7 @@ function take_job_detail() {
             )
         })
 }
-
 take_job_detail()
-
-
 /* 獲得工作細項 */
 
 /* 新增工作細項 */
@@ -161,14 +158,12 @@ function newJobDetail() {
         })
 }
 /* 新增工作細項 */
-
 </script>
 
 <template>
-    <!--Component here-->
+    <!-- 主要內容 -->
     <div class="flex pr-4 mb-4">
-
-        <div>
+        <div class="w-3/4">
             <!--功能列-->
             <div class="w-[94%] ml-8 py-[10px] inline-flex flex-wrap items-center">
                 <!--全部、未完成、完成狀態-->
@@ -278,7 +273,7 @@ function newJobDetail() {
                     <!-- 工作細項 -->
 
                     <template v-for="item in job_detail_Y" :key="item.job_detail_id">
-                        <JobDetail :jobDetail=item></JobDetail>
+                        <JobDetail :jobDetail=item @refresh="take_job_detail"></JobDetail>
                     </template>
 
                     <template v-for="item in job_detail_N" :key="item.job_detail_id">
@@ -288,157 +283,146 @@ function newJobDetail() {
 
                     <!-- 工作細項 -->
 
-
-                    <!-- 彈出視窗 -->
-
-                    <!-- 編輯工作 -->
-                    <Teleport to="body">
-                        <Modal :show="showModal1">
-                            <template #header>
-                                <div class="border-b-4 w-full px-4 py-4">
-                                    <div class="font-bold text-2xl">編輯工作</div>
-                                </div>
-                            </template>
-
-                            <template #body>
-                                <div class="overflow-y-auto max-h-96 pr-4">
-                                    <div class="flex-row justify-between space-y-3">
-                                        <div class="text-base font-bold">工作名稱</div>
-                                        <input type="text"
-                                            class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                                            placeholder="超棒的活動" v-model="uworkName">
-                                        <div class="text-base font-bold">工作日期</div>
-                                        <input type="date"
-                                            class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                                            placeholder="超棒的活動" v-model="uworkDate">
-                                        <div class="text-base font-bold">分配工作預算</div>
-                                        <div class="flex items-center justify-start space-x-3">
-                                            <span class="italic font-bold">$</span>
-                                            <input type="number"
-                                                class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                                                placeholder="10000" v-model="uworkBudget">
-                                        </div>
-
-                                        <div class="text-base font-bold">已使用工作預算</div>
-                                        <div class="flex items-center justify-start space-x-3">
-                                            <span class="italic font-bold">$</span>
-                                            <input type="number"
-                                                class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                                                placeholder="10000" v-model="uworkExpenditure">
-                                        </div>
-
-                                        <div class="text-base font-bold">工作說明</div>
-                                        <textarea
-                                            class=" px-1 py-1 text-base font-bold border border-2 border-slate-400 w-full"
-                                            placeholder="這次的活動，我們將要帶領大家..." v-model="uworkContent"></textarea>
-
-                                        <div class="text-base font-bold ">負責人</div>
-                                        <select class="px-1 py-1 w-full font-bold border border-2 border-slate-500"
-                                            name="responsibility" @change="get_responGmail()">
-                                            <option class="text-red-400 font-bold">未定</option>
-                                            <option v-for="c_email in colla">{{ c_email.user_email }}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </template>
-
-                            <template #footer>
-                                <div class="border-t-2 pt-2">
-                                    <button @click="toggleModal1(), updateWork()"
-                                        class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
-                                        新增
-                                    </button>
-                                    <button @click="toggleModal1()"
-                                        class=" btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
-                                        取消
-                                    </button>
-                                </div>
-
-                            </template>
-                        </Modal>
-                    </Teleport>
-                    <!-- 編輯工作 -->
-
-                    <!--刪除工作-->
-                    <Teleport to="body">
-                        <modal :show="showModal_delete">
-                            <template #header>
-                                <div class="border-b-4 w-full px-4 py-4">
-                                    <div class="font-bold text-2xl">警告視窗</div>
-                                </div>
-                            </template>
-                            <template #body>
-                                你確定要刪除此工作嗎，按下確定後就不能返回了
-                            </template>
-                            <template #footer>
-                                <button @click="toggleModal_delete(), deleteWork()"
-                                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
-                                    確定
-                                </button>
-                                <button @click="toggleModal_delete()"
-                                    class="py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
-                                    取消
-                                </button>
-                            </template>
-                        </modal>
-                    </Teleport>
-                    <!--刪除工作-->
-
-                    <!-- 新增工作細項 -->
-                    <Teleport to="body">
-                        <modal :show="showModal_new_job_detail" @close="toggleModal_new_job_detail()">
-                            <template #header>
-                                <div class="border-b-4 w-full px-4 py-4">
-                                    <div class="font-bold text-2xl">新增工作細項</div>
-                                </div>
-                            </template>
-
-                            <template #body>
-                                <div class="overflow-y-auto max-h-96 pr-4">
-                                    <div class="flex-row justify-between space-y-3">
-                                        <div class="text-base font-bold">工作細項名稱</div>
-                                        <input type="text"
-                                            class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                                            v-model="njob_detailName">
-
-                                        <div class="text-base font-bold">工作細項內容</div>
-                                        <textarea
-                                            class=" px-1 py-1 text-base font-bold border border-2 border-slate-400 w-full"
-                                            v-model="njob_detailContent">
-                                    </textarea>
-                                    </div>
-                                </div>
-                            </template>
-
-                            <template #footer>
-                                <div class="border-t-2 pt-2">
-                                    <button @click="toggleModal_new_job_detail(), newJobDetail()"
-                                        class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
-                                        新增
-                                    </button>
-                                    <button @click="toggleModal_new_job_detail()"
-                                        class=" btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
-                                        取消
-                                    </button>
-                                </div>
-
-                            </template>
-                        </modal>
-                    </Teleport>
-                    <!-- 新增工作細項 -->
-
-                    <!-- 彈出視窗 -->
                 </div>
             </div>
+
             <!--主要內容-->
         </div>
-
         <FileSection :mode=2></FileSection>
-
-
-
     </div>
-    <!--Component here-->
+    <!-- 主要內容 -->
+
+    <!-- 彈出視窗 -->
+    <!-- 編輯工作 -->
+    <Teleport to="body">
+        <Modal :show="showModal1">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">編輯工作</div>
+                </div>
+            </template>
+
+            <template #body>
+                <div class="overflow-y-auto max-h-96 pr-4">
+                    <div class="flex-row justify-between space-y-3">
+                        <div class="text-base font-bold">工作名稱</div>
+                        <input type="text" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                            placeholder="超棒的活動" v-model="uworkName">
+                        <div class="text-base font-bold">工作日期</div>
+                        <input type="date" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                            placeholder="超棒的活動" v-model="uworkDate">
+                        <div class="text-base font-bold">分配工作預算</div>
+                        <div class="flex items-center justify-start space-x-3">
+                            <span class="italic font-bold">$</span>
+                            <input type="number" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                                placeholder="10000" v-model="uworkBudget">
+                        </div>
+
+                        <div class="text-base font-bold">已使用工作預算</div>
+                        <div class="flex items-center justify-start space-x-3">
+                            <span class="italic font-bold">$</span>
+                            <input type="number" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                                placeholder="10000" v-model="uworkExpenditure">
+                        </div>
+
+                        <div class="text-base font-bold">工作說明</div>
+                        <textarea class=" px-1 py-1 text-base font-bold border border-2 border-slate-400 w-full"
+                            placeholder="這次的活動，我們將要帶領大家..." v-model="uworkContent"></textarea>
+
+                        <div class="text-base font-bold ">負責人</div>
+                        <select class="px-1 py-1 w-full font-bold border border-2 border-slate-500"
+                            name="responsibility" @change="get_responGmail()">
+                            <option class="text-red-400 font-bold">未定</option>
+                            <option v-for="c_email in colla">{{ c_email.user_email }}</option>
+                        </select>
+                    </div>
+                </div>
+            </template>
+
+            <template #footer>
+                <div class="border-t-2 pt-2">
+                    <button @click="toggleModal1(), updateWork()"
+                        class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                        新增
+                    </button>
+                    <button @click="toggleModal1()"
+                        class=" btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                        取消
+                    </button>
+                </div>
+
+            </template>
+        </Modal>
+    </Teleport>
+    <!-- 編輯工作 -->
+
+    <!--刪除工作-->
+    <Teleport to="body">
+        <modal :show="showModal_delete">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">警告視窗</div>
+                </div>
+            </template>
+            <template #body>
+                你確定要刪除此工作嗎，按下確定後就不能返回了
+            </template>
+            <template #footer>
+                <button @click="toggleModal_delete(), deleteWork()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    確定
+                </button>
+                <button @click="toggleModal_delete()"
+                    class="py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                    取消
+                </button>
+            </template>
+        </modal>
+    </Teleport>
+    <!--刪除工作-->
+
+    <!-- 新增工作細項 -->
+    <Teleport to="body">
+        <modal :show="showModal_new_job_detail" @close="toggleModal_new_job_detail()">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">新增工作細項</div>
+                </div>
+            </template>
+
+            <template #body>
+                <div class="overflow-y-auto max-h-96 pr-4">
+                    <div class="flex-row justify-between space-y-3">
+                        <div class="text-base font-bold">工作細項名稱</div>
+                        <input type="text" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                            v-model="njob_detailName">
+
+                        <div class="text-base font-bold">工作細項內容</div>
+                        <textarea class=" px-1 py-1 text-base font-bold border border-2 border-slate-400 w-full"
+                            v-model="njob_detailContent">
+                                    </textarea>
+                    </div>
+                </div>
+            </template>
+
+            <template #footer>
+                <div class="border-t-2 pt-2">
+                    <button @click="toggleModal_new_job_detail(), newJobDetail()"
+                        class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                        新增
+                    </button>
+                    <button @click="toggleModal_new_job_detail()"
+                        class=" btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                        取消
+                    </button>
+                </div>
+
+            </template>
+        </modal>
+    </Teleport>
+    <!-- 新增工作細項 -->
+    <!-- 彈出視窗 -->
+    
 </template>
 
 <style scoped>
