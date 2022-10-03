@@ -9,6 +9,7 @@ import EventBudget from './components/EventBudget.vue'
 import WorkSection from './components/WorkSection.vue' 
 import WorksPage from './components/WorksPage.vue' 
 import UserProfile from './components/UserProfile.vue'
+import EventOverview from './components/EventOverview.vue'
 
 const routes = [
     {
@@ -58,6 +59,11 @@ const routes = [
                 path: 'budget',
                 name: 'budget',
                 component: EventBudget,
+            }
+            ,  {
+                path: 'overview',
+                name: 'overview',
+                component: EventOverview,
             }
         ]
     },
