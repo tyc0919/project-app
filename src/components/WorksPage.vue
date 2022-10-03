@@ -34,8 +34,8 @@ async function job_take() {
 
 
                 let temp2 = new Date()
-                let x = parseInt(Math.abs(temp.getTime()-temp2.getTime()) / 1000 / 60 / 60 / 24)
-                Object.assign(job,{'Finish_dead_line' : x})
+                let x = parseInt(Math.abs(temp.getTime() - temp2.getTime()) / 1000 / 60 / 60 / 24)
+                Object.assign(job, { 'Finish_dead_line': x })
             })
         })
 
@@ -46,11 +46,11 @@ async function job_take() {
                 let countY = 0
                 temp.value = response.data
                 temp.value.forEach(function (test) {
-                    if (test.status === 1){
-                        countY ++
+                    if (test.status === 1) {
+                        countY++
                     }
                     count++
-                })              
+                })
                 Object.assign(A_job_data.value[i], { 'count': count })
                 Object.assign(A_job_data.value[i], { 'countY': countY })
             })
@@ -84,6 +84,7 @@ let nworkBudget = ref("")
 let nworkContent = ref("")
 
 function newWork() {
+    get_responGmail()
     axios.post("/api/job/create/", {
         "activity_id": route.params.EventId,
         "person_in_charge_email": respon_gmail,
@@ -94,10 +95,12 @@ function newWork() {
     }, config)
         .then(function (response) {
             console.log(response);
+            job_take()
         })
         .catch(function (error) {
             console.log(error);
         })
+    
 }
 
 /* 創建工作 */
@@ -150,7 +153,7 @@ const toggleModal = () => {
 
         <template #footer>
             <div class="border-t-2 pt-2">
-                <button @click="toggleModal(),newWork()"
+                <button @click="toggleModal(), newWork()"
                     class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
                     新增
                 </button>
@@ -209,7 +212,7 @@ const toggleModal = () => {
                 <div id="workContainer" class="grid grid-col3 grid-gap-1rem py-8 px-8 rounded-2xl bg-white shadow">
 
                     <div class="work card h-22rem border-[#2b6cb0] hover:card-float-up px-2 py-2 flex flex-column justify-between rounded-2xl shadow"
-                        v-for="(item) in A_job_data">
+                        v-for="(item) in A_job_data" :key="item.id">
                         <router-link :to="{name: 'event-work-detail', params: {WorkId: item.serial_number}}">
 
                             <div class="workTop flex flex-column justify-between">

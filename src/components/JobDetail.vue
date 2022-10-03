@@ -4,12 +4,9 @@ import axios from "axios";
 import { ref } from 'vue'
 import { getCookie } from '../assets/modules'
 import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 
 
-const props = defineProps([
-    "jobDetail"
-]
-)
 
 let csrftoken = getCookie()
 let config = {
@@ -18,6 +15,12 @@ let config = {
     },
     mode: 'same-origin'
 }
+const props = defineProps([
+    "jobDetail"
+]
+)
+const route = useRoute()
+const router = useRouter()
 
 let ujob_detailName = ref("")
 let ujob_detailContent = ref("")
@@ -33,6 +36,7 @@ function updateJobDetail() {
     axios.post("/api/job-detail/update/", data, config)
         .then(function (response) {
             console.log(response);
+
         })
         .catch(function (error) {
             console.log(error);
@@ -67,13 +71,12 @@ function statusJobDetail() {
     axios.post("/api/job-detail/status/", data, config)
         .then(function (response) {
             console.log(response);
+            // router.push({ path: "/events/" + route.params.EventId + "/works/" + route.params.WorkId })
         })
         .catch(function (error) {
             console.log(error);
         })
 }
-
-
 /* 工作細項狀態 */
 
 

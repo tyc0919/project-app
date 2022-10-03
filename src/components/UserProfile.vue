@@ -37,12 +37,19 @@ let config = {
     },
     mode: 'same-origin'
 }
+
+
 /* 取得使用者資料 */
 let data = ref("")
-axios.get("/api/userprofile/")
-    .then(response => {
-        data.value = response.data
-    })
+function take_userfile() {
+    axios.get("/api/userprofile/")
+        .then(response => {
+            data.value = response.data
+        })
+}
+
+take_userfile()
+
 /* 取得使用者資料 */
 
 /* 更改使用者資料 */
@@ -73,12 +80,14 @@ async function post_userfile() {
     })
 
     axios.post('/api/upload/avatar/',
-    formData,
-    configf
+        formData,
+        configf
     ).then(response => {
         console.log(response)
     })
-    
+
+    take_userfile()
+
 }
 /* 更改使用者資料 */
 

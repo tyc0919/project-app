@@ -1,5 +1,4 @@
 <script setup>
-
 import Modal from './Modal.vue'
 import axios from "axios";
 import JobDetail from "./JobDetail.vue";
@@ -59,10 +58,13 @@ axios.get("/api/activity/" + route.params.EventId + "/collaborator/")
 /* 取得活動協作者 */
 
 /* 獲得工作內容 */
-axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/")
-    .then(response => {
-        job.value = response.data
-    })
+function take_work() {
+    axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/")
+        .then(response => {
+            job.value = response.data
+        })
+}
+take_work()
 /* 獲得工作內容 */
 
 /* 更新工作 */
@@ -72,6 +74,7 @@ function get_responGmail() {
 }
 
 function updateWork() {
+    get_responGmail()
     let data = {
         "job_id": route.params.WorkId, //1
         "person_in_charge_email": respon_gmail,
@@ -85,6 +88,7 @@ function updateWork() {
     axios.post("/api/job/update/", data, config)
         .then(function (response) {
             console.log(response);
+            take_work()
         })
         .catch(function (error) {
             console.log(error);
@@ -114,43 +118,49 @@ async function deleteWork() {
 /* 刪除工作 */
 
 /* 獲得工作細項 */
-axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/job_detail/")
-    .then(response => {
-        job_detail.value = response.data
-
-    }
-    )
-    .then(() => {
-        job_detail.value.forEach((item) => {
-            if (item.status == 0) {
-                job_detail_N.value.push(item)
-            }
-            else {
-                job_detail_Y.value.push(item)
-            }
+function take_job_detail() {
+    axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/job_detail/")
+        .then(response => {
+            job_detail.value = response.data
         }
         )
-    })
+        .then(() => {
+            job_detail_N.value = []
+            job_detail_Y.value = []
+            job_detail.value.forEach((item) => {
+                if (item.status == 0) {
+                    job_detail_N.value.push(item)
+                }
+                else {
+                    job_detail_Y.value.push(item)
+                }
+            }
+            )
+        })
+}
+
+take_job_detail()
+
+
 /* 獲得工作細項 */
 
 /* 新增工作細項 */
 function newJobDetail() {
     let data = {
-        "job_id": Number(route.params.WorkId), 
+        "job_id": Number(route.params.WorkId),
         "title": njob_detailName.value,
         "content": njob_detailContent.value
     }
     axios.post("/api/job-detail/create/", data, config)
         .then(function (response) {
             console.log(response);
+            take_job_detail()
         })
         .catch(function (error) {
             console.log(error);
         })
 }
 /* 新增工作細項 */
-
-
 
 </script>
 
@@ -226,8 +236,6 @@ function newJobDetail() {
                             <div class="ml-4 font-bold">${{job.job_expenditure}}</div>
                             /
                             <div class="font-bold">${{job.job_budget}}</div>
-                            <div class="mx-4 text-[#696969] font-bold">剩餘</div>
-                            <div class="text-[#00db00] font-bold">$90000</div>
                         </div>
                         <!--預算-->
 
@@ -269,11 +277,11 @@ function newJobDetail() {
 
                     <!-- 工作細項 -->
 
-                    <template v-for="item in job_detail_Y">
+                    <template v-for="item in job_detail_Y" :key="item.job_detail_id">
                         <JobDetail :jobDetail=item></JobDetail>
                     </template>
 
-                    <template v-for="item in job_detail_N">
+                    <template v-for="item in job_detail_N" :key="item.job_detail_id">
                         <JobDetail :jobDetail=item></JobDetail>
                     </template>
 
@@ -433,7 +441,7 @@ function newJobDetail() {
     <!--Component here-->
 </template>
 
-<style>
+<style scoped>
 .border-r-3 {
     border-right-width: 3px;
 }
