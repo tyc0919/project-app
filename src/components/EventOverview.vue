@@ -1,11 +1,31 @@
 <script setup>
 import EventOverviewFile from './EventOverviewFile.vue'
+import EventOverviewLog from './EventOverviewLog.vue'
 </script>
 <template>
     <div class="content bg-[CEE5F2]">
+        <!-- Log紀錄 -->
         <div class="mx-10 p-14 border-b-2 border-[#c0c0c0]">
-            <div class="p-40 pb-80 bg-white"></div>
+            <div class="w-full h-80 bg-white overflow-auto text-xl font-bold">
+                <EventOverviewLog></EventOverviewLog>
+                <EventOverviewLog></EventOverviewLog>
+                <EventOverviewLog></EventOverviewLog>
+                <EventOverviewLog></EventOverviewLog>
+                <EventOverviewLog></EventOverviewLog>
+                <EventOverviewLog></EventOverviewLog>
+                <EventOverviewLog></EventOverviewLog>
+                <EventOverviewLog></EventOverviewLog>
+                <EventOverviewLog></EventOverviewLog>
+                <EventOverviewLog></EventOverviewLog>
+                <EventOverviewLog></EventOverviewLog>
+                <EventOverviewLog></EventOverviewLog>
+                <EventOverviewLog></EventOverviewLog>
+                <EventOverviewLog></EventOverviewLog>
+            </div>
         </div>
+        <!-- Log紀錄 -->
+
+        <!-- 檔案總覽 -->
 
         <div class="m-2">
             <div class="mr-20">
@@ -19,10 +39,13 @@ import EventOverviewFile from './EventOverviewFile.vue'
                 </div>
                 <!-- 下拉式選單 -->
             </div>
+
+            <!-- 檔案區-->
             <div class="m-8 border-2 border-dashed border-[#9747FF]">
                 <EventOverviewFile></EventOverviewFile>
                 <EventOverviewFile></EventOverviewFile><EventOverviewFile></EventOverviewFile>
             </div>
+            <!-- 檔案區-->
 
             <!--換頁-->
             <div class="pagination">
@@ -36,9 +59,10 @@ import EventOverviewFile from './EventOverviewFile.vue'
                     <li class="next"><span>下一頁</span></li>
                 </ul>
             </div>
-
             <!--換頁-->
         </div>
+
+        <!-- 檔案總覽 -->
     </div>
 </template>
 
