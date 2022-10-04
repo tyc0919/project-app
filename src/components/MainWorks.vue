@@ -66,15 +66,19 @@ getActivityName()
         </div>
 
         <div class="my-10 grid grid-cols-3 grid-gap-1rem items-center justify-center">
-            <MainWorksCard
+            <router-link
                 v-for="(item, index) of work"
-                :work-title="item.title"
-                :activity="activityName[index]"
-                :content="item.content"
-                :tracePercentage="100"
-                :costMoney="item.job_expenditure"
-                :budgetMoney="item.job_budget"
-            ></MainWorksCard>
+                :to="{ name: 'event-work-detail', params: { EventId: item.activity, WorkId: item.id } }"
+            >
+                <MainWorksCard
+                    :work-title="item.title"
+                    :activity="activityName[index]"
+                    :content="item.content"
+                    :tracePercentage="100"
+                    :costMoney="item.job_expenditure"
+                    :budgetMoney="item.job_budget"
+                ></MainWorksCard>
+            </router-link>
         </div>
 
         <div class="flex justify-center pb-10">

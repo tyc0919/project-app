@@ -138,14 +138,15 @@ function addActivity() {
 
         <div class="grid grid-cols-3 grid-gap-1rem items-center justify-center">
             <!-- cards -->
-            <MainDeFaultCard
-                v-for="item in activityData"
-                :name="item.activity_name"
-                :owner="item.owner"
-                :tracePercentage="100"
-                :costMoney="item.activity_expenditure"
-                :budgetMoney="item.activity_budget"
-            ></MainDeFaultCard>
+            <router-link v-for="item in activityData" :to="{ path: '/events/' + item.id }">
+                <MainDeFaultCard
+                    :name="item.activity_name"
+                    :owner="item.owner"
+                    :tracePercentage="100"
+                    :costMoney="item.activity_expenditure"
+                    :budgetMoney="item.activity_budget"
+                ></MainDeFaultCard>
+            </router-link>
             <!-- cards end -->
         </div>
     </div>
