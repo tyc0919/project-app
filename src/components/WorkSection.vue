@@ -277,7 +277,7 @@ function newJobDetail() {
                     </template>
 
                     <template v-for="item in job_detail_N" :key="item.job_detail_id">
-                        <JobDetail :jobDetail=item></JobDetail>
+                        <JobDetail :jobDetail=item @refresh="take_job_detail"></JobDetail>
                     </template>
 
 

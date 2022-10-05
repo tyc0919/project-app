@@ -12,7 +12,6 @@ function refresh(){
     emit('refresh')
 }
 
-
 let csrftoken = getCookie()
 let config = {
     headers: {
@@ -41,7 +40,7 @@ function updateJobDetail() {
     axios.post("/api/job-detail/update/", data, config)
         .then(function (response) {
             console.log(response);
-
+            refresh()
         })
         .catch(function (error) {
             console.log(error);
@@ -58,6 +57,7 @@ function deleteJobDetail() {
     axios.post("/api/job-detail/delete/", data, config)
         .then(function (response) {
             console.log(response);
+            refresh()
         })
         .catch(function (error) {
             console.log(error);
@@ -76,13 +76,13 @@ function statusJobDetail() {
     axios.post("/api/job-detail/status/", data, config)
         .then(function (response) {
             console.log(response);
-            // router.push({ path: "/events/" + route.params.EventId + "/works/" + route.params.WorkId })
+            refresh()
         })
         .catch(function (error) {
             console.log(error);
         })
     
-    refresh()
+    
 }
 /* 工作細項狀態 */
 
