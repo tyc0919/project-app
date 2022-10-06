@@ -101,12 +101,12 @@ async function getData() {
 }
 getData()
 
+
+// 更新預算
 let isUpdateActivityBudget = ref(false)
 let isWarningUpdateActivityBudget = ref(false)
 const updateActivityBudget = async () => {
     // post
-
-
     let budgetEl = document.querySelector('#budget-el');
     try {
         await axios.post('/api/activity/budget/update/',
@@ -133,6 +133,7 @@ const updateActivityBudget = async () => {
     getData();
 }
 
+// 上傳檔案
 let fileEl = ref(null);
 const uploadExpenditure = async () => {
 
@@ -159,6 +160,26 @@ const uploadExpenditure = async () => {
 
 }
 
+// ? 刪除檔案
+const deleteExpenditure = async (fileName, jobId) => {
+    let formData = new FormData();
+    try {
+        // do POST api
+        await axios.post('/api/delete-file/',
+            {
+                "model": "expenditure",
+                "job_id": jobId,
+                "file_name": fileName
+            }, config)
+            .then(function (response) {
+                console.log(response);
+            })
+
+        getData()
+    } catch (error) {
+        console.log("error")
+    }
+}
 
 
 </script>
@@ -279,7 +300,8 @@ const uploadExpenditure = async () => {
 
                         </div>
                     </div>
-                    <button class="text-red-500 p-2">X</button>
+                    <button @click="deleteExpenditure(item.expenditure_receipt_path, item.job)"
+                        class="text-red-500 p-2">X</button>
                 </div>
             </div>
 
