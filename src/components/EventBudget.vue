@@ -153,7 +153,6 @@ const uploadExpenditure = async () => {
     let expenseEl = document.querySelector('#expense-el');
     let jobEl = document.querySelector('#job-el');
 
-
     try {
         // append data of POST api 
         let formData = new FormData();
@@ -180,10 +179,15 @@ const uploadExpenditure = async () => {
         }
 
         // file error
+
         let errorStatus = error.response.status
         if (errorStatus == 413) {
             errorMessage.fileErrorMessage.value = '檔案過大'
         }
+        if (fileEl.value.files[0] == null) {
+            errorMessage.fileErrorMessage.value = '請選取一個檔案'
+        }
+
         // job error
         if (jobEl.value == "null") {
             errorMessage.jobErrorMessage.value = '請選擇一項工作'
