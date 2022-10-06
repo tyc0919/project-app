@@ -135,10 +135,24 @@ const updateActivityBudget = async () => {
 
 // 上傳檔案
 let fileEl = ref(null);
+// 錯誤訊息
+let errorMessage = {
+    expenseErrorMessage: ref(),
+    fileErrorMessage: ref(),
+    jobErrorMessage: ref(),
+}
+
 const uploadExpenditure = async () => {
 
+    //  清空錯誤訊息
+    for (let key of Object.keys(errorMessage)) {
+        errorMessage[key].value = ''
+    }
+
+    // 抓取api所需參數
     let expenseEl = document.querySelector('#expense-el');
     let jobEl = document.querySelector('#job-el');
+
 
     try {
         // append data of POST api 
@@ -150,12 +164,31 @@ const uploadExpenditure = async () => {
         // do POST api
         await axios.post('/api/upload/expenditure/', formData, config)
             .then(function (response) {
-                console.log(response);
+                console.log(response.data);
             })
-        getData()
+
         toggleModal()
     } catch (error) {
-        console.log("error")
+        let expense = expenseEl.value
+
+        // expense error
+        if (expense == "") {
+            errorMessage.expenseErrorMessage.value = '支出金額不可為空';
+
+        } else if (expense < 0) {
+            errorMessage.expenseErrorMessage.value = '支出金額不可為負數';
+        }
+
+        // file error
+        let errorStatus = error.response.status
+        if (errorStatus == 413) {
+            errorMessage.fileErrorMessage.value = '檔案過大'
+        }
+        // job error
+        if (jobEl.value == "null") {
+            errorMessage.jobErrorMessage.value = '請選擇一項工作'
+        }
+
     }
 
 }
@@ -224,7 +257,7 @@ const deleteExpenditure = async (fileName, jobId) => {
 
                 <template #body>
                     <div class="overflow-y-auto max-h-96 pr-4">
-                        <div class="flex-row justify-between space-y-3">
+                        <div class="flex-col justify-between space-y-3">
 
                             <div class="text-base font-bold">支出金額</div>
                             <div class="flex items-center justify-start space-x-3">
@@ -233,14 +266,18 @@ const deleteExpenditure = async (fileName, jobId) => {
                                     class="px-1 py-1 w-full text-base border border-2 border-slate-400"
                                     placeholder="10000">
                             </div>
+                            <span class="text-red-500">{{errorMessage.expenseErrorMessage.value}}</span>
 
                             <div class="text-base font-bold">收據圖片證明</div>
                             <input ref="fileEl" type="file">
+                            <div class="text-red-500">{{errorMessage.fileErrorMessage.value}}</div>
+
                             <div class="text-base font-bold ">所屬工作</div>
                             <select id="job-el" class="px-1 py-1 w-full font-bold border border-2 border-slate-500">
-                                <option class="italic font-bold">--請選擇一個工作--</option>
+                                <option value="null" class="italic font-bold">--請選擇一個工作--</option>
                                 <option v-for="item in budget.user_jobs" :value="item.id">{{item.title}}</option>
                             </select>
+                            <span class="text-red-500">{{errorMessage.jobErrorMessage.value}}</span>
                         </div>
                     </div>
                 </template>
