@@ -21,11 +21,14 @@ const activityId = route.params.EventId
 
 
 // modal
-const showModal = ref(false)
-const toggleModal = () => {
-    showModal.value = !showModal.value
+const modalController = {
+    uploadFileModal: ref(false),
+    updateBudgetModal: ref(false),
 }
-const modalContent = ref('測試內容')
+const toggleModal = (modalName) => {
+    modalController[modalName].value = !modalController[modalName].value
+}
+
 
 let budget = ref([]);
 async function getData() {
@@ -103,8 +106,7 @@ getData()
 
 
 // 更新預算
-let isUpdateActivityBudget = ref(false)
-let isWarningUpdateActivityBudget = ref(false)
+let isSuccessUpdateBudget = ref(false);
 const updateActivityBudget = async () => {
     // post
     let budgetEl = document.querySelector('#budget-el');
@@ -117,21 +119,21 @@ const updateActivityBudget = async () => {
             config)
             .then(response => {
                 console.log(response)
-
-
             });
         // success message
-        isUpdateActivityBudget.value = true;
-        isWarningUpdateActivityBudget.value = false;
+        isSuccessUpdateBudget.value = true;
+
     } catch (error) {
         // failed message
-        isUpdateActivityBudget.value = false;
-        isWarningUpdateActivityBudget.value = true;
+        isSuccessUpdateBudget.value = false;
+
     } finally {
         budgetEl.value = ""
+        toggleModal('updateBudgetModal')
     }
     getData();
 }
+
 
 // 上傳檔案
 let fileEl = ref(null);
@@ -166,7 +168,7 @@ const uploadExpenditure = async () => {
                 console.log(response.data);
             })
 
-        toggleModal()
+        toggleModal('uploadFileModal')
     } catch (error) {
         let expense = expenseEl.value
 
@@ -241,17 +243,48 @@ const deleteExpenditure = async (fileName, jobId) => {
             <input id="budget-el" type="number" class="w-1/3 mr-4 p-2" />
             <button @click="updateActivityBudget()"
                 class="bg-sky-700 text-white px-4 py-2 rounded shadow-md">預算更新</button>
-            <span v-if="isUpdateActivityBudget" class="text-red-500">預算更新成功</span>
-            <span v-if="isWarningUpdateActivityBudget" class="text-red-500">預算更新失敗<p>失敗原因:不可為負數</p></span>
+
+
         </div>
 
         <!-- budget box end -->
+        <Teleport to="body">
+            <!-- use the modal component, pass in the prop -->
+            <modal :show="modalController.updateBudgetModal.value">
+                <template #header>
+                    <div class="border-b-4 w-full px-4 py-4">
+                        <div class="font-bold text-2xl">提醒</div>
+                    </div>
 
+                </template>
+
+                <template #body>
+                    <div class="overflow-y-auto max-h-96 pr-4">
+                        <div v-if="isSuccessUpdateBudget">
+                            預算更新為: <span class="text-red-500">$ {{budget.activity_budget}}</span>
+                        </div>
+                        <div v-if="!isSuccessUpdateBudget">
+                            失敗原因: <span class="text-red-500">不可為負數或空值</span>
+                        </div>
+                    </div>
+                </template>
+
+                <template #footer>
+                    <div class="border-t-2 pt-2">
+
+                        <button @click="toggleModal('updateBudgetModal')"
+                            class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                            確定
+                        </button>
+                    </div>
+                </template>
+            </modal>
+        </Teleport>
 
         <!-- test block start -->
         <Teleport to="body">
             <!-- use the modal component, pass in the prop -->
-            <modal :show="showModal">
+            <modal :show="modalController.uploadFileModal.value">
                 <template #header>
                     <div class="border-b-4 w-full px-4 py-4">
                         <div class="font-bold text-2xl">上傳收據</div>
@@ -292,7 +325,7 @@ const deleteExpenditure = async (fileName, jobId) => {
                             class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
                             新增
                         </button>
-                        <button @click="toggleModal()"
+                        <button @click="toggleModal('uploadFileModal')"
                             class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
                             取消
                         </button>
@@ -311,7 +344,8 @@ const deleteExpenditure = async (fileName, jobId) => {
             圖表放置處
         </canvas>
         <div class="w-1/2 pt-4 pb-4 bg-white h-96 rounded-lg shadow-md flex flex-col">
-            <button @click="toggleModal()" class="w-auto border-sky-700 border mx-8 mb-4 rounded text-sky-700">
+            <button @click="toggleModal('uploadFileModal')"
+                class="w-auto border-sky-700 border mx-8 mb-4 rounded text-sky-700">
                 上傳</button>
             <div class="overflow-y-auto">
                 <div v-for="item in budget.expenditures"
