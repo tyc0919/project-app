@@ -1,5 +1,33 @@
 <script setup>
 import SocialPost from './SocialPost.vue'
+import { ref } from 'vue'
+import { getCookie } from '../assets/modules'
+import axios from 'axios'
+
+let socialData = ref([])
+let reviewData = ref([])
+
+let csrftoken = getCookie()
+let config = {
+    headers: {
+        'X-CSRFToken': csrftoken,
+    },
+    mode: 'same-origin',
+}
+
+axios
+    .get('http://app.ace.project/api/social/')
+    .then(function (response) {
+        socialData.value = response.data
+    })
+    .then(function (res) {
+        for (let a of socialData.value) {
+            axios.get('http://app.ace.project/api/social/' + a.id + '/review/', config).then(function (response) {
+                reviewData.value.push(response.data)
+            })
+        }
+        console.log(reviewData.value)
+    })
 </script>
 
 <template>
@@ -23,9 +51,14 @@ import SocialPost from './SocialPost.vue'
             <!--按鈕列-->
 
             <!--主要內容-->
-            <SocialPost></SocialPost>
-            <SocialPost></SocialPost>
-            <SocialPost></SocialPost>
+            <router-link v-for="item in socialData" :to="{ name: 'post', params: { PostId: item.id } }">
+                <SocialPost
+                    :title="item.activity_name"
+                    :owner="item.owner"
+                    :content="item.content"
+                    :rating="'100%'"
+                ></SocialPost>
+            </router-link>
             <!--主要內容-->
         </div>
         <!--貼文、按鈕-->
@@ -48,33 +81,9 @@ import SocialPost from './SocialPost.vue'
     <!--Component here-->
 </template>
 
-<style>
-.img-social {
-    max-height: 15.625rem;
-    width: 90%;
-    margin: 0 auto;
-}
-
+<style scoped>
 .shadow-primary {
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-}
-
-.star_ratings {
-    position: relative;
-    vertical-align: center;
-    display: inline-block;
-    color: #ddd; /*背景星星顏色*/
-    font-size: 20px; /*調整字體大小可放大縮小星星*/
-    text-shadow: 0px 1px 0 #999;
-}
-.full_star {
-    width: 90%; /*調整寬度可變更星等*/
-    position: absolute;
-    left: 0;
-    top: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    color: #ffce31; /*前景星星顏色*/
 }
 
 .post_content {

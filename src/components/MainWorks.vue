@@ -25,9 +25,11 @@ async function getActivityName() {
                 activityData.value = response.data
 
                 for (let a of activityData.value) {
-                    await axios.get('/api/activity/' + a.id + '/job/', config).then(function (response) {
-                        workData.value.push(response.data)
-                    })
+                    await axios
+                        .get('http://app.ace.project/api/activity/' + a.id + '/job/', config)
+                        .then(function (response) {
+                            workData.value.push(response.data)
+                        })
                 }
             })
             .finally(function (response) {
