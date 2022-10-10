@@ -52,15 +52,11 @@ take_userfile()
 
 /* 取得使用者資料 */
 
-/* 更改使用者資料 */
 let file = ref(null)
 let formData = new FormData()
 
+/* 更改使用者頭像 */
 function fileUpload() {
-    formData.append('file', file.value.files[0])
-}
-
-async function post_userfile() {
     let configf = {
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -68,6 +64,18 @@ async function post_userfile() {
         },
         mode: 'same-origin'
     }
+    formData.append('file', file.value.files[0])
+    axios.post('/api/upload/avatar/',
+        formData,
+        configf
+    ).then(response => {
+        console.log(response)
+    })
+}
+/* 更改使用者頭像 */
+
+/* 更改使用者資料 */
+async function post_userfile() {
     let name = document.getElementById("1").value
     let tele = document.getElementById("2").value
     await axios.post("/api/userprofile/edit/", {
@@ -78,16 +86,7 @@ async function post_userfile() {
     }).catch(error => {
         console.log(error);
     })
-
-    axios.post('/api/upload/avatar/',
-        formData,
-        configf
-    ).then(response => {
-        console.log(response)
-    })
-
     take_userfile()
-
 }
 /* 更改使用者資料 */
 
@@ -124,7 +123,10 @@ const post_passwd = () => {
             <div class="grid_wrapper">
                 <div class="pic">
                     <picture>
-                        <img src="../assets/images/FirstPart.png" alt="">
+                        <label for="image">
+                            <input @change="fileUpload()" ref="file" type="file" id="image" class="file_img" />
+                            <img src="../assets/images/FirstPart.png" alt="">
+                        </label>
                     </picture>
                 </div>
                 <div class="name">暱稱: {{ data.user_name }}</div>
@@ -148,11 +150,6 @@ const post_passwd = () => {
                 <div class="normal">
                     <span class="fix">手機</span>
                     <input id="2" type="text">
-                </div>
-
-                <div class="normal">
-                    <input @change="fileUpload()" ref="file" type="file"
-                        class="w-auto border-sky-700 border mx-8 mb-4 rounded text-sky-700" />
                 </div>
 
                 <!-- <button class="sub_btn" @click="toggleModal1()">確定</button> -->
@@ -300,6 +297,10 @@ hr {
     grid-column: 1/2;
     grid-row: 1/4;
     margin: 0 auto;
+}
+
+.grid_wrapper .file_img {
+    display: none;
 }
 
 .grid_wrapper img {
