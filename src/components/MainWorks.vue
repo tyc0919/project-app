@@ -67,7 +67,7 @@ getActivityName()
             </div>
         </div>
 
-        <div class="my-10 grid grid-cols-3 grid-gap-1rem items-center justify-center">
+        <div class="my-4 grid grid-cols-3 grid-gap-1rem items-center justify-center">
             <router-link
                 v-for="(item, index) of work"
                 :to="{ name: 'event-work-detail', params: { EventId: item.activity, WorkId: item.id } }"

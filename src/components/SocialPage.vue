@@ -14,14 +14,9 @@ let workData = ref([])
 let reviewData = ref([])
 let userData = ref([])
 let reviewPercentage = ref([])
+let user = ref()
+let activity = ref()
 
-let csrftoken = getCookie()
-let config = {
-    headers: {
-        'X-CSRFToken': csrftoken,
-    },
-    mode: 'same-origin',
-}
 let isDisabled = ref(true)
 
 const route = useRoute()
@@ -33,6 +28,7 @@ const toggleModal = () => {
 
 axios.get('http://app.ace.project/api/social/' + route.params.PostId).then(function (response) {
     socialData.value = response.data
+    activity.value = socialData.value.activity_name
     document.getElementById('description').innerHTML = socialData.value.activity_description
 })
 axios.get('/api/activity/' + route.params.PostId + '/job/').then(function (response) {
@@ -40,6 +36,7 @@ axios.get('/api/activity/' + route.params.PostId + '/job/').then(function (respo
 })
 axios.get('http://app.ace.project/api/userprofile/').then(function (response) {
     userData.value = response.data
+    user.value = userData.value.user_email
 })
 
 axios.get('/api/social/' + route.params.PostId + '/review/').then(function (response) {
@@ -51,13 +48,21 @@ function ratingPercentage(star) {
     for (let i of star) {
         let rate = (i.review_star * 20).toString() + '%'
         reviewPercentage.value.push(rate)
-        console.log(reviewPercentage.value)
     }
 }
 
 function addReview() {
     let comment = document.getElementById('comment').value
     let star = document.querySelector('input[name="rating"]:checked').value
+
+    let csrftoken = getCookie()
+    let config = {
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+        mode: 'same-origin',
+    }
+
     axios
         .post(
             'http://app.ace.project/api/social/post-review/',
@@ -89,15 +94,15 @@ function enableBtn() {
         <modal :show="showModal" @close="toggleModal()">
             <template #header>
                 <div class="border-b-4 w-full px-4 py-4">
-                    <div class="font-bold text-2xl">活動名稱</div>
+                    <div class="font-bold text-2xl">{{ activity }}</div>
                 </div>
             </template>
 
             <template #body>
                 <div class="overflow-y-auto max-h-96 pr-4">
-                    <div class="reviewer flex justify-start items-center mb-2">
+                    <div class="reviewer flex justify-start items-center mb-8">
                         <div class="reviewer-img mr-2"></div>
-                        <div class="reviewer-name text-xl cursor-text">評論者名稱</div>
+                        <div class="reviewer-name text-xl cursor-text">{{ user }}</div>
                     </div>
 
                     <!-- 星號 -->
@@ -152,7 +157,7 @@ function enableBtn() {
         </modal>
     </Teleport>
 
-    <div class="container px-4 py-4 w-full">
+    <div class="mx-12 px-4 py-4">
         <div class="top-container flex justify-between">
             <!--? banner -->
             <div class="flex justify-center w-3/4">

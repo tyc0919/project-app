@@ -30,6 +30,7 @@ let star = props.rating
                     <div class="empty_star">★★★★★</div>
                     <div :style="{ width: star }" class="full_star absolute text-yellow-400">★★★★★</div>
                 </div>
+                <!-- ! stars -->
                 <div class="review-time text-xl font text-gray-400 cursor-text">
                     {{ date.substring(0, 10) + '　' + date.substring(11, 19) }}
                 </div>
@@ -57,6 +58,7 @@ let star = props.rating
 }
 
 .full_star {
+    width: 10%;
     /*調整寬度可變更星等*/
     left: 0;
     top: 0;

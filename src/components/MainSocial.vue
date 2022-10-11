@@ -1,32 +1,34 @@
 <script setup>
 import SocialPost from './SocialPost.vue'
 import { ref } from 'vue'
-import { getCookie } from '../assets/modules'
 import axios from 'axios'
 
 let socialData = ref([])
 let reviewData = ref([])
-
-let csrftoken = getCookie()
-let config = {
-    headers: {
-        'X-CSRFToken': csrftoken,
-    },
-    mode: 'same-origin',
-}
-
+let reviewRating = ref([])
+let ratingPercent = ref([])
 axios
     .get('http://app.ace.project/api/social/')
     .then(function (response) {
         socialData.value = response.data
     })
-    .then(function (res) {
-        for (let a of socialData.value) {
-            axios.get('http://app.ace.project/api/social/' + a.id + '/review/', config).then(function (response) {
+    .then(async function (res) {
+        for (let s of socialData.value) {
+            await axios.get('http://app.ace.project/api/social/' + s.id + '/review/').then(function (response) {
                 reviewData.value.push(response.data)
             })
         }
-        console.log(reviewData.value)
+    })
+    .then(function (res) {
+        for (let rd of reviewData.value) {
+            reviewRating.value.length = 0
+            for (let i = 0; i < rd.length; i++) {
+                reviewRating.value.push(rd[i].review_star)
+            }
+            let tempSum = reviewRating.value.reduce((previousValue, currentValue) => previousValue + currentValue)
+            let tempPercent = ((tempSum / reviewRating.value.length) * 20).toString() + '%'
+            ratingPercent.value.push(tempPercent)
+        }
     })
 </script>
 
@@ -51,12 +53,12 @@ axios
             <!--按鈕列-->
 
             <!--主要內容-->
-            <router-link v-for="item in socialData" :to="{ name: 'post', params: { PostId: item.id } }">
+            <router-link v-for="(item, index) of socialData" :to="{ name: 'post', params: { PostId: item.id } }">
                 <SocialPost
                     :title="item.activity_name"
                     :owner="item.owner"
+                    :rating="ratingPercent[index]"
                     :content="item.content"
-                    :rating="'100%'"
                 ></SocialPost>
             </router-link>
             <!--主要內容-->

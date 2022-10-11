@@ -30,7 +30,7 @@ let star = props.rating
                         <div class="inline-flex text-sm italic mr-4 text-blue">{{ owner }}</div>
                         <div class="star_ratings">
                             <div>★★★★★</div>
-                            <div :class="star" class="full_star">★★★★★</div>
+                            <div :style="{ width: star }" class="full_star">★★★★★</div>
                         </div>
                     </div>
                     <!--By作者、星級-->
@@ -43,7 +43,6 @@ let star = props.rating
                 </div>
                 <!--貼文-->
             </div>
-            <div class="flex justify-end text-[#8a8080] more_content">更多內容...</div>
         </div>
     </div>
 </template>
@@ -56,17 +55,16 @@ let star = props.rating
 }
 .star_ratings {
     position: relative;
-    vertical-align: center;
     display: inline-block;
     color: #ddd; /*背景星星顏色*/
     font-size: 20px; /*調整字體大小可放大縮小星星*/
     text-shadow: 0px 1px 0 #999;
 }
 .full_star {
+    width: 10%;
     position: absolute;
     left: 0;
     top: 0;
-    white-space: nowrap;
     overflow: hidden;
     color: #ffce31; /*前景星星顏色*/
 }

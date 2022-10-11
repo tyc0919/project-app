@@ -20,10 +20,10 @@ const toggleModal = () => {
     showModal.value = !showModal.value
 }
 
-axios.get('http://app.ace.project/api/activity/', config).then(function (response) {
+axios.get('http://app.ace.project/api/activity/').then(function (response) {
     activityData.value = response.data
 })
-axios.get('http://app.ace.project/api/userprofile/', config).then(function (response) {
+axios.get('http://app.ace.project/api/userprofile/').then(function (response) {
     let temp = response.data
     activityOwner = temp.user_email
 })
@@ -44,7 +44,7 @@ function addActivity() {
             config
         )
         .then(function (res) {
-            axios.get('http://app.ace.project/api/activity/', config).then(function (response) {
+            axios.get('http://app.ace.project/api/activity/').then(function (response) {
                 activityData.value = response.data
             })
         })
@@ -125,18 +125,9 @@ function addActivity() {
                     <label class="radioLable text-base" for="radio3">全部</label>
                 </div>
             </div>
-
-            <div id="optionsRight" class="flex justify-end align-center">
-                <button
-                    @click="toggleModal()"
-                    class="btnCreateEvent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                >
-                    新增活動
-                </button>
-            </div>
         </div>
 
-        <div class="grid grid-cols-3 grid-gap-1rem items-center justify-center">
+        <div class="my-4 grid grid-cols-3 grid-gap-1rem items-center justify-center">
             <!-- cards -->
             <router-link v-for="item in activityData" :to="{ path: '/events/' + item.id }">
                 <MainDeFaultCard
