@@ -167,7 +167,7 @@ const uploadExpenditure = async () => {
             .then(function (response) {
                 console.log(response.data);
             })
-
+        getData();
         toggleModal('uploadFileModal')
     } catch (error) {
         let expense = expenseEl.value
@@ -343,11 +343,11 @@ const deleteExpenditure = async (fileName, jobId) => {
         <canvas id="BudgetCanva" class="w-1/2">
             圖表放置處
         </canvas>
-        <div class="w-1/2 pt-4 pb-4 bg-white h-96 rounded-lg shadow-md flex flex-col">
+        <div class="w-full pt-4 pb-4 bg-white h-96 rounded-lg shadow-md flex flex-col ">
             <button @click="toggleModal('uploadFileModal')"
                 class="w-auto border-sky-700 border mx-8 mb-4 rounded text-sky-700">
                 上傳</button>
-            <div class="overflow-y-auto">
+            <div class="overflow-y-auto flex flex-col flex-col-reverse">
                 <div v-for="item in budget.expenditures"
                     class="flex justify-between w-auto mt-4 mx-8 border-2 rounded-md py-2 pl-4 pr-2 border-gray-300 file-shadow">
 
@@ -381,37 +381,6 @@ const deleteExpenditure = async (fileName, jobId) => {
             </div>
 
         </div>
-    </div>
-
-
-
-
-
-
-
-
-    <!-- ? historyRecord -->
-    <h1>歷史記載</h1>
-    <div class="wrapper">
-        <div class="normal-row">
-            <div class="expense normal-square text-xl">支出金額</div>
-            <div class="represent normal-square text-xl">報銷人員</div>
-            <div class="work-name normal-square text-xl">工作名稱</div>
-            <div class="upload-time normal-square text-xl">上傳日期</div>
-        </div>
-        <hr>
-
-        <div class="normal-row" v-for="item in budget.expenditures">
-            <div class="expense normal-square text-xl flex">
-                <div class="flex-1 text-left pl-10">$</div>
-                <div class="flex-2 pr-10 truncate">{{item.expense}}</div>
-            </div>
-            <div class="represent normal-square text-xl">{{item.user_name}}</div>
-            <div class="work-name normal-square text-xl">{{item.job_title}}</div>
-            <div class="upload-time normal-square text-xl">{{item.expenditure_uploaded_time}}</div>
-        </div>
-
-
     </div>
 
 
