@@ -320,12 +320,15 @@ const toggleModal_fail = () => {
 
                         <div id="radios">
                             <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1"
-                                checked />
+                                 />
                             <label class="radioLable text-base" for="radio1" @click="job_F_take()">完成</label>
+
                             <input id="radio2" class="radioInput hidden " type="radio" name="radio" value="radio2" />
                             <label class="radioLable text-base" for="radio2" @click="job_NF_take()">未完成</label>
-                            <input id="radio3" class="radioInput hidden " type="radio" name="radio" value="radio3" />
+
+                            <input id="radio3" class="radioInput hidden " type="radio" name="radio" value="radio3" checked/>
                             <label class="radioLable text-base" for="radio3" @click="job_take()">全部</label>
+                            
                         </div>
 
                         <form id="search" class="flex items-center shadow:focus mr-10">

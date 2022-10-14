@@ -154,6 +154,41 @@ function take_job_detail() {
         })
 }
 take_job_detail()
+
+function take_job_detailF() {
+    axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/job_detail/")
+        .then(response => {
+            job_detail.value = response.data
+        }
+        )
+        .then(() => {
+            job_detail_N.value = []
+            job_detail_Y.value = []
+            job_detail.value.forEach((item) => {
+                if (item.status == 1) {
+                    job_detail_Y.value.push(item)
+                }
+            }
+            )
+        })
+}
+function take_job_detailNF() {
+    axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/job_detail/")
+        .then(response => {
+            job_detail.value = response.data
+        }
+        )
+        .then(() => {
+            job_detail_N.value = []
+            job_detail_Y.value = []
+            job_detail.value.forEach((item) => {
+                if (item.status == 0) {
+                    job_detail_N.value.push(item)
+                }
+            }
+            )
+        })
+}
 /* 獲得工作細項 */
 
 /* 新增工作細項 */
@@ -165,11 +200,14 @@ function newJobDetail() {
     }
     axios.post("/api/job-detail/create/", data, config)
         .then(function (response) {
-            console.log(response);
+            messageS.value = "新增工作細項成功"
+            toggleModal_success()
             take_job_detail()
         })
         .catch(function (error) {
-            console.log(error);
+            messageF.value = "新增工作細項失敗"
+            toggleModal_success()
+            take_job_detail()
         })
 }
 /* 新增工作細項 */
@@ -184,12 +222,12 @@ function newJobDetail() {
                 <!--全部、未完成、完成狀態-->
                 <div>
                     <div id="radios">
-                        <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" checked />
-                        <label class="radioLable text-base" for="radio1">完成</label>
+                        <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1"/>
+                        <label class="radioLable text-base" for="radio1" @click="take_job_detailF()">完成</label>
                         <input id="radio2" class="radioInput hidden " type="radio" name="radio" value="radio2" />
-                        <label class="radioLable text-base" for="radio2">未完成</label>
-                        <input id="radio3" class="radioInput hidden " type="radio" name="radio" value="radio3" />
-                        <label class="radioLable text-base" for="radio3">全部</label>
+                        <label class="radioLable text-base" for="radio2" @click="take_job_detailNF()">未完成</label>
+                        <input id="radio3" class="radioInput hidden " type="radio" name="radio" value="radio3" checked/>
+                        <label class="radioLable text-base" for="radio3" @click="take_job_detail()">全部</label>
                     </div>
                 </div>
                 <!--全部、未完成、完成狀態-->
@@ -217,17 +255,17 @@ function newJobDetail() {
             <div class="w-[50%] py-[px] inline-flex flex-wrap justify-end">
                 <div class="ml-">
                     <button
-                        class="py-2 px-4 rounded text-base font-bold border border-[#3491d9] bg-white text-[#3491d9] shadow-btn"
+                        class="py-2 px-4 rounded text-base font-bold border border-[#3491d9] bg-white text-[#3491d9] shadow-btn btn_click1"
                         @click="toggleModal1()">
                         編輯工作
                     </button>
                     <button
-                        class="mx-2 py-2 px-4 rounded text-base font-bold bg-white border border-[#ff0000] text-[#ff0000] shadow-btn"
+                        class="mx-2 py-2 px-4 rounded text-base font-bold bg-white border border-[#ff0000] text-[#ff0000] shadow-btn btn_click2"
                         @click="toggleModal_delete()">
                         刪除工作
                     </button>
                     <button
-                        class="py-2 px-4 rounded text-base font-bold bg-white border border-[#ff0000] text-[#ff0000] shadow-btn">
+                        class="py-2 px-4 rounded text-base font-bold bg-white border border-[#ff0000] text-[#ff0000] shadow-btn btn_click2">
                         關閉分頁
                     </button>
                 </div>
@@ -260,11 +298,9 @@ function newJobDetail() {
 
                     <!--工作標題、工作簡介說明-->
                     <div class="w-full py-[10px] mb-2 text-center text-base font-bold  border round_border">
-                        工作名稱
                         {{job.title}}
                     </div>
                     <div class="w-full p-[10px] pb-[150px] mb-2 text-base text-[#696969] border round_border">
-                        工作內容
                         {{job.content}}
                     </div>
                     <!--工作標題、工作簡介說明-->
@@ -272,7 +308,7 @@ function newJobDetail() {
                     <!--新增細項、完成、取消完成-->
                     <div>
                         <button
-                            class="w-full items-center bg-white rounded-lg border-w-3 border-[#3491d9] py-[10px] text-[#3491d9] shadow-btn mb-[20px]"
+                            class="w-full items-center bg-white rounded-lg border-w-3 border-[#3491d9] py-[10px] text-[#3491d9] shadow-btn mb-[20px] btn_click1"
                             @click="toggleModal_new_job_detail()">
                             新增細項 +
                         </button>
@@ -542,4 +578,13 @@ function newJobDetail() {
 .radioInput:checked+.radioLable {
     background: #52708f;
 }
+
+.btn_click1:hover{
+    background-color: #b9cfe4;
+}
+
+.btn_click2:hover{
+    background-color: #ffcccc;
+}
+
 </style>

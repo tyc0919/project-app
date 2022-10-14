@@ -30,6 +30,17 @@ const toggleModal2 = () => {
     showModal2.value = !showModal2.value
 }
 
+const showModal_success = ref(false)
+const showModal_fail = ref(false)
+const toggleModal_success = () => {
+    showModal_success.value = !showModal_success.value
+}
+const toggleModal_fail = () => {
+    showModal_fail.value = !showModal_fail.value
+}
+let messageS = ref("")
+let messageF = ref("")
+
 let csrftoken = getCookie('csrftoken')
 let config = {
     headers: {
@@ -56,7 +67,7 @@ let file = ref(null)
 let formData = new FormData()
 
 /* 更改使用者頭像 */
-function fileUpload() {
+async function fileUpload() {
     let configf = {
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -65,12 +76,17 @@ function fileUpload() {
         mode: 'same-origin'
     }
     formData.append('file', file.value.files[0])
-    axios.post('/api/upload/avatar/',
+    await axios.post('/api/upload/avatar/',
         formData,
         configf
     ).then(response => {
-        console.log(response)
+        messageS.value = "修改頭像成功"
+        toggleModal_success()
+    }).catch(error => {
+        messageF.value = "修改頭像失敗"
+        toggleModal_fail()
     })
+    take_userfile()
 }
 /* 更改使用者頭像 */
 
@@ -82,9 +98,11 @@ async function post_userfile() {
         "user_name": name,
         "telephone": tele
     }, config).then(response => {
-        console.log(response);
+        messageS.value = "修改個人資料成功"
+        toggleModal_success()
     }).catch(error => {
-        console.log(error);
+        messageF.value = "修改個人資料失敗"
+        toggleModal_fail()
     })
     take_userfile()
 }
@@ -98,10 +116,13 @@ const post_passwd = () => {
         "password": passwd1,
         "new_password": passwd2
     }, config).then(response => {
-        console.log(response);
+        messageS.value = "修改密碼成功"
+        toggleModal_success()
     }).catch(error => {
-        console.log(error);
+        messageF.value = "修改密碼失敗"
+        toggleModal_fail()
     })
+    take_userfile()
 }
 /* 更改使用者密碼 */
 
@@ -125,7 +146,7 @@ const post_passwd = () => {
                     <picture>
                         <label for="image">
                             <input @change="fileUpload()" ref="file" type="file" id="image" class="file_img" />
-                            <img src="../assets/images/FirstPart.png" alt="">
+                            <img src="../assets/images/FirstPart.png" alt="" class="cursor-pointer">
                         </label>
                     </picture>
                 </div>
@@ -152,8 +173,7 @@ const post_passwd = () => {
                     <input id="2" type="text">
                 </div>
 
-                <!-- <button class="sub_btn" @click="toggleModal1()">確定</button> -->
-                <button class="sub_btn" @click="post_userfile">確定</button>
+                <button class="sub_btn" @click="post_userfile()">確定</button>
 
             </div>
 
@@ -183,8 +203,53 @@ const post_passwd = () => {
         </div>
     </div>
 
-    <router-link to="/events/1" class="text-sky-500">點擊前往Event.vue</router-link>
+    <!-- 彈出視窗 -->
+    <!-- 正確訊息視窗 -->
+    <Teleport to="body">
+        <modal :show="showModal_success">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">成功視窗</div>
+                </div>
+            </template>
+            <template #body>
+                {{ messageS }}
+            </template>
+            <template #footer>
+                <button @click="toggleModal_success()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    確定
+                </button>
 
+            </template>
+        </modal>
+    </Teleport>
+    <!-- 正確訊息視窗 -->
+
+    <!-- 錯誤訊息視窗 -->
+    <Teleport to="body">
+        <modal :show="showModal_fail">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">警告視窗</div>
+                </div>
+            </template>
+            <template #body>
+                {{ messageF }}
+            </template>
+            <template #footer>
+                <button @click="toggleModal_fail()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    確定
+                </button>
+            </template>
+        </modal>
+    </Teleport>
+    <!-- 錯誤訊息視窗 -->
+    <!-- 彈出視窗 -->
+
+    <!-- 沒用到 -->
+    <!-- 修改個人資料 -->
     <Teleport to="body">
         <!-- use the modal component, pass in the prop -->
         <modal :show="showModal1" @close="toggleModal1()">
@@ -220,7 +285,9 @@ const post_passwd = () => {
             </template>
         </modal>
     </Teleport>
+    <!-- 修改個人資料 -->
 
+    <!-- 修改密碼 -->
     <Teleport to="body">
         <!-- use the modal component, pass in the prop -->
         <modal :show="showModal2" @close="toggleModal2()">
@@ -256,6 +323,8 @@ const post_passwd = () => {
             </template>
         </modal>
     </Teleport>
+    <!-- 修改密碼 -->
+    <!-- 沒用到 -->
 
 </template>
 

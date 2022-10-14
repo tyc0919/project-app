@@ -140,12 +140,12 @@ async function statusJobDetail() {
                 </div>
                 <div class="w-2/4 inline-flex justify-end align-middle my-1">
                     <button
-                        class="rounded-lg border border-[#3491d9] font-bold text-base text-[#3491d9] py-0 px-3 shadow-btn"
+                        class="rounded-lg border border-[#3491d9] font-bold text-base text-[#3491d9] py-0 px-3 shadow-btn btn_click1"
                         @click="toggleModal_update_job_detail()">
                         編輯
                     </button>
                     <button
-                        class="mx-4 rounded-lg border border-[#ff0000] font-bold text-base text-[#ff0000] py-0 px-3 shadow-btn"
+                        class="mx-4 rounded-lg border border-[#ff0000] font-bold text-base text-[#ff0000] py-0 px-3 shadow-btn btn_click2"
                         @click="toggleModal_delete_job_detail()">
                         刪除
                     </button>
@@ -171,12 +171,12 @@ async function statusJobDetail() {
                 </div>
                 <div class="w-2/4 inline-flex justify-end align-middle my-1">
                     <button
-                        class="rounded-lg border border-[#3491d9] font-bold text-base text-[#3491d9] py-0 px-3 shadow-btn"
+                        class="rounded-lg border border-[#3491d9] font-bold text-base text-[#3491d9] py-0 px-3 shadow-btn btn_click1"
                         @click="toggleModal_update_job_detail()">
                         編輯
                     </button>
                     <button
-                        class="mx-4 rounded-lg border border-[#ff0000] font-bold text-base text-[#ff0000] py-0 px-3 shadow-btn"
+                        class="mx-4 rounded-lg border border-[#ff0000] font-bold text-base text-[#ff0000] py-0 px-3 shadow-btn btn_click2"
                         @click="toggleModal_delete_job_detail()">
                         刪除
                     </button>
@@ -336,4 +336,13 @@ async function statusJobDetail() {
 .round_border {
     border-radius: 1rem;
 }
+
+.btn_click1:hover{
+    background-color: #b9cfe4;
+}
+
+.btn_click2:hover{
+    background-color: #ffcccc;
+}
+
 </style>
