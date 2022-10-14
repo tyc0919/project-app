@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="mb-2 text-center flex flex-col justify-start items-center">
                     <img class="h-64 w-96" src="src\assets\images\FirstPart.png" />
                 </div>
-                <div class="text-xl font-bold title ellipsis-2">{{ name }}</div>
+                <div class="text-2xl font-bold title ellipsis-2">{{ name }}</div>
                 <div class="inline-flex justify-start w-full text-sm italic person">
                     <span class="">By</span>
                     <span class="ml-2 person-name text-blue font-bold ellipsis">{{ owner }} </span>

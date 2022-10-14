@@ -20,10 +20,10 @@ const toggleModal = () => {
     showModal.value = !showModal.value
 }
 
-axios.get('http://app.ace.project/api/activity/').then(function (response) {
+axios.get('/api/activity/').then(function (response) {
     activityData.value = response.data
 })
-axios.get('http://app.ace.project/api/userprofile/').then(function (response) {
+axios.get('/api/userprofile/').then(function (response) {
     let temp = response.data
     activityOwner = temp.user_email
 })
@@ -34,7 +34,7 @@ function addActivity() {
     let description = document.getElementById('activityContent').value
     axios
         .post(
-            'http://app.ace.project/api/activity/create/',
+            '/api/activity/create/',
             {
                 owner: activityOwner,
                 activity_name: title,
@@ -44,7 +44,7 @@ function addActivity() {
             config
         )
         .then(function (res) {
-            axios.get('http://app.ace.project/api/activity/').then(function (response) {
+            axios.get('/api/activity/').then(function (response) {
                 activityData.value = response.data
             })
         })

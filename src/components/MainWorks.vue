@@ -20,16 +20,14 @@ let config = {
 async function getActivityName() {
     try {
         axios
-            .get('http://app.ace.project/api/activity/', config)
+            .get('/api/activity/', config)
             .then(async function (response) {
                 activityData.value = response.data
 
                 for (let a of activityData.value) {
-                    await axios
-                        .get('http://app.ace.project/api/activity/' + a.id + '/job/', config)
-                        .then(function (response) {
-                            workData.value.push(response.data)
-                        })
+                    await axios.get('/api/activity/' + a.id + '/job/', config).then(function (response) {
+                        workData.value.push(response.data)
+                    })
                 }
             })
             .finally(function (response) {

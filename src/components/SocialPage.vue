@@ -26,7 +26,7 @@ const toggleModal = () => {
     isDisabled.value = true
 }
 
-axios.get('http://app.ace.project/api/social/' + route.params.PostId).then(function (response) {
+axios.get('/api/social/' + route.params.PostId).then(function (response) {
     socialData.value = response.data
     activity.value = socialData.value.activity_name
     document.getElementById('description').innerHTML = socialData.value.activity_description
@@ -34,7 +34,7 @@ axios.get('http://app.ace.project/api/social/' + route.params.PostId).then(funct
 axios.get('/api/activity/' + route.params.PostId + '/job/').then(function (response) {
     workData.value = response.data
 })
-axios.get('http://app.ace.project/api/userprofile/').then(function (response) {
+axios.get('/api/userprofile/').then(function (response) {
     userData.value = response.data
     user.value = userData.value.user_email
 })
@@ -42,6 +42,7 @@ axios.get('http://app.ace.project/api/userprofile/').then(function (response) {
 axios.get('/api/social/' + route.params.PostId + '/review/').then(function (response) {
     reviewData.value = response.data
     ratingPercentage(reviewData.value)
+    console.log(reviewPercentage.value)
 })
 
 function ratingPercentage(star) {
@@ -65,7 +66,7 @@ function addReview() {
 
     axios
         .post(
-            'http://app.ace.project/api/social/post-review/',
+            '/api/social/post-review/',
             {
                 activity_id: route.params.PostId,
                 user_email: userData.value.user_email,

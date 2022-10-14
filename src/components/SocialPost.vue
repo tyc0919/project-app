@@ -23,14 +23,14 @@ let star = props.rating
 
                 <!--貼文-->
                 <div class="align-top h-full w-[70%]">
-                    <div class="font-bold text-xl pb-4 underline">{{ title }}</div>
+                    <div class="font-bold text-2xl pb-4 underline">{{ title }}</div>
                     <!--By作者、星級-->
                     <div>
                         <div class="inline-flex text-sm pb-4 mr-4">By</div>
                         <div class="inline-flex text-sm italic mr-4 text-blue">{{ owner }}</div>
                         <div class="star_ratings">
-                            <div>★★★★★</div>
-                            <div :style="{ width: star }" class="full_star">★★★★★</div>
+                            <div class="empty_star">★★★★★</div>
+                            <div :style="{ width: star }" class="full_star absolute text-yellow-400">★★★★★</div>
                         </div>
                     </div>
                     <!--By作者、星級-->
@@ -61,12 +61,9 @@ let star = props.rating
     text-shadow: 0px 1px 0 #999;
 }
 .full_star {
-    width: 10%;
-    position: absolute;
     left: 0;
     top: 0;
     overflow: hidden;
-    color: #ffce31; /*前景星星顏色*/
 }
 .text-blue {
     color: rgb(60, 60, 240);

@@ -8,27 +8,30 @@ let reviewData = ref([])
 let reviewRating = ref([])
 let ratingPercent = ref([])
 axios
-    .get('http://app.ace.project/api/social/')
+    .get('/api/social/')
     .then(function (response) {
         socialData.value = response.data
     })
     .then(async function (res) {
         for (let s of socialData.value) {
-            await axios.get('http://app.ace.project/api/social/' + s.id + '/review/').then(function (response) {
+            await axios.get('/api/social/' + s.id + '/review/').then(function (response) {
                 reviewData.value.push(response.data)
             })
         }
-    })
-    .then(function (res) {
         for (let rd of reviewData.value) {
             reviewRating.value.length = 0
-            for (let i = 0; i < rd.length; i++) {
-                reviewRating.value.push(rd[i].review_star)
+            if (rd.length != 0) {
+                for (let i = 0; i < rd.length; i++) {
+                    reviewRating.value.push(rd[i].review_star)
+                }
+            } else {
+                reviewRating.value.push(0)
             }
             let tempSum = reviewRating.value.reduce((previousValue, currentValue) => previousValue + currentValue)
             let tempPercent = ((tempSum / reviewRating.value.length) * 20).toString() + '%'
             ratingPercent.value.push(tempPercent)
         }
+        console.log(ratingPercent.value)
     })
 </script>
 
