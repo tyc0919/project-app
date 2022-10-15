@@ -222,31 +222,53 @@ function enableBtn() {
         <!-- ? Review -->
         <div class="title w-fit px-4 py-2 rounded-full bg-white text-2xl text-cyan-800 font-bold my-4">評論</div>
         <div class="flex flex-col justify-between mt-4">
-            <div class="my-4 p-4 pt-8 bg-white">
-                <!-- 星號 -->
-                <div class="rating text-2xl mt-8 mb-4">
-                    <input @click="enableBtn()" type="radio" name="rating" value="5" id="5" /><label for="5">☆</label>
-                    <input @click="enableBtn()" type="radio" name="rating" value="4" id="4" /><label for="4">☆</label>
-                    <input @click="enableBtn()" type="radio" name="rating" value="3" id="3" /><label for="3">☆</label>
-                    <input @click="enableBtn()" type="radio" name="rating" value="2" id="2" /><label for="2">☆</label>
-                    <input @click="enableBtn()" type="radio" name="rating" value="1" id="1" /><label for="1">☆</label>
+            <div class="flex flex-col my-4 p-4 pt-8 bg-white">
+                <div class="overflow-y-auto max-h-96 px-20">
+                    <div class="reviewer flex justify-start items-center mb-8">
+                        <div class="reviewer-img mr-2"></div>
+                        <div class="reviewer-name text-xl cursor-text">{{ user }}</div>
+                    </div>
+
+                    <!-- 星號 -->
+                    <div class="flex items-end mb-2">
+                        <div class="rating text-2xl">
+                            <input @click="enableBtn()" type="radio" name="rating" value="5" id="5" /><label for="5"
+                                >☆</label
+                            >
+                            <input @click="enableBtn()" type="radio" name="rating" value="4" id="4" /><label for="4"
+                                >☆</label
+                            >
+                            <input @click="enableBtn()" type="radio" name="rating" value="3" id="3" /><label for="3"
+                                >☆</label
+                            >
+                            <input @click="enableBtn()" type="radio" name="rating" value="2" id="2" /><label for="2"
+                                >☆</label
+                            >
+                            <input @click="enableBtn()" type="radio" name="rating" value="1" id="1" /><label for="1"
+                                >☆</label
+                            >
+                        </div>
+                    </div>
+                    <!-- 星號 -->
+
+                    <div class="mt-8">
+                        <textarea
+                            id="comment"
+                            placeholder="寫下你的評論"
+                            class="p-2 w-full h-48 border border-2 border-black"
+                        ></textarea>
+                    </div>
                 </div>
-                <!-- 星號 -->
-                <div class="center">
-                    <textarea
-                        id="comment"
-                        placeholder="寫下你的評論"
-                        class="p-2 w-full h-48 border border-slate-400 focus-visible:outline-none"
-                    ></textarea>
+                <div class="flex justify-center">
+                    <button
+                        @click="toggleModal()"
+                        class="my-4 py-2 px-4 rounded hover:text-[#2b6cb0] border border-[#2b6cb0] hover:bg-transparent text-white bg-sky-700 font-semibold"
+                    >
+                        送出評論
+                    </button>
                 </div>
             </div>
 
-            <button
-                @click="toggleModal()"
-                class="flex items-center w-fit my-4 py-2 px-4 rounded hover:text-[#2b6cb0] border border-[#2b6cb0] hover:bg-transparent text-white bg-sky-700 font-semibold"
-            >
-                送出評論
-            </button>
             <div class="flex flex-col-reverse">
                 <SocialPageReviewCard
                     v-for="(item, index) of reviewData"
