@@ -31,7 +31,7 @@ axios
             let tempPercent = ((tempSum / reviewRating.value.length) * 20).toString() + '%'
             ratingPercent.value.push(tempPercent)
         }
-        console.log(ratingPercent.value)
+
     })
 </script>
 
@@ -57,12 +57,8 @@ axios
 
             <!--主要內容-->
             <router-link v-for="(item, index) of socialData" :to="{ name: 'post', params: { PostId: item.id } }">
-                <SocialPost
-                    :title="item.activity_name"
-                    :owner="item.owner"
-                    :rating="ratingPercent[index]"
-                    :content="item.content"
-                ></SocialPost>
+                <SocialPost :title="item.activity_name" :owner="item.owner" :rating="ratingPercent[index]"
+                    :content="item.content"></SocialPost>
             </router-link>
             <!--主要內容-->
         </div>
@@ -107,11 +103,13 @@ axios
     display: flex;
     justify-content: center;
 }
+
 .pagination ul {
     display: inline-flex;
     background-color: #fff;
     margin: 2rem 0;
 }
+
 .pagination ul li {
     text-align: center;
     padding: 10px 20px 10px 20px;
@@ -120,9 +118,11 @@ axios
     margin-left: -1px;
     cursor: pointer;
 }
+
 .pagination ul li.dot {
     cursor: default;
 }
+
 .pagination ul li.current {
     background-color: #dbd8d4;
 }
@@ -141,7 +141,7 @@ axios
     border-right: 1px solid #52708f;
 }
 
-.radioInput:checked + .radioLable {
+.radioInput:checked+.radioLable {
     background: #52708f;
 }
 </style>
