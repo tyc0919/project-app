@@ -22,6 +22,8 @@ let config = {
     mode: 'same-origin'
 }
 
+let messageS = ref("")
+let messageF = ref("")
 let user_e
 let formData = new FormData()
 
@@ -45,7 +47,7 @@ function take_activity() {
 }
 
 take_activity()
- /* 活動資訊 */
+/* 活動資訊 */
 
 /* 取得工作列表 */
 // function add_tab(serial_number, title){
@@ -69,7 +71,6 @@ take_activity()
 /* 完成活動 */
 function finish_activity() {
     var yesNo1 = document.querySelector('input[name="test1"]:checked').value;
-
     axios.post('/api/activity/finish/',
         {
             "activity_id": route.params.EventId,
@@ -77,18 +78,20 @@ function finish_activity() {
         }
         , config)
         .then(function (response) {
-            console.log(response);
+            messageS.value = response.data.success
+            toggleModal_success()
         })
         .catch(function (error) {
-            console.log(error);
+            messageF.value = error.data.error
+            toggleModal_fail()
         })
-
 }
 /* 完成活動 */
 
 /* 發布活動 */
 function publish_Activity() {
     var yesNo2 = document.querySelector('input[name="test2"]:checked').value;
+    console.log(yesNo2)
     axios.post('/api/activity/publish/',
         {
             "activity_id": route.params.EventId,
@@ -96,10 +99,12 @@ function publish_Activity() {
         }
         , config)
         .then(function (response) {
-            console.log(response);
+            messageS.value = response.data.success
+            toggleModal_success()
         })
         .catch(function (error) {
-            console.log(error);
+            messageF.value = error.data.error
+            toggleModal_fail()
         })
 }
 /* 發布活動 */
@@ -129,6 +134,12 @@ async function update_Activity() {
     const activity_n = document.getElementById("test1")
     const activity_t = document.getElementById("test2")
 
+    let testS1 = false
+    let testF1 = false
+
+    let testS2 = false
+    let testF2 = false
+
     await axios.post('/api/activity/update/', {
         "activity_id": route.params.EventId,
         "owner": user_e,
@@ -136,16 +147,34 @@ async function update_Activity() {
         "activity_description": activity_t.value
     }, config)
         .then(function (response) {
-            console.log(response);
+            testS1 = true
         })
         .catch(function (error) {
-            console.log(error);
+            testF1 = true
         })
 
-    axios.post("/api/upload/activity_pic/", formData, configf)
-        .then(response => {
-            console.log(response)
+    await axios.post("/api/upload/activity_pic/", formData, configf)
+        .then(function(response){
+            testS2 = true
         })
+        .catch(function (error) {
+            testF2 = true
+        })
+
+    if (testS1 & testS2){
+        messageS.value = "更新成功"
+        toggleModal_success()
+    }
+    else if(testS1 & testF2){
+        console.log("圖片無法更新")
+        messageF.value = "活動名稱及活動簡介已更新，但圖片無法更新"
+        toggleModal_fail()
+    }
+    else{
+        messageF.value = "更新失敗"
+        toggleModal_fail()
+    }
+
     take_activity()
 }
 /* 編輯活動 */
@@ -181,6 +210,8 @@ const showModal_publish = ref(false)
 const showModal_update = ref(false)
 const showModal_delete = ref(false)
 const showModal_finish = ref(false)
+const showModal_success = ref(false)
+const showModal_fail = ref(false)
 
 const toggleModal_publish = () => {
     showModal_publish.value = !showModal_publish.value
@@ -195,6 +226,12 @@ const toggleModal_delete = () => {
 }
 const toggleModal_finish = () => {
     showModal_finish.value = !showModal_finish.value
+}
+const toggleModal_success = () => {
+    showModal_success.value = !showModal_success.value
+}
+const toggleModal_fail = () => {
+    showModal_fail.value = !showModal_fail.value
 }
 /* 彈出視窗 */
 </script>
@@ -304,7 +341,7 @@ const toggleModal_finish = () => {
                 </div>
             </template>
             <template #footer>
-                <button @click="toggleModal_publish(), publish_Activity()()"
+                <button @click="toggleModal_publish(), publish_Activity()"
                     class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
                     確定
                 </button>
@@ -381,9 +418,54 @@ const toggleModal_finish = () => {
     </Teleport>
     <!-- 刪除視窗 -->
 
+    <!-- 正確訊息視窗 -->
+    <Teleport to="body">
+        <modal :show="showModal_success">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">成功視窗</div>
+                </div>
+            </template>
+            <template #body>
+                {{ messageS }}
+            </template>
+            <template #footer>
+                <button @click="toggleModal_success()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    確定
+                </button>
+
+            </template>
+        </modal>
+    </Teleport>
+    <!-- 正確訊息視窗 -->
+
+    <!-- 錯誤訊息視窗 -->
+    <Teleport to="body">
+        <modal :show="showModal_fail">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">警告視窗</div>
+                </div>
+            </template>
+            <template #body>
+                {{ messageF }}
+            </template>
+            <template #footer>
+                <button @click="toggleModal_fail()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    確定
+                </button>
+            </template>
+        </modal>
+    </Teleport>
+
+    <!-- 錯誤訊息視窗 -->
+
+
     <!-- eventBody start-->
 
-    <div class="bookmark2 m-1.5 mx-8 relative">
+    <div class="bookmark2  mx-8 relative">
         <router-link class="bookmark2-box text-xl bg-white" :to="{name: 'event-works'}">
             所有工作
         </router-link>

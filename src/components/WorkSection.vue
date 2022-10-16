@@ -23,6 +23,15 @@ const toggleModal_new_job_detail = () => {
     showModal_new_job_detail.value = !showModal_new_job_detail.value
 }
 
+const showModal_success = ref(false)
+const showModal_fail = ref(false)
+const toggleModal_success = () => {
+    showModal_success.value = !showModal_success.value
+}
+const toggleModal_fail = () => {
+    showModal_fail.value = !showModal_fail.value
+}
+
 let csrftoken = getCookie()
 let config = {
     headers: {
@@ -49,6 +58,9 @@ let job_detail_N = ref([])
 let njob_detailName = ref("")
 let njob_detailContent = ref("")
 
+let messageS = ref("")
+let messageF = ref("")
+
 /* 取得活動協作者 */
 axios.get("/api/activity/" + route.params.EventId + "/collaborator/")
     .then(response => {
@@ -73,7 +85,7 @@ function get_responGmail() {
     respon_gmail = select_res.options[select_res.selectedIndex].text;
 }
 
-function updateWork() {
+async function updateWork() {
     get_responGmail()
     let data = {
         "job_id": route.params.WorkId, //1
@@ -85,14 +97,17 @@ function updateWork() {
         "job_expenditure": uworkExpenditure.value
     }
 
-    axios.post("/api/job/update/", data, config)
+    await axios.post("/api/job/update/", data, config)
         .then(function (response) {
-            console.log(response);
-            take_work()
+            messageS.value = "編輯工作成功"
+            toggleModal_success()
         })
         .catch(function (error) {
-            console.log(error);
+            messageF.value = "編輯工作失敗"
+            toggleModal_fail()
         })
+
+    take_work()
 }
 /* 更新工作 */
 
@@ -139,6 +154,41 @@ function take_job_detail() {
         })
 }
 take_job_detail()
+
+function take_job_detailF() {
+    axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/job_detail/")
+        .then(response => {
+            job_detail.value = response.data
+        }
+        )
+        .then(() => {
+            job_detail_N.value = []
+            job_detail_Y.value = []
+            job_detail.value.forEach((item) => {
+                if (item.status == 1) {
+                    job_detail_Y.value.push(item)
+                }
+            }
+            )
+        })
+}
+function take_job_detailNF() {
+    axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/job_detail/")
+        .then(response => {
+            job_detail.value = response.data
+        }
+        )
+        .then(() => {
+            job_detail_N.value = []
+            job_detail_Y.value = []
+            job_detail.value.forEach((item) => {
+                if (item.status == 0) {
+                    job_detail_N.value.push(item)
+                }
+            }
+            )
+        })
+}
 /* 獲得工作細項 */
 
 /* 新增工作細項 */
@@ -150,11 +200,14 @@ function newJobDetail() {
     }
     axios.post("/api/job-detail/create/", data, config)
         .then(function (response) {
-            console.log(response);
+            messageS.value = "新增工作細項成功"
+            toggleModal_success()
             take_job_detail()
         })
         .catch(function (error) {
-            console.log(error);
+            messageF.value = "新增工作細項失敗"
+            toggleModal_success()
+            take_job_detail()
         })
 }
 /* 新增工作細項 */
@@ -162,67 +215,67 @@ function newJobDetail() {
 
 <template>
     <!-- 主要內容 -->
-    <div class="flex pr-4 mb-4">
-        <div class="w-3/4">
+    <div class="flex px-8 py-4">
+        <div class="w-3/4 mr-2">
             <!--功能列-->
-            <div class="w-[94%] ml-8 py-[10px] inline-flex flex-wrap items-center">
+            <div class="w-[50%]  inline-flex flex-wrap items-center my-4">
                 <!--全部、未完成、完成狀態-->
                 <div>
-                    <button class="py-1 px-4 border border-[#7a6d6d] text-white text-base bg-[#5b83ac] font-medium">
-                        全部
-                    </button>
-                    <button class="py-1 px-4 border border-[#7a6d6d] text-white text-base bg-[#5b83ac] font-medium">
-                        未完成
-                    </button>
-                    <button class="py-1 px-4 border border-[#7a6d6d] bg-[#5b83ac] text-white text-base font-medium">
-                        完成
-                    </button>
+                    <div id="radios">
+                        <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1"/>
+                        <label class="radioLable text-base" for="radio1" @click="take_job_detailF()">完成</label>
+                        <input id="radio2" class="radioInput hidden " type="radio" name="radio" value="radio2" />
+                        <label class="radioLable text-base" for="radio2" @click="take_job_detailNF()">未完成</label>
+                        <input id="radio3" class="radioInput hidden " type="radio" name="radio" value="radio3" checked/>
+                        <label class="radioLable text-base" for="radio3" @click="take_job_detail()">全部</label>
+                    </div>
                 </div>
                 <!--全部、未完成、完成狀態-->
 
                 <!--搜尋欄-->
-                <form class="mx-auto">
-                    <div class="relative">
-                        <div class="flex absolute inset-y-0 left-0 items-center pl-2 pointer-events-none">
-                            <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                <form id="search" class="flex items-center shadow:focus mr-10 ml-5">
+                    <label for="simple-search" class=""></label>
+                    <div class="relative w-full">
+                        <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                            <svg aria-hidden="true" class="w-5 h-5 text-gray-500" fill="currentColor"
+                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                    clip-rule="evenodd"></path>
                             </svg>
                         </div>
-                        <input type="search"
-                            class="block p-search text-sm bg-gray-50 border border-gray-300 focus:shadow-inner"
-                            placeholder="搜尋工作" required />
+                        <input type="text" id="simple-search"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
+                            placeholder="Search" required>
                     </div>
                 </form>
                 <!--搜尋欄-->
-
-                <!--編輯、刪除工作，關閉分頁-->
-                <div>
+            </div>
+            <!--編輯、刪除工作，關閉分頁-->
+            <div class="w-[50%] py-[px] inline-flex flex-wrap justify-end">
+                <div class="ml-">
                     <button
-                        class="py-3 px-1 border-w-3 rounded-lg text-base font-bold border-[#3491d9] bg-white text-[#3491d9] shadow-btn"
+                        class="py-2 px-4 rounded text-base font-bold border border-[#3491d9] bg-white text-[#3491d9] shadow-btn btn_click1"
                         @click="toggleModal1()">
                         編輯工作
                     </button>
-
                     <button
-                        class="mx-2 py-3 px-1 border-w-3 rounded-lg text-base font-bold bg-white border-[#ff0000] text-[#ff0000] shadow-btn"
+                        class="mx-2 py-2 px-4 rounded text-base font-bold bg-white border border-[#ff0000] text-[#ff0000] shadow-btn btn_click2"
                         @click="toggleModal_delete()">
                         刪除工作
                     </button>
-
                     <button
-                        class="py-3 px-1 border-w-3 rounded-lg text-base font-bold bg-white border-[#ff0000] text-[#ff0000] shadow-btn">
+                        class="py-2 px-4 rounded text-base font-bold bg-white border border-[#ff0000] text-[#ff0000] shadow-btn btn_click2">
                         關閉分頁
                     </button>
                 </div>
-                <!--編輯、刪除工作，關閉分頁-->
             </div>
+            <!--編輯、刪除工作，關閉分頁-->
             <!--功能列-->
 
             <!--主要內容-->
-            <div class="px-4 mx-4">
-                <div class="bg-white relative px-[10px] pt-[10px] pb-[60px]">
+            <div>
+                <div class="bg-white relative px-[10px] pt-[10px] pb-[60px] round_border">
                     <div class="w-full pb-[10px] flex">
                         <!--預算-->
                         <div class="w-6/12 inline-flex flex-row items-center">
@@ -244,10 +297,10 @@ function newJobDetail() {
                     </div>
 
                     <!--工作標題、工作簡介說明-->
-                    <div class="w-full bg-[#D9D9D9] text-center font-bold py-[30px] mb-2">
+                    <div class="w-full py-[10px] mb-2 text-center text-base font-bold  border round_border">
                         {{job.title}}
                     </div>
-                    <div class="w-full bg-[#D9D9D9] pb-[150px] mb-2 text-sm text-[#696969] font-bold">
+                    <div class="w-full p-[10px] pb-[150px] mb-2 text-base text-[#696969] border round_border">
                         {{job.content}}
                     </div>
                     <!--工作標題、工作簡介說明-->
@@ -255,7 +308,7 @@ function newJobDetail() {
                     <!--新增細項、完成、取消完成-->
                     <div>
                         <button
-                            class="w-full items-center bg-white rounded-lg border-w-3 border-[#3491d9] py-[10px] text-[#3491d9] shadow-btn mb-[20px]"
+                            class="w-full items-center bg-white rounded-lg border-w-3 border-[#3491d9] py-[10px] text-[#3491d9] shadow-btn mb-[20px] btn_click1"
                             @click="toggleModal_new_job_detail()">
                             新增細項 +
                         </button>
@@ -277,16 +330,14 @@ function newJobDetail() {
                     </template>
 
                     <template v-for="item in job_detail_N" :key="item.job_detail_id">
-                        <JobDetail :jobDetail=item></JobDetail>
+                        <JobDetail :jobDetail=item @refresh="take_job_detail"></JobDetail>
                     </template>
-
-
                     <!-- 工作細項 -->
 
                 </div>
             </div>
-
             <!--主要內容-->
+
         </div>
         <FileSection :mode=2></FileSection>
     </div>
@@ -421,8 +472,51 @@ function newJobDetail() {
         </modal>
     </Teleport>
     <!-- 新增工作細項 -->
+
+    <!-- 正確訊息視窗 -->
+    <Teleport to="body">
+        <modal :show="showModal_success">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">成功視窗</div>
+                </div>
+            </template>
+            <template #body>
+                {{ messageS }}
+            </template>
+            <template #footer>
+                <button @click="toggleModal_success()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    確定
+                </button>
+
+            </template>
+        </modal>
+    </Teleport>
+    <!-- 正確訊息視窗 -->
+
+    <!-- 錯誤訊息視窗 -->
+    <Teleport to="body">
+        <modal :show="showModal_fail">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">警告視窗</div>
+                </div>
+            </template>
+            <template #body>
+                {{ messageF }}
+            </template>
+            <template #footer>
+                <button @click="toggleModal_fail()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    確定
+                </button>
+            </template>
+        </modal>
+    </Teleport>
+    <!-- 錯誤訊息視窗 -->
     <!-- 彈出視窗 -->
-    
+
 </template>
 
 <style scoped>
@@ -453,4 +547,44 @@ function newJobDetail() {
 .p-search {
     padding: 0.3rem 0.3rem 0.3rem 2.5rem;
 }
+
+.round_border {
+    border-radius: 1rem;
+}
+
+
+/* radios */
+#radios {
+    display: inline-flex;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+}
+
+.radioLable {
+    padding: 8px 14px;
+    font-size: 14px;
+    font-family: sans-serif;
+    color: #ffffff;
+    background: #5B83AC;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.radioLable:not(:last-of-type) {
+    border-right: 1px solid #52708f;
+}
+
+.radioInput:checked+.radioLable {
+    background: #52708f;
+}
+
+.btn_click1:hover{
+    background-color: #b9cfe4;
+}
+
+.btn_click2:hover{
+    background-color: #ffcccc;
+}
+
 </style>

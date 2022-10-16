@@ -4,26 +4,29 @@
     <div class="wrapper">
         <div class="bookmark h-12 flex">
             <div class="w-full flex text-center items-center">
-                <router-link
-                    :to="{ name: 'event-works' }"
-                    class="main-switch w-half px-4 h-full flex items-center bg-zinc-300"
-                    >北商大母親節活動</router-link
-                >
-                <router-link
-                    :to="{ name: 'budget' }"
-                    class="main-switch w-half px-4 h-full flex items-center bg-zinc-300"
-                    >預算編輯</router-link
-                >
-                <router-link
-                    :to="{ name: 'overview' }"
-                    class="main-switch w-half px-4 h-full flex items-center bg-zinc-300"
-                    >總覽</router-link
-                >
+                <router-link :to="{ name: 'event-works' }" class="flex-1 mask main-switch">
+                    <div class="w-half px-4 h-full flex items-center mask_p">
+                        北商大母親節活動
+                    </div>
+                </router-link>
+
+                <router-link :to="{ name: 'budget' }" class="flex-1 mask main-switch">
+                    <div class="w-half px-4 h-full flex items-center mask_p">
+                        預算編輯
+                    </div>
+                </router-link>
+
+                <router-link :to="{ name: 'overview' }" class="flex-1 mask main-switch">
+                    <div class="w-half px-4 h-full flex items-center mask_p">
+                        總覽
+                    </div>
+                </router-link>
             </div>
-            <router-link :to="{ name: 'main-default' }" class="flex items-center pr-4">
+            <router-link :to="{ name: 'main-default' }" class="flex items-center pr-4 mx-3">
                 <img src="/src/assets/images/home.svg" class="h-8" />
             </router-link>
         </div>
+
         <div class="content bg-[CEE5F2] overflow-y-auto">
             <!-- 把你寫的Component放在這裡測試，要上github前這個檔案更動要discard掉-->
             <router-view />
@@ -33,8 +36,9 @@
 
 <style scoped>
 .main-switch.router-link-exact-active {
-    background-color: #cee5f2;
+    border-color: transparent transparent #cee5f2;
 }
+
 .wrapper {
     height: calc(100% - 7rem);
 }
@@ -45,5 +49,19 @@
 
 .bg-\[CEE5F2\] {
     background-color: #cee5f2;
+}
+
+.mask {
+    border-width: 0 20px 50px 20px;
+    border-style: none solid solid;
+    border-color: transparent transparent rgb(212 212 216);
+    position: relative;
+}
+
+.mask_p {
+    position: absolute;
+    margin-top: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
 }
 </style>
