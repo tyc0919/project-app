@@ -14,30 +14,39 @@ const route = useRoute()
 const router = useRouter()
 const works = ref([])
 const file = ref(null)
+let csrftoken = getCookie()
+let config = {
+    headers: {
+        'X-CSRFToken': csrftoken
+    },
+    mode: 'same-origin'
+}
 
+let messageS = ref("")
+let messageF = ref("")
 let user_e
 let formData = new FormData()
 
-
-axios.get("/api/userprofile/")
-    .then(response => {
-        user_data.value = response.data;
-        user_e = user_data.value.user_email
-    })
-/* 取得使用者帳號 */
-
 /* 活動資訊 */
+function take_activity() {
+    axios.get("/api/userprofile/")
+        .then(response => {
+            user_data.value = response.data;
+            user_e = user_data.value.user_email
+        })
 
-axios.get("/api/activity/" + route.params.EventId + "/")
-    .then(response => {
-        activity_data.value = response.data
-        let temp = new Date(activity_data.value.post_time)
-        activity_data.value.post_time = temp.toLocaleDateString()
-    })
-    .catch(error => {
-        console.log(error)
-    })
+    axios.get("/api/activity/" + route.params.EventId + "/")
+        .then(response => {
+            activity_data.value = response.data
+            let temp = new Date(activity_data.value.post_time)
+            activity_data.value.post_time = temp.toLocaleDateString()
+        })
+        .catch(error => {
+            console.log(error)
+        })
+}
 
+take_activity()
 /* 活動資訊 */
 
 /* 取得工作列表 */
@@ -59,32 +68,30 @@ axios.get("/api/activity/" + route.params.EventId + "/")
 //     })
 /* 取得工作列表 */
 
-/* 發布、完成活動 */
-async function test_Activity() {
-    let csrftoken = getCookie()
-    let config = {
-        headers: {
-            'X-CSRFToken': csrftoken
-        },
-        mode: 'same-origin'
-    }
-
+/* 完成活動 */
+function finish_activity() {
     var yesNo1 = document.querySelector('input[name="test1"]:checked').value;
-    var yesNo2 = document.querySelector('input[name="test2"]:checked').value;
-
-    await axios.post('/api/activity/finish/',
+    axios.post('/api/activity/finish/',
         {
             "activity_id": route.params.EventId,
             "is_finished": yesNo1
         }
         , config)
         .then(function (response) {
-            console.log(response);
+            messageS.value = response.data.success
+            toggleModal_success()
         })
         .catch(function (error) {
-            console.log(error);
+            messageF.value = error.data.error
+            toggleModal_fail()
         })
+}
+/* 完成活動 */
 
+/* 發布活動 */
+function publish_Activity() {
+    var yesNo2 = document.querySelector('input[name="test2"]:checked').value;
+    console.log(yesNo2)
     axios.post('/api/activity/publish/',
         {
             "activity_id": route.params.EventId,
@@ -92,13 +99,15 @@ async function test_Activity() {
         }
         , config)
         .then(function (response) {
-            console.log(response);
+            messageS.value = response.data.success
+            toggleModal_success()
         })
         .catch(function (error) {
-            console.log(error);
+            messageF.value = error.data.error
+            toggleModal_fail()
         })
 }
-/* 發布、完成活動 */
+/* 發布活動 */
 
 /* 編輯活動 */
 
@@ -125,6 +134,12 @@ async function update_Activity() {
     const activity_n = document.getElementById("test1")
     const activity_t = document.getElementById("test2")
 
+    let testS1 = false
+    let testF1 = false
+
+    let testS2 = false
+    let testF2 = false
+
     await axios.post('/api/activity/update/', {
         "activity_id": route.params.EventId,
         "owner": user_e,
@@ -132,16 +147,35 @@ async function update_Activity() {
         "activity_description": activity_t.value
     }, config)
         .then(function (response) {
-            console.log(response);
+            testS1 = true
         })
         .catch(function (error) {
-            console.log(error);
+            testF1 = true
         })
 
-    axios.post("/api/upload/activity_pic/", formData, configf)
-        .then(response => {
-            console.log(response)
+    await axios.post("/api/upload/activity_pic/", formData, configf)
+        .then(function(response){
+            testS2 = true
         })
+        .catch(function (error) {
+            testF2 = true
+        })
+
+    if (testS1 & testS2){
+        messageS.value = "更新成功"
+        toggleModal_success()
+    }
+    else if(testS1 & testF2){
+        console.log("圖片無法更新")
+        messageF.value = "活動名稱及活動簡介已更新，但圖片無法更新"
+        toggleModal_fail()
+    }
+    else{
+        messageF.value = "更新失敗"
+        toggleModal_fail()
+    }
+
+    take_activity()
 }
 /* 編輯活動 */
 
@@ -176,6 +210,8 @@ const showModal_publish = ref(false)
 const showModal_update = ref(false)
 const showModal_delete = ref(false)
 const showModal_finish = ref(false)
+const showModal_success = ref(false)
+const showModal_fail = ref(false)
 
 const toggleModal_publish = () => {
     showModal_publish.value = !showModal_publish.value
@@ -191,14 +227,17 @@ const toggleModal_delete = () => {
 const toggleModal_finish = () => {
     showModal_finish.value = !showModal_finish.value
 }
+const toggleModal_success = () => {
+    showModal_success.value = !showModal_success.value
+}
+const toggleModal_fail = () => {
+    showModal_fail.value = !showModal_fail.value
+}
 /* 彈出視窗 */
-
-
 </script>
 
 <template>
     <!-- activityHead Start-->
-
     <div class="content bg-[CEE5F2]">
         <div class="w-full flex">
             <div class="w-2/3 m-1.5 ">
@@ -206,7 +245,7 @@ const toggleModal_finish = () => {
 
                 <form action="">
                     <div class="flex justify-around w-full">
-                        <div class="button hover" @click="toggleModal_finish()()">
+                        <div class="button hover" @click="toggleModal_finish()">
                             <input type="button" value="完成活動">
                         </div>
                         <div class="button hover" @click="toggleModal_publish()">
@@ -234,21 +273,8 @@ const toggleModal_finish = () => {
                     <p class="text-base m-1.5 text-[696969]">建立日期 {{activity_data.post_time}}</p>
                 </div>
             </div>
-
-            <!-- <div class="w-1/3 border-solid border border-black m-1.5 mr-10 bg-white relative">
-                <p class="text-base2x m-1.5 text-[696969]"> </p>
-                <p class="text-base m-1.5 text-[696969]">提案人 </p>
-                <p class="text-base m-1.5 text-[696969] overflow-y intro2">
-
-                </p>
-                <div class="absolute bottom-down w-full">
-                    <hr class="m-1.5 border-3">
-                    <p class="text-base m-1.5 text-[696969]">建立日期</p>
-                </div>
-            </div> -->
         </div>
     </div>
-
     <!-- activityHead end-->
 
 
@@ -277,7 +303,7 @@ const toggleModal_finish = () => {
                 </div>
             </template>
             <template #footer>
-                <button @click="toggleModal_finish()"
+                <button @click="toggleModal_finish(), finish_activity()"
                     class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
                     確定
                 </button>
@@ -288,7 +314,6 @@ const toggleModal_finish = () => {
             </template>
         </modal>
     </Teleport>
-
     <!-- 完成視窗 -->
 
     <!-- 發布視窗 -->
@@ -316,7 +341,7 @@ const toggleModal_finish = () => {
                 </div>
             </template>
             <template #footer>
-                <button @click="toggleModal_publish(), test_Activity()"
+                <button @click="toggleModal_publish(), publish_Activity()"
                     class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
                     確定
                 </button>
@@ -327,7 +352,6 @@ const toggleModal_finish = () => {
             </template>
         </modal>
     </Teleport>
-
     <!-- 發布視窗 -->
 
     <!-- 編輯視窗 -->
@@ -394,9 +418,54 @@ const toggleModal_finish = () => {
     </Teleport>
     <!-- 刪除視窗 -->
 
+    <!-- 正確訊息視窗 -->
+    <Teleport to="body">
+        <modal :show="showModal_success">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">成功視窗</div>
+                </div>
+            </template>
+            <template #body>
+                {{ messageS }}
+            </template>
+            <template #footer>
+                <button @click="toggleModal_success()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    確定
+                </button>
+
+            </template>
+        </modal>
+    </Teleport>
+    <!-- 正確訊息視窗 -->
+
+    <!-- 錯誤訊息視窗 -->
+    <Teleport to="body">
+        <modal :show="showModal_fail">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">警告視窗</div>
+                </div>
+            </template>
+            <template #body>
+                {{ messageF }}
+            </template>
+            <template #footer>
+                <button @click="toggleModal_fail()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    確定
+                </button>
+            </template>
+        </modal>
+    </Teleport>
+
+    <!-- 錯誤訊息視窗 -->
+
+
     <!-- eventBody start-->
 
-    <div class="bookmark2 m-1.5 mx-8 relative">
+    <div class="bookmark2  mx-8 relative">
         <router-link class="bookmark2-box text-xl bg-white" :to="{name: 'event-works'}">
             所有工作
         </router-link>
@@ -518,13 +587,12 @@ const toggleModal_finish = () => {
     color: #1D5E9F;
 }
 
-.hover:nth-of-type(3):hover {
+.hover:nth-of-type(4):hover {
     background-color: #FF0000;
     color: white;
-
 }
 
-.button:nth-of-type(3) {
+.button:nth-of-type(4) {
     background-color: #FEEBD7;
     color: #FF0000;
     border: 1px solid #FF0000;

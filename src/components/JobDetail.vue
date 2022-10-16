@@ -4,12 +4,13 @@ import axios from "axios";
 import { ref } from 'vue'
 import { getCookie } from '../assets/modules'
 import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 
+const emit = defineEmits(["refresh"])
 
-const props = defineProps([
-    "jobDetail"
-]
-)
+function refresh() {
+    emit('refresh')
+}
 
 let csrftoken = getCookie()
 let config = {
@@ -18,64 +19,17 @@ let config = {
     },
     mode: 'same-origin'
 }
+const props = defineProps([
+    "jobDetail"
+]
+)
+const route = useRoute()
+const router = useRouter()
 
 let ujob_detailName = ref("")
 let ujob_detailContent = ref("")
-
-/* 編輯工作細項 */
-function updateJobDetail() {
-    let data = {
-        "job_detail_id": props.jobDetail.job_detail_id,
-        "title": ujob_detailName.value,
-        "content": ujob_detailContent.value
-    }
-
-    axios.post("/api/job-detail/update/", data, config)
-        .then(function (response) {
-            console.log(response);
-        })
-        .catch(function (error) {
-            console.log(error);
-        })
-}
-/* 編輯工作細項 */
-
-/* 刪除工作細項 */
-function deleteJobDetail() {
-    let data = {
-        "job_detail_id": props.jobDetail.job_detail_id
-    }
-
-    axios.post("/api/job-detail/delete/", data, config)
-        .then(function (response) {
-            console.log(response);
-        })
-        .catch(function (error) {
-            console.log(error);
-        })
-}
-/* 刪除工作細項 */
-
-/* 工作細項狀態 */
-function statusJobDetail() {
-    var jdstatus = document.querySelector('input[name="jobDetailStatus"]:checked').value;
-    let data = {
-        "job_detail_id": props.jobDetail.job_detail_id,
-        "status": jdstatus
-    }
-
-    axios.post("/api/job-detail/status/", data, config)
-        .then(function (response) {
-            console.log(response);
-        })
-        .catch(function (error) {
-            console.log(error);
-        })
-}
-
-
-/* 工作細項狀態 */
-
+let messageS = ref("")
+let messageF = ref("")
 
 const showModal_update_job_detail = ref(false)
 const toggleModal_update_job_detail = () => {
@@ -87,43 +41,117 @@ const toggleModal_delete_job_detail = () => {
     showModal_delete_job_detail.value = !showModal_delete_job_detail.value
 }
 
-const showModal_status_job_detail = ref(false)
-const toggleModal_status_job_detail = () => {
-    showModal_status_job_detail.value = !showModal_status_job_detail.value
+const showModal_success = ref(false)
+const showModal_fail = ref(false)
+
+const toggleModal_success = () => {
+    showModal_success.value = !showModal_success.value
 }
+
+const toggleModal_fail = () => {
+    showModal_fail.value = !showModal_fail.value
+}
+
+/* 編輯工作細項 */
+async function updateJobDetail() {
+    let data = {
+        "job_detail_id": props.jobDetail.job_detail_id,
+        "title": ujob_detailName.value,
+        "content": ujob_detailContent.value
+    }
+
+    await axios.post("/api/job-detail/update/", data, config)
+        .then(function (response) {
+            messageS.value = "編輯工作細項成功"
+            toggleModal_success()
+        })
+        .catch(function (error) {
+            messageF.value = "編輯工作細項失敗"
+            toggleModal_fail()
+        })
+    
+    refresh()
+}
+/* 編輯工作細項 */
+
+/* 刪除工作細項 */
+async function deleteJobDetail() {
+    let data = {
+        "job_detail_id": props.jobDetail.job_detail_id
+    }
+
+    await axios.post("/api/job-detail/delete/", data, config)
+        .then(function (response) {
+            console.log(response);
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+
+    refresh()
+}
+/* 刪除工作細項 */
+
+/* 工作細項狀態 */
+async function statusJobDetail() {
+    let jdstatus = props.jobDetail.status
+
+    if (jdstatus == "1") {
+        jdstatus = "0"
+    }
+    else {
+        jdstatus = "1"
+    }
+
+    let data = {
+        "job_detail_id": props.jobDetail.job_detail_id,
+        "status": jdstatus
+    }
+
+    await axios.post("/api/job-detail/status/", data, config)
+        .then(function (response) {
+            messageS.value = "工作細項狀態更新成功"
+            toggleModal_success()
+        })
+        .catch(function (error) {
+            messageF.value = "工作細項狀態更新失敗"
+            toggleModal_fail()
+        })
+
+    refresh()
+}
+/* 工作細項狀態 */
+
+
+
 </script>
 
 <template>
-
     <!--工作細項未完成-->
-    <div class="w-fullcjo4 flex border border-[#00db00] my-[20px]" v-if=" props.jobDetail.status == 0 ">
-        <div class="flex w-[8.3%] py-14 bg-[#ff0000] items-center justify-center text-white border-r-3 border-black">
+    <div class="w-fullcjo4 flex border border-[#00db00] my-[20px] round_border" v-if=" props.jobDetail.status == 0 ">
+        <div class="flex w-[9%] py-14 bg-[#ff0000] items-center justify-center text-white round_border cursor-pointer"
+            @click="statusJobDetail()">
             未完成
         </div>
-        <div class="w-[calc(100%-8.3%)]">
+        <div class="w-[calc(100%-9%)]">
             <div class="border-b border-black">
-                <div class="w-2/4 inline-flex font-bold align-middle">
+                <div class="w-2/4 inline-flex font-bold align-middle pl-1">
                     {{ props.jobDetail.title }}
                 </div>
                 <div class="w-2/4 inline-flex justify-end align-middle my-1">
                     <button
-                        class="mr-4 rounded-lg border-w-3 border-[#3491d9] font-bold text-base text-[#3491d9] py-0 px-3 shadow-btn"
-                        @click="toggleModal_status_job_detail()">
-                        狀態
-                    </button>
-                    <button
-                        class="rounded-lg border-w-3 border-[#3491d9] font-bold text-base text-[#3491d9] py-0 px-3 shadow-btn"
+                        class="rounded-lg border border-[#3491d9] font-bold text-base text-[#3491d9] py-0 px-3 shadow-btn btn_click1"
                         @click="toggleModal_update_job_detail()">
                         編輯
                     </button>
                     <button
-                        class="mx-4 rounded-lg border-w-3 border-[#ff0000] font-bold text-base text-[#ff0000] py-0 px-3 shadow-btn"
+                        class="mx-4 rounded-lg border border-[#ff0000] font-bold text-base text-[#ff0000] py-0 px-3 shadow-btn btn_click2"
                         @click="toggleModal_delete_job_detail()">
                         刪除
                     </button>
                 </div>
             </div>
-            <div class="text-[#696969]">
+            <div class="text-[#696969] pl-1">
                 {{ props.jobDetail.content }}
             </div>
         </div>
@@ -131,80 +159,35 @@ const toggleModal_status_job_detail = () => {
     <!--工作細項未完成-->
 
     <!--工作細項完成-->
-    <div class="w-full flex border border-[#3491d9] my-[20px]" v-else>
-        <div class="flex w-[8.3%] py-14 bg-[#00db00] items-center justify-center text-white border-r-3 border-black">
+    <div class="w-full flex border border-[#3491d9] my-[20px] round_border" v-else>
+        <div class="flex w-[9%] py-14 bg-[#00db00] items-center justify-center text-white round_border cursor-pointer"
+            @click="statusJobDetail()">
             完成
         </div>
-        <div class="w-[calc(100%-8.3%)]">
+        <div class="w-[calc(100%-9%)]">
             <div class="border-b border-black">
-                <div class="w-2/4 inline-flex font-bold align-middle">
+                <div class="w-2/4 inline-flex font-bold align-middle pl-1">
                     {{ props.jobDetail.title }}
                 </div>
                 <div class="w-2/4 inline-flex justify-end align-middle my-1">
                     <button
-                        class="mr-4 rounded-lg border-w-3 border-[#3491d9] font-bold text-base text-[#3491d9] py-0 px-3 shadow-btn"
-                        @click="toggleModal_status_job_detail()">
-                        狀態
-                    </button>
-                    <button
-                        class="rounded-lg border-w-3 border-[#3491d9] font-bold text-base text-[#3491d9] py-0 px-3 shadow-btn"
+                        class="rounded-lg border border-[#3491d9] font-bold text-base text-[#3491d9] py-0 px-3 shadow-btn btn_click1"
                         @click="toggleModal_update_job_detail()">
                         編輯
                     </button>
                     <button
-                        class="mx-4 rounded-lg border-w-3 border-[#ff0000] font-bold text-base text-[#ff0000] py-0 px-3 shadow-btn"
+                        class="mx-4 rounded-lg border border-[#ff0000] font-bold text-base text-[#ff0000] py-0 px-3 shadow-btn btn_click2"
                         @click="toggleModal_delete_job_detail()">
                         刪除
                     </button>
                 </div>
             </div>
-            <div class="text-[#696969]">
+            <div class="text-[#696969] pl-1">
                 {{ props.jobDetail.content }}
             </div>
         </div>
     </div>
     <!--工作細項完成-->
-
-    <!-- 工作細項狀態 -->
-    <Teleport to="body">
-        <modal :show="showModal_status_job_detail" @close="toggleModal_status_job_detail()">
-            <template #header>
-                <div class="border-b-4 w-full px-4 py-4">
-                    <div class="font-bold text-2xl">完成狀態</div>
-                </div>
-            </template>
-
-            <template #body>
-                <div class="overflow-y-auto max-h-96 pr-4">
-                    <div class="flex-row justify-between space-y-3 px-1 py-1 check">
-                        <form name="jobDetailStatus">
-                            <input type="radio" id="F" name="jobDetailStatus" value="1">
-                            <label for="F" class="text-base font-bold">已完成</label>
-                            <br>
-                            <input type="radio" id="NF" name="jobDetailStatus" value="0">
-                            <label for="NF" class="text-base font-bold">未完成</label>
-                            <br>
-                        </form>
-                    </div>
-                </div>
-            </template>
-
-            <template #footer>
-                <div class="border-t-2 pt-2">
-                    <button @click="toggleModal_status_job_detail(), statusJobDetail()"
-                        class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
-                        送出
-                    </button>
-                    <button @click="toggleModal_status_job_detail()"
-                        class=" btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
-                        取消
-                    </button>
-                </div>
-
-            </template>
-        </modal>
-    </Teleport>
-    <!-- 工作細項狀態 -->
 
     <!-- 編輯工作細項 -->
     <Teleport to="body">
@@ -226,18 +209,6 @@ const toggleModal_status_job_detail = () => {
                         <textarea class=" px-1 py-1 text-base font-bold border border-2 border-slate-400 w-full"
                             v-model="ujob_detailContent">
                         </textarea>
-
-                        <div class="flex-row justify-between space-y-3 px-1 py-1 check">
-                            <div class="text-base font-bold">活動狀態</div>
-                            <form name="test1">
-                                <input type="radio" id="Yes1" name="test1" value="1">
-                                <label for="Yes1" class="text-base font-bold">已完成</label>
-                                <br>
-                                <input type="radio" id="No1" name="test1" value="0">
-                                <label for="No1" class="text-base font-bold">未完成</label>
-                                <br>
-                            </form>
-                        </div>
                     </div>
                 </div>
             </template>
@@ -288,6 +259,49 @@ const toggleModal_status_job_detail = () => {
     </Teleport>
     <!-- 刪除工作細項 -->
 
+    <!-- 正確訊息視窗 -->
+    <Teleport to="body">
+        <modal :show="showModal_success">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">成功視窗</div>
+                </div>
+            </template>
+            <template #body>
+                {{ messageS }}
+            </template>
+            <template #footer>
+                <button @click="toggleModal_success()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    確定
+                </button>
+
+            </template>
+        </modal>
+    </Teleport>
+    <!-- 正確訊息視窗 -->
+
+    <!-- 錯誤訊息視窗 -->
+    <Teleport to="body">
+        <modal :show="showModal_fail">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">警告視窗</div>
+                </div>
+            </template>
+            <template #body>
+                {{ messageF }}
+            </template>
+            <template #footer>
+                <button @click="toggleModal_fail()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    確定
+                </button>
+            </template>
+        </modal>
+    </Teleport>
+    <!-- 錯誤訊息視窗 -->
+
 </template>
 
 <style>
@@ -318,4 +332,17 @@ const toggleModal_status_job_detail = () => {
 .p-search {
     padding: 0.3rem 0.3rem 0.3rem 2.5rem;
 }
+
+.round_border {
+    border-radius: 1rem;
+}
+
+.btn_click1:hover{
+    background-color: #b9cfe4;
+}
+
+.btn_click2:hover{
+    background-color: #ffcccc;
+}
+
 </style>
