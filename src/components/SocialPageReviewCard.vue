@@ -86,7 +86,7 @@ let star = props.rating
     overflow: hidden;
     display: -webkit-box;
     text-overflow: ellipsis;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     white-space: normal;
 }
