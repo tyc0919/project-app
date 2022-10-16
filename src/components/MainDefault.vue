@@ -20,6 +20,7 @@ const modalController = {
     noticeModal: ref(false),
 }
 const toggleModal = (modalName) => {
+    cleanErrorMessage()
     modalController[modalName].value = !modalController[modalName].value
 }
 
@@ -35,6 +36,12 @@ let errorMessage = {
     titleErrorMessage: ref(''),
     descriptionErrorMessage: ref(),
     budgetErrorMessage: ref(),
+}
+const cleanErrorMessage = () => {
+    //  清空錯誤訊息
+    for (let key of Object.keys(errorMessage)) {
+        errorMessage[key].value = ''
+    }
 }
 const addActivity = async () => {
 

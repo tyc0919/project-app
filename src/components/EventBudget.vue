@@ -26,6 +26,7 @@ const modalController = {
     updateBudgetModal: ref(false),
 }
 const toggleModal = (modalName) => {
+    cleanErrorMessage()
     modalController[modalName].value = !modalController[modalName].value
 }
 
@@ -143,13 +144,15 @@ let errorMessage = {
     fileErrorMessage: ref(),
     jobErrorMessage: ref(),
 }
-
-const uploadExpenditure = async () => {
-
+const cleanErrorMessage = () => {
     //  清空錯誤訊息
     for (let key of Object.keys(errorMessage)) {
         errorMessage[key].value = ''
     }
+}
+
+const uploadExpenditure = async () => {
+    cleanErrorMessage()
 
     // 抓取api所需參數
     let expenseEl = document.querySelector('#expense-el');
