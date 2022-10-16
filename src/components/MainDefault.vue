@@ -37,6 +37,11 @@ let errorMessage = {
     budgetErrorMessage: ref(),
 }
 const addActivity = async () => {
+
+    for (let key of Object.keys(errorMessage)) {
+        errorMessage[key].value = ''
+    }
+
     let title = document.getElementById('activityTitle').value
     let budget = document.getElementById('activityBudget').value
     let description = document.getElementById('activityContent').value
@@ -71,6 +76,9 @@ const addActivity = async () => {
         if (description == '') {
             errorMessage.descriptionErrorMessage.value = '請填寫活動內容'
         }
+        if (budget < 0) {
+            errorMessage.budgetErrorMessage.value = '預算不可為負數'
+        }
     }
 }
 </script>
@@ -93,10 +101,8 @@ const addActivity = async () => {
 
             <template #footer>
                 <div class="border-t-2 pt-2">
-                    <button
-                        @click="toggleModal('noticeModal')"
-                        class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold"
-                    >
+                    <button @click="toggleModal('noticeModal')"
+                        class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold">
                         確定
                     </button>
                 </div>
@@ -115,32 +121,22 @@ const addActivity = async () => {
             <div class="overflow-y-auto max-h-96 pr-4">
                 <div class="flex-row justify-between space-y-3">
                     <div class="text-base font-bold">活動名稱</div>
-                    <input
-                        id="activityTitle"
-                        type="text"
+                    <input id="activityTitle" type="text"
                         class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                        placeholder="超棒的活動 (需至少三個字)"
-                    />
+                        placeholder="超棒的活動 (需至少三個字)" />
                     <span class="text-red-500">{{ errorMessage.titleErrorMessage.value }}</span>
                     <div class="text-base font-bold">活動預算</div>
                     <div class="flex items-center justify-start space-x-3">
                         <span class="italic font-bold">$</span>
-                        <input
-                            id="activityBudget"
-                            type="number"
-                            class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                            placeholder="10000"
-                        />
+                        <input id="activityBudget" type="number"
+                            class="px-1 py-1 w-full text-base border border-2 border-slate-400" placeholder="10000" />
                     </div>
                     <span class="text-red-500">{{ errorMessage.budgetErrorMessage.value }}</span>
                     <div class="text-base font-bold">活動圖片</div>
                     <input id="activityImage" type="file" />
                     <div class="text-base font-bold">活動簡介</div>
-                    <textarea
-                        id="activityContent"
-                        class="text-base font-bold border border-2 border-slate-400 w-full"
-                        placeholder="這次的活動，我們將要帶領大家..."
-                    ></textarea>
+                    <textarea id="activityContent" class="text-base font-bold border border-2 border-slate-400 w-full"
+                        placeholder="這次的活動，我們將要帶領大家..."></textarea>
                     <span class="text-red-500">{{ errorMessage.descriptionErrorMessage.value }}</span>
                 </div>
             </div>
@@ -148,16 +144,12 @@ const addActivity = async () => {
 
         <template #footer>
             <div class="border-t-2 pt-2">
-                <button
-                    @click="addActivity()"
-                    class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
-                >
+                <button @click="addActivity()"
+                    class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold">
                     新增
                 </button>
-                <button
-                    @click="toggleModal('addActivityModal')"
-                    class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold"
-                >
+                <button @click="toggleModal('addActivityModal')"
+                    class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold">
                     取消
                 </button>
             </div>
@@ -181,10 +173,8 @@ const addActivity = async () => {
             </div>
 
             <div id="optionsRight" class="flex justify-end align-center">
-                <button
-                    @click="toggleModal('addActivityModal')"
-                    class="btnCreateEvent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                >
+                <button @click="toggleModal('addActivityModal')"
+                    class="btnCreateEvent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
                     新增活動
                 </button>
             </div>
@@ -193,13 +183,8 @@ const addActivity = async () => {
         <div class="grid grid-cols-3 grid-gap-1rem items-center justify-center">
             <!-- cards -->
             <router-link v-for="item in activityData" :to="{ path: '/events/' + item.id }">
-                <MainDeFaultCard
-                    :name="item.activity_name"
-                    :owner="item.owner"
-                    :tracePercentage="100"
-                    :costMoney="item.activity_expenditure"
-                    :budgetMoney="item.activity_budget"
-                ></MainDeFaultCard>
+                <MainDeFaultCard :name="item.activity_name" :owner="item.owner" :tracePercentage="100"
+                    :costMoney="item.activity_expenditure" :budgetMoney="item.activity_budget"></MainDeFaultCard>
             </router-link>
 
             <!-- cards end -->
@@ -244,7 +229,7 @@ const addActivity = async () => {
     border-right: 1px solid #52708f;
 }
 
-.radioInput:checked + .radioLable {
+.radioInput:checked+.radioLable {
     background: #52708f;
 }
 
