@@ -1,12 +1,12 @@
 <script setup>
 import Modal from './Modal.vue'
-import axios from "axios";
-import JobDetail from "./JobDetail.vue";
-import FileSection from './FileSection.vue';
+import axios from 'axios'
+import JobDetail from './JobDetail.vue'
+import FileSection from './FileSection.vue'
 import { ref } from 'vue'
 import { getCookie } from '../assets/modules'
-import { useRoute } from "vue-router";
-import { useRouter } from "vue-router";
+import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 const showModal1 = ref(false)
 const toggleModal1 = () => {
@@ -35,41 +35,40 @@ const toggleModal_fail = () => {
 let csrftoken = getCookie()
 let config = {
     headers: {
-        'X-CSRFToken': csrftoken
+        'X-CSRFToken': csrftoken,
     },
-    mode: 'same-origin'
+    mode: 'same-origin',
 }
 const route = useRoute()
 const router = useRouter()
 
-let colla = ref("")
+let colla = ref('')
 let respon_gmail
 
-let uworkName = ref("")
-let uworkDate = ref("")
-let uworkBudget = ref("")
-let uworkExpenditure = ref("")
-let uworkContent = ref("")
+let uworkName = ref('')
+let uworkDate = ref('')
+let uworkBudget = ref('')
+let uworkExpenditure = ref('')
+let uworkContent = ref('')
 
-let job = ref("")
-let job_detail = ref("")
+let job = ref('')
+let job_detail = ref('')
 let job_detail_Y = ref([])
 let job_detail_N = ref([])
-let njob_detailName = ref("")
-let njob_detailContent = ref("")
+let njob_detailName = ref('')
+let njob_detailContent = ref('')
 
 let messageS = ref("")
 let messageF = ref("")
 
 /* 取得活動協作者 */
-axios.get("/api/activity/" + route.params.EventId + "/collaborator/")
-    .then(response => {
-        colla.value = response.data
-    }
-    )
+axios.get('/api/activity/' + route.params.EventId + '/collaborator/').then((response) => {
+    colla.value = response.data
+})
 /* 取得活動協作者 */
 
 /* 獲得工作內容 */
+
 function take_work() {
     axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/")
         .then(response => {
@@ -77,25 +76,27 @@ function take_work() {
         })
 }
 take_work()
+
 /* 獲得工作內容 */
 
 /* 更新工作 */
 function get_responGmail() {
     const select_res = document.querySelector("select[name='responsibility']")
-    respon_gmail = select_res.options[select_res.selectedIndex].text;
+    respon_gmail = select_res.options[select_res.selectedIndex].text
 }
 
 async function updateWork() {
     get_responGmail()
     let data = {
-        "job_id": route.params.WorkId, //1
-        "person_in_charge_email": respon_gmail,
-        "title": uworkName.value,
-        "dead_line": uworkDate.value,
-        "content": uworkContent.value,
-        "job_budget": uworkBudget.value,
-        "job_expenditure": uworkExpenditure.value
+        job_id: route.params.WorkId, //1
+        person_in_charge_email: respon_gmail,
+        title: uworkName.value,
+        dead_line: uworkDate.value,
+        content: uworkContent.value,
+        job_budget: uworkBudget.value,
+        job_expenditure: uworkExpenditure.value,
     }
+
 
     await axios.post("/api/job/update/", data, config)
         .then(function (response) {
@@ -105,6 +106,7 @@ async function updateWork() {
         .catch(function (error) {
             messageF.value = "編輯工作失敗"
             toggleModal_fail()
+
         })
 
     take_work()
@@ -114,25 +116,27 @@ async function updateWork() {
 /* 刪除工作 */
 async function deleteWork() {
     let data = {
-        "job_id": route.params.WorkId //2
+        job_id: route.params.WorkId, //2
     }
 
-    await axios.post("/api/job/delete/", data, config)
+    await axios
+        .post('/api/job/delete/', data, config)
         .then(function (response) {
-            console.log(response);
+            console.log(response)
         })
         .catch(function (error) {
-            console.log(error);
+            console.log(error)
         })
 
     router.push({
         path: '/events/' + route.params.EventId,
-        name: 'event-default'
+        name: 'event-default',
     })
 }
 /* 刪除工作 */
 
 /* 獲得工作細項 */
+
 function take_job_detail() {
     axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/job_detail/")
         .then(response => {
@@ -189,17 +193,22 @@ function take_job_detailNF() {
             )
         })
 }
+
 /* 獲得工作細項 */
 
 /* 新增工作細項 */
 function newJobDetail() {
     let data = {
+
         "job_id": Number(route.params.WorkId),
         "title": njob_detailName.value,
         "content": njob_detailContent.value
+
     }
-    axios.post("/api/job-detail/create/", data, config)
+    axios
+        .post('/api/job-detail/create/', data, config)
         .then(function (response) {
+
             messageS.value = "新增工作細項成功"
             toggleModal_success()
             take_job_detail()
@@ -208,12 +217,14 @@ function newJobDetail() {
             messageF.value = "新增工作細項失敗"
             toggleModal_success()
             take_job_detail()
+
         })
 }
 /* 新增工作細項 */
 </script>
 
 <template>
+
     <!-- 主要內容 -->
     <div class="flex px-8 py-4">
         <div class="w-3/4 mr-2">
@@ -281,7 +292,7 @@ function newJobDetail() {
                         <div class="w-6/12 inline-flex flex-row items-center">
                             <div class="text-[#696969] font-bold">預算</div>
 
-                            <div class="ml-4 font-bold">${{job.job_expenditure}}</div>
+                            <div class="ml-4 font-bold">${{ job.job_expenditure }}</div>
                             /
                             <div class="font-bold">${{job.job_budget}}</div>
                         </div>
@@ -291,7 +302,7 @@ function newJobDetail() {
                         <div class="w-2/4 inline-flex justify-end pr-[20px] items-center">
                             <div class="circle mr-2 border"></div>
                             <div class="mr-4">負責人</div>
-                            <div class="text-[#3491d9]">{{job.person_in_charge_email}}</div>
+                            <div class="text-[#3491d9]">{{ job.person_in_charge_email }}</div>
                         </div>
                         <!--負責人-->
                     </div>
@@ -313,18 +324,19 @@ function newJobDetail() {
                             新增細項 +
                         </button>
                         <button
-                            class="w-full items-center bg-[#1d5e9f] rounded-lg border-w-3 border-[#006eaf] py-[10px] text-white shadow-btn mb-[20px]">
+                            class="w-full items-center bg-[#1d5e9f] rounded-lg border-w-3 border-[#006eaf] py-[10px] text-white shadow-btn mb-[20px]"
+                        >
                             完成
                         </button>
                         <button
-                            class="w-full items-center bg-[#ffcccc] rounded-lg border-w-3 border-[#ff0000] py-[10px] text-[#ff0000] shadow-btn">
+                            class="w-full items-center bg-[#ffcccc] rounded-lg border-w-3 border-[#ff0000] py-[10px] text-[#ff0000] shadow-btn"
+                        >
                             取消完成
                         </button>
                     </div>
                     <!--新增細項、完成、取消完成-->
 
                     <!-- 工作細項 -->
-
                     <template v-for="item in job_detail_Y" :key="item.job_detail_id">
                         <JobDetail :jobDetail=item @refresh="take_job_detail"></JobDetail>
                     </template>
@@ -333,10 +345,10 @@ function newJobDetail() {
                         <JobDetail :jobDetail=item @refresh="take_job_detail"></JobDetail>
                     </template>
                     <!-- 工作細項 -->
-
                 </div>
             </div>
             <!--主要內容-->
+
 
         </div>
         <FileSection :mode=2></FileSection>
@@ -516,7 +528,6 @@ function newJobDetail() {
     </Teleport>
     <!-- 錯誤訊息視窗 -->
     <!-- 彈出視窗 -->
-
 </template>
 
 <style scoped>

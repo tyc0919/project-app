@@ -20,7 +20,7 @@ let config = {
 async function getActivityName() {
     try {
         axios
-            .get('http://app.ace.project/api/activity/', config)
+            .get('/api/activity/', config)
             .then(async function (response) {
                 activityData.value = response.data
 
@@ -65,16 +65,20 @@ getActivityName()
             </div>
         </div>
 
-        <div class="my-10 grid grid-cols-3 grid-gap-1rem items-center justify-center">
-            <MainWorksCard
+        <div class="my-4 grid grid-cols-3 grid-gap-1rem items-center justify-center">
+            <router-link
                 v-for="(item, index) of work"
-                :work-title="item.title"
-                :activity="activityName[index]"
-                :content="item.content"
-                :tracePercentage="100"
-                :costMoney="item.job_expenditure"
-                :budgetMoney="item.job_budget"
-            ></MainWorksCard>
+                :to="{ name: 'event-work-detail', params: { EventId: item.activity, WorkId: item.id } }"
+            >
+                <MainWorksCard
+                    :work-title="item.title"
+                    :activity="activityName[index]"
+                    :content="item.content"
+                    :tracePercentage="100"
+                    :costMoney="item.job_expenditure"
+                    :budgetMoney="item.job_budget"
+                ></MainWorksCard>
+            </router-link>
         </div>
 
         <div class="flex justify-center pb-10">

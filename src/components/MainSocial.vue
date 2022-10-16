@@ -1,5 +1,38 @@
 <script setup>
 import SocialPost from './SocialPost.vue'
+import { ref } from 'vue'
+import axios from 'axios'
+
+let socialData = ref([])
+let reviewData = ref([])
+let reviewRating = ref([])
+let ratingPercent = ref([])
+axios
+    .get('/api/social/')
+    .then(function (response) {
+        socialData.value = response.data
+    })
+    .then(async function (res) {
+        for (let s of socialData.value) {
+            await axios.get('/api/social/' + s.id + '/review/').then(function (response) {
+                reviewData.value.push(response.data)
+            })
+        }
+        for (let rd of reviewData.value) {
+            reviewRating.value.length = 0
+            if (rd.length != 0) {
+                for (let i = 0; i < rd.length; i++) {
+                    reviewRating.value.push(rd[i].review_star)
+                }
+            } else {
+                reviewRating.value.push(0)
+            }
+            let tempSum = reviewRating.value.reduce((previousValue, currentValue) => previousValue + currentValue)
+            let tempPercent = ((tempSum / reviewRating.value.length) * 20).toString() + '%'
+            ratingPercent.value.push(tempPercent)
+        }
+
+    })
 </script>
 
 <template>
@@ -23,9 +56,10 @@ import SocialPost from './SocialPost.vue'
             <!--按鈕列-->
 
             <!--主要內容-->
-            <SocialPost></SocialPost>
-            <SocialPost></SocialPost>
-            <SocialPost></SocialPost>
+            <router-link v-for="(item, index) of socialData" :to="{ name: 'post', params: { PostId: item.id } }">
+                <SocialPost :title="item.activity_name" :owner="item.owner" :rating="ratingPercent[index]"
+                    :content="item.content"></SocialPost>
+            </router-link>
             <!--主要內容-->
         </div>
         <!--貼文、按鈕-->
@@ -48,33 +82,9 @@ import SocialPost from './SocialPost.vue'
     <!--Component here-->
 </template>
 
-<style>
-.img-social {
-    max-height: 15.625rem;
-    width: 90%;
-    margin: 0 auto;
-}
-
+<style scoped>
 .shadow-primary {
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-}
-
-.star_ratings {
-    position: relative;
-    vertical-align: center;
-    display: inline-block;
-    color: #ddd; /*背景星星顏色*/
-    font-size: 20px; /*調整字體大小可放大縮小星星*/
-    text-shadow: 0px 1px 0 #999;
-}
-.full_star {
-    width: 90%; /*調整寬度可變更星等*/
-    position: absolute;
-    left: 0;
-    top: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    color: #ffce31; /*前景星星顏色*/
 }
 
 .post_content {
@@ -93,11 +103,13 @@ import SocialPost from './SocialPost.vue'
     display: flex;
     justify-content: center;
 }
+
 .pagination ul {
     display: inline-flex;
     background-color: #fff;
     margin: 2rem 0;
 }
+
 .pagination ul li {
     text-align: center;
     padding: 10px 20px 10px 20px;
@@ -106,9 +118,11 @@ import SocialPost from './SocialPost.vue'
     margin-left: -1px;
     cursor: pointer;
 }
+
 .pagination ul li.dot {
     cursor: default;
 }
+
 .pagination ul li.current {
     background-color: #dbd8d4;
 }
@@ -127,7 +141,7 @@ import SocialPost from './SocialPost.vue'
     border-right: 1px solid #52708f;
 }
 
-.radioInput:checked + .radioLable {
+.radioInput:checked+.radioLable {
     background: #52708f;
 }
 </style>

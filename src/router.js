@@ -10,6 +10,8 @@ import WorkSection from './components/WorkSection.vue'
 import WorksPage from './components/WorksPage.vue' 
 import UserProfile from './components/UserProfile.vue'
 import EventOverview from './components/EventOverview.vue'
+import Social from './components/Social.vue'
+import SocialPage from './components/SocialPage.vue'
 
 const routes = [
     {
@@ -75,6 +77,17 @@ const routes = [
     {
         path: '/:pathMatch(.*)*',
         redirect: '/',
+    },
+    {
+        path: '/posts',
+        component: Social,
+        children:[
+            {
+                path: ':PostId',
+                name:'post',
+                component: SocialPage
+            },
+        ],
     }
 ]
 

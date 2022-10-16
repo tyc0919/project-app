@@ -93,9 +93,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <template>
     <!-- card1 -->
-    <div class="shadow bg-white flex flex-col justify-between px-4 py-4 card align-start hover:card-float-up">
+    <div class="h-96 shadow bg-white flex flex-col justify-between px-4 py-4 card align-start hover:card-float-up">
         <div class="cardTop mb-8">
-            <div class="text-xl font-bold title ellipsis-2">
+            <div class="text-2xl font-bold title ellipsis-2">
                 {{ workTitle }}
             </div>
             <div class="inline-flex justify-start w-full text-sm italic person">
