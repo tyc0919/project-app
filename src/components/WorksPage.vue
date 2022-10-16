@@ -131,7 +131,6 @@ async function job_take() {
                 Object.assign(job, { 'Finish_dead_line': x })
             })
         })
-    })
 
     for (let i = 0; i < A_job_data.value.length; i++) {
         axios.get("/api/activity/" + route.params.EventId + "/job/" + A_job_data.value[i].id + "/job_detail/")
@@ -271,28 +270,16 @@ const toggleModal_fail = () => {
             <div class="overflow-y-auto max-h-96 pr-4">
                 <div class="flex-row justify-between space-y-3">
                     <div class="text-base font-bold">工作名稱</div>
-                    <input
-                        type="text"
-                        class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                        placeholder="超棒的活動"
-                        v-model="nworkName"
-                    />
+                    <input type="text" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                        placeholder="超棒的活動" v-model="nworkName" />
                     <div class="text-base font-bold">工作日期</div>
-                    <input
-                        type="date"
-                        class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                        placeholder="超棒的活動"
-                        v-model="nworkDate"
-                    />
+                    <input type="date" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                        placeholder="超棒的活動" v-model="nworkDate" />
                     <div class="text-base font-bold">分配工作預算</div>
                     <div class="flex items-center justify-start space-x-3">
                         <span class="italic font-bold">$</span>
-                        <input
-                            type="number"
-                            class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                            placeholder="10000"
-                            v-model="nworkBudget"
-                        />
+                        <input type="number" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                            placeholder="10000" v-model="nworkBudget" />
                     </div>
 
                     <div class="text-base font-bold">工作說明</div>
@@ -314,10 +301,8 @@ const toggleModal_fail = () => {
                     class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
                     新增
                 </button>
-                <button
-                    @click="toggleModal()"
-                    class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold"
-                >
+                <button @click="toggleModal()"
+                    class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold">
                     取消
                 </button>
             </div>
@@ -331,14 +316,14 @@ const toggleModal_fail = () => {
                 <div id="options" class="inline-flex justify-between my-4 w-full">
                     <div id="optionsLeft" class="inline-flex justify-around">
                         <div id="radios">
-                            <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1"
-                                 />
+                            <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" />
                             <label class="radioLable text-base" for="radio1" @click="job_F_take()">完成</label>
 
                             <input id="radio2" class="radioInput hidden " type="radio" name="radio" value="radio2" />
                             <label class="radioLable text-base" for="radio2" @click="job_NF_take()">未完成</label>
 
-                            <input id="radio3" class="radioInput hidden " type="radio" name="radio" value="radio3" checked/>
+                            <input id="radio3" class="radioInput hidden " type="radio" name="radio" value="radio3"
+                                checked />
                             <label class="radioLable text-base" for="radio3" @click="job_take()">全部</label>
                         </div>
 
@@ -346,37 +331,23 @@ const toggleModal_fail = () => {
                             <label for="simple-search" class=""></label>
                             <div class="relative w-full">
                                 <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                                    <svg
-                                        aria-hidden="true"
-                                        class="w-5 h-5 text-gray-500"
-                                        fill="currentColor"
-                                        viewBox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            fill-rule="evenodd"
+                                    <svg aria-hidden="true" class="w-5 h-5 text-gray-500" fill="currentColor"
+                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
                                             d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                            clip-rule="evenodd"
-                                        ></path>
+                                            clip-rule="evenodd"></path>
                                     </svg>
                                 </div>
-                                <input
-                                    type="text"
-                                    id="simple-search"
+                                <input type="text" id="simple-search"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
-                                    placeholder="Search"
-                                    required
-                                />
+                                    placeholder="Search" required />
                             </div>
                         </form>
                     </div>
 
                     <div id="optionsRight" class="flex justify-end align-center">
-                        <button
-                            id="addNewWorkButton"
-                            @click="toggleModal()"
-                            class="bg-transparent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                        >
+                        <button id="addNewWorkButton" @click="toggleModal()"
+                            class="bg-transparent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
                             新增工作
                         </button>
                     </div>
@@ -414,34 +385,6 @@ const toggleModal_fail = () => {
                                     還剩
                                     <div class="mx-2 text-[#c70000]">{{ item.Finish_dead_line }}</div>
                                     天
-                                </div>
-                            </div>
-                            <!-- <div class="back h-full hidden flex flex-column pt-6">
-                                <div class="backTitle text-2xl font-bold mb-10 text-center ">工作追蹤</div>
-                                <div class="backBody h-full w-full y-overflow">
-                                    <div
-                                        class="backText text-base font-bold mb-8 ml-8 inline-flex justify-start items-center"
-                                    >
-                                        <div class="nowrap">完成項目</div>
-                                        <div class="text-base ml-20 italic">{{ item.countY }} / {{ item.count }}</div>
-                                    </div>
-
-                                    <div
-                                        class="backText text-base font-bold mb-8 ml-8 inline-flex justify-start items-center"
-                                    >
-                                        <div class="nowrap">預算支出</div>
-                                        <div class="text-base ml-20 italic">
-                                            ${{ item.job_expenditure }} / ${{ item.job_budget }}
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="backText text-base font-bold mb-8 ml-8 inline-flex justify-start items-center"
-                                    >
-                                        <div class="nowrap">到期時間</div>
-                                        <div class="text-base ml-20 italic">
-                                            {{ item.time }}
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </router-link>
@@ -566,7 +509,6 @@ const toggleModal_fail = () => {
     grid-column-gap: 1rem;
 }
 
-/*  */
 body {
     height: 100%;
 }
@@ -671,7 +613,7 @@ body {
     border-right: 1px solid #52708f;
 }
 
-.radioInput:checked + .radioLable {
+.radioInput:checked+.radioLable {
     background: #52708f;
 }
 </style>
