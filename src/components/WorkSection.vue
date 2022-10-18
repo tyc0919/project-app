@@ -77,6 +77,7 @@ function take_work() {
 }
 take_work()
 
+
 /* 獲得工作內容 */
 
 /* 更新工作 */
@@ -137,8 +138,8 @@ async function deleteWork() {
 
 /* 獲得工作細項 */
 
-function take_job_detail() {
-    axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/job_detail/")
+async function take_job_detail() {
+    await axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/job_detail/")
         .then(response => {
             job_detail.value = response.data
         }
@@ -158,6 +159,13 @@ function take_job_detail() {
         })
 }
 take_job_detail()
+
+async function take_job_detail_test(){
+    take_job_detail()
+    messageS.value = "成功更新活動狀態"
+    toggleModal_success()
+}
+
 
 function take_job_detailF() {
     axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/job_detail/")
@@ -338,11 +346,11 @@ function newJobDetail() {
 
                     <!-- 工作細項 -->
                     <template v-for="item in job_detail_Y" :key="item.job_detail_id">
-                        <JobDetail :jobDetail=item @refresh="take_job_detail"></JobDetail>
+                        <JobDetail :jobDetail=item @refresh="take_job_detail" @refresh2="take_job_detail_test"></JobDetail>
                     </template>
 
                     <template v-for="item in job_detail_N" :key="item.job_detail_id">
-                        <JobDetail :jobDetail=item @refresh="take_job_detail"></JobDetail>
+                        <JobDetail :jobDetail=item @refresh="take_job_detail" @refresh2="take_job_detail_test"></JobDetail>
                     </template>
                     <!-- 工作細項 -->
                 </div>

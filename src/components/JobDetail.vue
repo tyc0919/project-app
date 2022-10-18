@@ -6,10 +6,14 @@ import { getCookie } from '../assets/modules'
 import { useRoute } from "vue-router";
 import { useRouter } from "vue-router";
 
-const emit = defineEmits(["refresh"])
+const emit = defineEmits(["refresh","refresh2"])
 
 function refresh() {
     emit('refresh')
+}
+
+function refresh2(){
+    emit('refresh2')
 }
 
 let csrftoken = getCookie()
@@ -93,6 +97,7 @@ async function deleteJobDetail() {
 /* 刪除工作細項 */
 
 /* 工作細項狀態 */
+let xdxd
 async function statusJobDetail() {
     let jdstatus = props.jobDetail.status
 
@@ -110,15 +115,11 @@ async function statusJobDetail() {
 
     await axios.post("/api/job-detail/status/", data, config)
         .then(function (response) {
-            messageS.value = "工作細項狀態更新成功"
-            toggleModal_success()
         })
         .catch(function (error) {
-            messageF.value = "工作細項狀態更新失敗"
-            toggleModal_fail()
         })
 
-    refresh()
+    refresh2()
 }
 /* 工作細項狀態 */
 

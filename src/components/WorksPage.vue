@@ -111,9 +111,6 @@ async function job_NF_take() {
 
 }
 
-
-
-
 /* 篩選 */
 
 /*  取出活動相關工作 */

@@ -9,11 +9,8 @@ import axios from "axios";
 
 /* 取得使用者帳號 */
 const user_data = ref()
-let activity_data = ref("")
 const route = useRoute()
 const router = useRouter()
-const works = ref([])
-const file = ref(null)
 let csrftoken = getCookie()
 let config = {
     headers: {
@@ -22,20 +19,25 @@ let config = {
     mode: 'same-origin'
 }
 
+const works = ref([])
+const file = ref(null)
+let activity_data = ref("")
 let messageS = ref("")
 let messageF = ref("")
 let user_e
 let formData = new FormData()
+let finishStatus = ref(false)
+let publicStatus = ref(false)
 
 /* 活動資訊 */
-function take_activity() {
-    axios.get("/api/userprofile/")
+async function take_activity() {
+    await axios.get("/api/userprofile/")
         .then(response => {
             user_data.value = response.data;
             user_e = user_data.value.user_email
         })
 
-    axios.get("/api/activity/" + route.params.EventId + "/")
+    await axios.get("/api/activity/" + route.params.EventId + "/")
         .then(response => {
             activity_data.value = response.data
             let temp = new Date(activity_data.value.post_time)
@@ -44,6 +46,21 @@ function take_activity() {
         .catch(error => {
             console.log(error)
         })
+
+    if (activity_data.value.is_finished == 1) {
+        finishStatus.value = true
+    }
+    else {
+        finishStatus.value = false
+    }
+
+    if (activity_data.value.is_public == 1) {
+        publicStatus.value = true
+    }
+    else {
+        publicStatus.value = false
+    }
+
 }
 
 take_activity()
@@ -69,9 +86,9 @@ take_activity()
 /* 取得工作列表 */
 
 /* 完成活動 */
-function finish_activity() {
+async function finish_activity() {
     var yesNo1 = document.querySelector('input[name="test1"]:checked').value;
-    axios.post('/api/activity/finish/',
+    await axios.post('/api/activity/finish/',
         {
             "activity_id": route.params.EventId,
             "is_finished": yesNo1
@@ -85,14 +102,15 @@ function finish_activity() {
             messageF.value = error.data.error
             toggleModal_fail()
         })
+    take_activity()
 }
 /* 完成活動 */
 
 /* 發布活動 */
-function publish_Activity() {
+async function publish_Activity() {
     var yesNo2 = document.querySelector('input[name="test2"]:checked').value;
     console.log(yesNo2)
-    axios.post('/api/activity/publish/',
+    await axios.post('/api/activity/publish/',
         {
             "activity_id": route.params.EventId,
             "is_public": yesNo2
@@ -106,6 +124,7 @@ function publish_Activity() {
             messageF.value = error.data.error
             toggleModal_fail()
         })
+        take_activity()
 }
 /* 發布活動 */
 
@@ -154,23 +173,23 @@ async function update_Activity() {
         })
 
     await axios.post("/api/upload/activity_pic/", formData, configf)
-        .then(function(response){
+        .then(function (response) {
             testS2 = true
         })
         .catch(function (error) {
             testF2 = true
         })
 
-    if (testS1 & testS2){
+    if (testS1 & testS2) {
         messageS.value = "更新成功"
         toggleModal_success()
     }
-    else if(testS1 & testF2){
+    else if (testS1 & testF2) {
         console.log("圖片無法更新")
         messageF.value = "活動名稱及活動簡介已更新，但圖片無法更新"
         toggleModal_fail()
     }
-    else{
+    else {
         messageF.value = "更新失敗"
         toggleModal_fail()
     }
@@ -245,12 +264,21 @@ const toggleModal_fail = () => {
 
                 <form action="">
                     <div class="flex justify-around w-full">
-                        <div class="button hover" @click="toggleModal_finish()">
+                        
+                        <div v-if="finishStatus" class="button2 hover2" @click="toggleModal_finish()">
                             <input type="button" value="完成活動">
                         </div>
-                        <div class="button hover" @click="toggleModal_publish()">
+                        <div v-else class="button hover" @click="toggleModal_finish()" id="Finish_btn">
+                            <input type="button" value="完成活動">
+                        </div>
+
+                        <div v-if="publicStatus" class="button2 hover2" @click="toggleModal_publish()">
                             <input type="button" value="發布活動">
                         </div>
+                        <div v-else class="button hover" @click="toggleModal_publish()" id="Public_btn">
+                            <input type="button" value="發布活動">
+                        </div>
+
                         <div class="button hover" @click="toggleModal_update()">
                             <input type="button" value="編輯活動">
                         </div>
@@ -581,12 +609,26 @@ const toggleModal_fail = () => {
     font-size: 1.5rem;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
+.button2{
+    width: 250px;
+    height: 45px;
+    line-height: 45px;
+    background-color: green;
+    margin: 1.5rem;
+    color: white;
+    text-align: center;
+    font-size: 1.5rem;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
 
 .hover:hover {
     background-color: white;
     color: #1D5E9F;
 }
-
+.hover2:hover {
+    background-color: white;
+    color: green;
+}
 .hover:nth-of-type(4):hover {
     background-color: #FF0000;
     color: white;
