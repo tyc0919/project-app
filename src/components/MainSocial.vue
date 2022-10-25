@@ -25,6 +25,8 @@ const getData = async () => {
     // add total starCount into each activity
     for (let s of socialData.value) {
         let stars = [];
+        s["total_star"] = 0
+        s['star_percent'] = "0%"
         await axios.get('/api/social/' + s.id + '/review/').then(function (response) {
             if (response.data.length > 0) {
                 let total = 0
@@ -34,9 +36,6 @@ const getData = async () => {
                 }
                 s["total_star"] = total / stars.length
                 s['star_percent'] = (s["total_star"] * 20).toString() + "%"
-            } else {
-                s["total_star"] = 0
-                s['star_percent'] = "0%"
             }
         })
     }
@@ -77,7 +76,7 @@ getData()
             <!--按鈕列-->
 
             <!--主要內容-->
-            <router-link v-for="(item, index) of pages[pageNumber-1]"
+            <router-link v-for="(item, index) of pages[pageNumber - 1]"
                 :to="{ name: 'post', params: { PostId: item.id } }">
                 <SocialPost :title="item.activity_name" :owner="item.owner" :rating="item.star_percent"
                     :content="item.content"></SocialPost>
@@ -87,21 +86,70 @@ getData()
         <!--貼文、按鈕-->
 
         <!--換頁-->
-        <div class="pagination">
-            <ul>
-                <li v-if="pageNumber - 1 > 0" @click="changePage(pageNumber-1)" class="prev">上一頁</li>
-                <li class="number current">{{pageNumber}}</li>
-                <li v-if="pageNumber+1 <= pages.length" @click="changePage(pageNumber + 1)" class="number">
-                    {{pageNumber+1}}
-                </li>
-                <li v-if="pageNumber + 2 <= pages.length" @click="changePage(pageNumber + 2)" class="number">
-                    {{pageNumber + 2}}
-                </li>
-                <li class="dot">...</li>
-                <li @click="changePage(pages.length)" class="number">{{pages.length}}</li>
-                <li v-if="pageNumber < pages.length" @click="changePage(pageNumber+1)" class="next">下一頁</li>
-            </ul>
+        <div class="flex justify-center pb-10">
+            <nav aria-label="Page navigation example">
+                <ul class="inline-flex -space-x-px text-xl shadow-primary">
+                    <li v-if="pageNumber - 1 > 0" @click="changePage(pageNumber - 1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 ml-0 rounded-l-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        上一頁
+                    </li>
+                    <li v-else
+                        class="shadow-none text-opacity-30 bg-white border border-gray-300 text-gray-500 rounded-l-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 ">
+                        上一頁
+                    </li>
+                    <li v-if="pageNumber - 2 > 1" @click="changePage(1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        1
+                    </li>
+                    <li v-if="pageNumber - 2 > 1"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        ...
+                    </li>
+
+                    <li v-if="pageNumber - 2 >= 1" @click="changePage(pageNumber - 2)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        {{ pageNumber - 2 }}
+                    </li>
+                    <li v-if="pageNumber - 1 >= 1" @click="changePage(pageNumber - 1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        {{ pageNumber - 1 }}
+                    </li>
+
+                    <li
+                        class="bg-blue-50 border border-gray-300 text-blue-600 hover:bg-blue-100 hover:text-blue-700 py-2 px-3 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
+                        {{ pageNumber }}
+                    </li>
+
+                    <li v-if="pageNumber + 1 <= pages.length" @click="changePage(pageNumber + 1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        {{ pageNumber + 1 }}
+                    </li>
+                    <li v-if="pageNumber + 2 <= pages.length" @click="changePage(pageNumber + 2)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        {{ pageNumber + 2 }}
+                    </li>
+
+                    <li v-if="pageNumber + 2 < pages.length"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        ...
+                    </li>
+                    <li v-if="pageNumber + 2 < pages.length" @click="changePage(pages.length)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        {{ pages.length }}
+                    </li>
+
+                    <li v-if="pageNumber < pages.length" @click="changePage(pageNumber + 1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-r-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        下一頁
+                    </li>
+                    <li v-else
+                        class="shadow-none text-opacity-30 bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-r-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        下一頁
+                    </li>
+                </ul>
+            </nav>
         </div>
+
 
         <!--換頁-->
     </div>
