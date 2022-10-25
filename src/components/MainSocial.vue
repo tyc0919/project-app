@@ -3,36 +3,57 @@ import SocialPost from './SocialPost.vue'
 import { ref } from 'vue'
 import axios from 'axios'
 
-let socialData = ref([])
-let reviewData = ref([])
-let reviewRating = ref([])
-let ratingPercent = ref([])
-axios
-    .get('/api/social/')
-    .then(function (response) {
-        socialData.value = response.data
-    })
-    .then(async function (res) {
-        for (let s of socialData.value) {
-            await axios.get('/api/social/' + s.id + '/review/').then(function (response) {
-                reviewData.value.push(response.data)
-            })
-        }
-        for (let rd of reviewData.value) {
-            reviewRating.value.length = 0
-            if (rd.length != 0) {
-                for (let i = 0; i < rd.length; i++) {
-                    reviewRating.value.push(rd[i].review_star)
-                }
-            } else {
-                reviewRating.value.push(0)
-            }
-            let tempSum = reviewRating.value.reduce((previousValue, currentValue) => previousValue + currentValue)
-            let tempPercent = ((tempSum / reviewRating.value.length) * 20).toString() + '%'
-            ratingPercent.value.push(tempPercent)
-        }
 
-    })
+const quantum = 2;
+let pageNumber = ref(1);
+
+// get data
+let socialData = ref([])
+let pages = ref([])
+
+const changePage = (targetPage) => {
+    pageNumber.value = targetPage
+}
+
+const getData = async () => {
+    // add social data
+    await axios.get('/api/social/')
+        .then(function (response) {
+            socialData.value = response.data
+        })
+
+    // add total starCount into each activity
+    for (let s of socialData.value) {
+        let stars = [];
+        await axios.get('/api/social/' + s.id + '/review/').then(function (response) {
+            if (response.data.length > 0) {
+                let total = 0
+                for (let rv of response.data) {
+                    stars.push(rv.review_star)
+                    total += rv.review_star;
+                }
+                s["total_star"] = total / stars.length
+                s['star_percent'] = (s["total_star"] * 20).toString() + "%"
+            } else {
+                s["total_star"] = 0
+                s['star_percent'] = "0%"
+            }
+        })
+    }
+    console.log(socialData.value)
+
+    // divide data to each page
+    let pageData = [];
+    for (let [i, s] of socialData.value.entries()) {
+        pageData.push(s);
+        if (pageData.length >= quantum || i == socialData.value.length - 1) {
+            pages.value.push(pageData)
+            pageData = [];
+        }
+    }
+}
+getData()
+
 </script>
 
 <template>
@@ -56,8 +77,9 @@ axios
             <!--按鈕列-->
 
             <!--主要內容-->
-            <router-link v-for="(item, index) of socialData" :to="{ name: 'post', params: { PostId: item.id } }">
-                <SocialPost :title="item.activity_name" :owner="item.owner" :rating="ratingPercent[index]"
+            <router-link v-for="(item, index) of pages[pageNumber-1]"
+                :to="{ name: 'post', params: { PostId: item.id } }">
+                <SocialPost :title="item.activity_name" :owner="item.owner" :rating="item.star_percent"
                     :content="item.content"></SocialPost>
             </router-link>
             <!--主要內容-->
@@ -67,13 +89,17 @@ axios
         <!--換頁-->
         <div class="pagination">
             <ul>
-                <li class="prev"><span>上一頁</span></li>
-                <li class="number current"><span>1</span></li>
-                <li class="number"><span>2</span></li>
-                <li class="number"><span>3</span></li>
-                <li class="dot"><span>...</span></li>
-                <li class="number"><span>8</span></li>
-                <li class="next"><span>下一頁</span></li>
+                <li v-if="pageNumber - 1 > 0" @click="changePage(pageNumber-1)" class="prev">上一頁</li>
+                <li class="number current">{{pageNumber}}</li>
+                <li v-if="pageNumber+1 <= pages.length" @click="changePage(pageNumber + 1)" class="number">
+                    {{pageNumber+1}}
+                </li>
+                <li v-if="pageNumber + 2 <= pages.length" @click="changePage(pageNumber + 2)" class="number">
+                    {{pageNumber + 2}}
+                </li>
+                <li class="dot">...</li>
+                <li @click="changePage(pages.length)" class="number">{{pages.length}}</li>
+                <li v-if="pageNumber < pages.length" @click="changePage(pageNumber+1)" class="next">下一頁</li>
             </ul>
         </div>
 
