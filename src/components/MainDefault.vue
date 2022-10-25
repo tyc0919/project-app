@@ -24,10 +24,7 @@ const toggleModal = (modalName) => {
     modalController[modalName].value = !modalController[modalName].value
 }
 
-axios.get('/api/activity/', config).then(function (response) {
-    activityData.value = response.data
-})
-axios.get('/api/userprofile/', config).then(function (response) {
+axios.get('/api/userprofile/').then(function (response) {
     let temp = response.data
     activityOwner = temp.user_email
 })
@@ -65,7 +62,7 @@ const addActivity = async () => {
                 config
             )
             .then(function (res) {
-                axios.get('/api/activity/', config).then(function (response) {
+                axios.get('/api/activity/').then(function (response) {
                     activityData.value = response.data
                 })
                 toggleModal('addActivityModal')
@@ -87,6 +84,40 @@ const addActivity = async () => {
         }
     }
 }
+
+const show_f = () => {
+    axios.get('/api/activity/').then(function (response) {
+        let temp = []
+        temp = response.data
+        activityData.value.length = 0
+        for (let i of temp) {
+            if (i.is_finished == 1) {
+                activityData.value.push(i)
+                console.log(activityData.value)
+            }
+        }
+    })
+}
+const show_un = () => {
+    axios.get('/api/activity/').then(function (response) {
+        let temp = []
+        temp = response.data
+        activityData.value.length = 0
+        for (let i of temp) {
+            if (i.is_finished == 0) {
+                activityData.value.push(i)
+                console.log(activityData.value)
+            }
+        }
+    })
+}
+const show_all = () => {
+    axios.get('/api/activity/').then(function (response) {
+        activityData.value = response.data
+        console.log(activityData.value)
+    })
+}
+show_all()
 </script>
 
 <template>
@@ -147,12 +178,11 @@ const addActivity = async () => {
                         />
                     </div>
                     <span class="text-red-500">{{ errorMessage.budgetErrorMessage.value }}</span>
-                    <div class="text-base font-bold">活動圖片</div>
-                    <input id="activityImage" type="file" />
+
                     <div class="text-base font-bold">活動簡介</div>
                     <textarea
                         id="activityContent"
-                        class="text-base font-bold border border-2 border-slate-400 w-full"
+                        class="px-1 py-1 text-base border border-2 border-slate-400 w-full"
                         placeholder="這次的活動，我們將要帶領大家..."
                     ></textarea>
                     <span class="text-red-500">{{ errorMessage.descriptionErrorMessage.value }}</span>
@@ -186,12 +216,12 @@ const addActivity = async () => {
             <div id="options" class="flex items-center my-4">
                 <div class="inline-flex justify-around">
                     <div id="radios">
-                        <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" checked />
-                        <label class="radioLable text-base" for="radio1">完成</label>
+                        <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" />
+                        <label class="radioLable text-base" for="radio1" @click="show_f()">完成</label>
                         <input id="radio2" class="radioInput hidden" type="radio" name="radio" value="radio2" />
-                        <label class="radioLable text-base" for="radio2">未完成</label>
-                        <input id="radio3" class="radioInput hidden" type="radio" name="radio" value="radio3" />
-                        <label class="radioLable text-base" for="radio3">全部</label>
+                        <label class="radioLable text-base" for="radio2" @click="show_un()">未完成</label>
+                        <input id="radio3" class="radioInput hidden" type="radio" name="radio" value="radio3" checked />
+                        <label class="radioLable text-base" for="radio3" @click="show_all()">全部</label>
                     </div>
                 </div>
             </div>

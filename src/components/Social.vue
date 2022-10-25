@@ -1,11 +1,24 @@
-<script setup></script>
+<script setup>
+import axios from 'axios'
+import { useRoute } from 'vue-router'
+
+let socialData = []
+let activity
+const route = useRoute()
+
+axios.get('/api/social/' + route.params.PostId).then(function (response) {
+    socialData = response.data
+    activity = socialData.activity_name
+    document.getElementById('title').innerHTML = activity
+})
+</script>
 
 <template>
     <div class="wrapper">
         <div class="bookmark h-12 flex">
             <div class="w-full flex text-center items-center justify-between">
                 <router-link :to="{ name: 'post' }" class="flex-[0.3_0.3_0%] mask main-switch">
-                    <div class="w-half px-4 h-full flex items-center mask_p">北商大母親節活動</div>
+                    <div id="title" class="w-half px-4 h-full flex items-center mask_p">北商大母親節活動</div>
                 </router-link>
                 <router-link :to="{ name: 'main-default' }" class="flex items-center pr-4 mx-3">
                     <img src="/src/assets/images/home.svg" class="h-8" />

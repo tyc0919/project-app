@@ -1,52 +1,105 @@
 <script setup>
 import MainWorksCard from './MainWorksCard.vue'
 import axios from 'axios'
-import { getCookie } from '../assets/modules'
 import { ref } from 'vue'
 
-let workData = ref([])
+let workData = []
 let work = ref([])
 let activityData = ref([])
 let activityName = ref([])
 
-let csrftoken = getCookie()
-let config = {
-    headers: {
-        'X-CSRFToken': csrftoken,
-    },
-    mode: 'same-origin',
+const show_f = async () => {
+    workData.length = 0
+    work.value.length = 0
+    activityName.value.length = 0
+    axios
+        .get('/api/activity/')
+        .then(async function (response) {
+            activityData.value = response.data
+
+            for (let a of activityData.value) {
+                await axios.get('/api/activity/' + a.id + '/job/').then(function (response) {
+                    let temp = response.data
+                    for (let i of temp) {
+                        if (i.status == 3) {
+                            workData.push(i)
+                        }
+                    }
+                })
+            }
+        })
+        .finally(function (response) {
+            for (let wd of workData) {
+                work.value.push(wd)
+                for (let a of activityData.value) {
+                    if (a.id == wd.activity) {
+                        activityName.value.push(a.activity_name)
+                    }
+                }
+            }
+        })
 }
 
-async function getActivityName() {
-    try {
-        axios
-            .get('/api/activity/', config)
-            .then(async function (response) {
-                activityData.value = response.data
+const show_un = () => {
+    workData.length = 0
+    work.value.length = 0
+    activityName.value.length = 0
+    axios
+        .get('/api/activity/')
+        .then(async function (response) {
+            activityData.value = response.data
 
+            for (let a of activityData.value) {
+                await axios.get('/api/activity/' + a.id + '/job/').then(function (response) {
+                    let temp = response.data
+                    for (let i of temp) {
+                        if (i.status == 1) {
+                            workData.push(i)
+                        }
+                    }
+                })
+            }
+        })
+        .finally(function (response) {
+            for (let wd of workData) {
+                work.value.push(wd)
                 for (let a of activityData.value) {
-                    await axios.get('/api/activity/' + a.id + '/job/', config).then(function (response) {
-                        workData.value.push(response.data)
-                    })
+                    if (a.id == wd.activity) {
+                        activityName.value.push(a.activity_name)
+                    }
                 }
-            })
-            .finally(function (response) {
-                for (let wd of workData.value) {
-                    for (let w of wd) {
-                        work.value.push(w)
-                        for (let a of activityData.value) {
-                            if (a.id == w.activity) {
-                                activityName.value.push(a.activity_name)
-                            }
+            }
+        })
+}
+const show_all = () => {
+    workData.length = 0
+    work.value.length = 0
+    activityName.value.length = 0
+    axios
+        .get('/api/activity/')
+        .then(async function (response) {
+            activityData.value = response.data
+
+            for (let a of activityData.value) {
+                await axios.get('/api/activity/' + a.id + '/job/').then(function (response) {
+                    workData.push(response.data)
+                })
+            }
+        })
+        .finally(function (response) {
+            for (let wd of workData) {
+                for (let w of wd) {
+                    work.value.push(w)
+                    for (let a of activityData.value) {
+                        if (a.id == w.activity) {
+                            activityName.value.push(a.activity_name)
                         }
                     }
                 }
-            })
-    } catch (error) {
-        throw new Error(error)
-    }
+            }
+        })
 }
-getActivityName()
+show_all()
 </script>
 
 <template>
@@ -55,12 +108,12 @@ getActivityName()
         <div id="options" class="inline-flex justify-between items-center my-4 w-full">
             <div class="inline-flex justify-around">
                 <div id="radios">
-                    <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" checked />
-                    <label class="radioLable text-base" for="radio1">完成</label>
+                    <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" />
+                    <label class="radioLable text-base" for="radio1" @click="show_f">完成</label>
                     <input id="radio2" class="radioInput hidden" type="radio" name="radio" value="radio2" />
-                    <label class="radioLable text-base" for="radio2">未完成</label>
-                    <input id="radio3" class="radioInput hidden" type="radio" name="radio" value="radio3" />
-                    <label class="radioLable text-base" for="radio3">全部</label>
+                    <label class="radioLable text-base" for="radio2" @click="show_un">未完成</label>
+                    <input id="radio3" class="radioInput hidden" type="radio" name="radio" value="radio3" checked />
+                    <label class="radioLable text-base" for="radio3" @click="show_all">全部</label>
                 </div>
             </div>
         </div>
@@ -81,7 +134,7 @@ getActivityName()
             </router-link>
         </div>
 
-        <div class="flex justify-center pb-10">
+        <div class="flex justify-center py-10">
             <nav aria-label="Page navigation example">
                 <ul class="inline-flex -space-x-px">
                     <li>
