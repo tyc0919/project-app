@@ -145,7 +145,7 @@ const post_passwd = () => {
                 <div class="pic">
                     <picture>
                         <label for="image">
-                            <input @change="fileUpload()" ref="file" type="file" id="image" class="file_img" />
+                            <input @change="fileUpload()" ref="file" type="file" id="image" class="file_img" accept="image/*"/>
                             <img src="../assets/images/FirstPart.png" alt="" class="cursor-pointer">
                         </label>
                     </picture>

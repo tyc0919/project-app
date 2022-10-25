@@ -1,4 +1,24 @@
-<script setup></script>
+<script setup>
+import axios from "axios";
+import { ref } from "vue";
+import { useRoute } from "vue-router";
+
+const takeActivityTitle = () => {
+    axios.get("/api/activity/" + route.params.EventId + "/")
+        .then(response => {
+            activity_data.value = response.data
+        })
+        .catch(error => {
+            console.log(error)
+        })
+}
+
+let activity_data = ref("")
+const route = useRoute()
+
+takeActivityTitle()
+
+</script>
 
 <template>
     <div class="wrapper">
@@ -6,7 +26,7 @@
             <div class="w-full flex text-center items-center">
                 <router-link :to="{ name: 'event-works' }" class="flex-1 mask main-switch">
                     <div class="w-half px-4 h-full flex items-center mask_p">
-                        北商大母親節活動
+                        {{ activity_data.activity_name }}
                     </div>
                 </router-link>
 

@@ -1,14 +1,15 @@
 <script setup>
-import { ref } from "vue";
+import Modal from './Modal.vue';
+import axios from "axios";
+import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useRouter } from "vue-router";
 import { getCookie } from '../assets/modules'
-import Modal from './Modal.vue';
-import axios from "axios";
-
+import { usePageStoretest } from "../stores/page"
 
 /* 取得使用者帳號 */
 const user_data = ref()
+const store = usePageStoretest()
 const route = useRoute()
 const router = useRouter()
 let csrftoken = getCookie()
@@ -19,7 +20,6 @@ let config = {
     mode: 'same-origin'
 }
 
-const works = ref([])
 const file = ref(null)
 let activity_data = ref("")
 let messageS = ref("")
@@ -66,25 +66,6 @@ async function take_activity() {
 take_activity()
 /* 活動資訊 */
 
-/* 取得工作列表 */
-// function add_tab(serial_number, title){
-//     works.value.push({
-//         serial_number: serial_number,
-//         title: title
-//     })
-//     console.log(works.value)
-// }
-// axios.get("/api/activity/" + route.params.EventId + "/job/")
-//     .then(response => {
-//         for (let i = 0; i < response.data.length; i++) {
-//             works.value[i] = {
-//                 id: response.data[i].serial_number,
-//                 name: response.data[i].title
-//             }
-//         }
-//     })
-/* 取得工作列表 */
-
 /* 完成活動 */
 async function finish_activity() {
     var yesNo1 = document.querySelector('input[name="test1"]:checked').value;
@@ -124,7 +105,7 @@ async function publish_Activity() {
             messageF.value = error.data.error
             toggleModal_fail()
         })
-        take_activity()
+    take_activity()
 }
 /* 發布活動 */
 
@@ -264,7 +245,7 @@ const toggleModal_fail = () => {
 
                 <form action="">
                     <div class="flex justify-around w-full">
-                        
+
                         <div v-if="finishStatus" class="button2 hover2" @click="toggleModal_finish()">
                             <input type="button" value="完成活動">
                         </div>
@@ -292,13 +273,13 @@ const toggleModal_fail = () => {
 
             <div class="w-1/3 border-solid border border-black m-1.5 mr-10 bg-white relative">
                 <p class="text-base2x m-1.5 text-[696969]"> {{ activity_data.activity_name }} </p>
-                <p class="text-base m-1.5 text-[696969]">提案人 {{activity_data.owner}} </p>
+                <p class="text-base m-1.5 text-[696969]">提案人 {{ activity_data.owner }} </p>
                 <p class="text-base m-1.5 text-[696969] overflow-y intro2">
-                    {{activity_data.activity_description}}
+                    {{ activity_data.activity_description }}
                 </p>
                 <div class="absolute bottom-down w-full">
                     <hr class="m-1.5 border-3">
-                    <p class="text-base m-1.5 text-[696969]">建立日期 {{activity_data.post_time}}</p>
+                    <p class="text-base m-1.5 text-[696969]">建立日期 {{ activity_data.post_time }}</p>
                 </div>
             </div>
         </div>
@@ -407,7 +388,7 @@ const toggleModal_fail = () => {
                 </div>
             </template>
             <template #footer>
-                <button @click="toggleModal_update(),update_Activity()"
+                <button @click="toggleModal_update(), update_Activity()"
                     class="py-2 mr-2  px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
                     更改
                 </button>
@@ -494,18 +475,16 @@ const toggleModal_fail = () => {
     <!-- eventBody start-->
 
     <div class="bookmark2  mx-8 relative">
-        <router-link class="bookmark2-box text-xl bg-white" :to="{name: 'event-works'}">
+
+        <router-link class="bookmark2-box text-xl bg-white" :to="{ name: 'event-works' }">
             所有工作
         </router-link>
 
-        <router-link class="bookmark2-box text-xl bg-white" v-for="work in works"
-            :to="{name: 'event-work-detail', params: {WorkId: work.id}}">
-            {{work.name}}
-        </router-link>
+        <router-link class="bookmark2-box text-xl bg-white" v-for="work in store.tabs"
+            :to="{ name: 'event-work-detail', params: { WorkId: work.id } }">
+            {{ work.title }}
 
-        <!-- <router-link class="bookmark2-box text-xl bg-white" :to="{name: 'event-work-detail', params: {WorkId: 2}}">
-                工作2dsdsdsdsdsdsdsdsdsdsddsdsdsdsdsdsdsdsdsdsdsdsdsd
-            </router-link> -->
+        </router-link>
 
         <a class="bookmark2-menu">
             <svg width="9" height="31" viewBox="0 0 9 31" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -516,7 +495,7 @@ const toggleModal_fail = () => {
         </a>
 
     </div>
-    <!-- <WorksPage></WorksPage> -->
+
     <router-view :key="$route.path">
 
     </router-view>
@@ -609,7 +588,8 @@ const toggleModal_fail = () => {
     font-size: 1.5rem;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
-.button2{
+
+.button2 {
     width: 250px;
     height: 45px;
     line-height: 45px;
@@ -625,10 +605,12 @@ const toggleModal_fail = () => {
     background-color: white;
     color: #1D5E9F;
 }
+
 .hover2:hover {
     background-color: white;
     color: green;
 }
+
 .hover:nth-of-type(4):hover {
     background-color: #FF0000;
     color: white;

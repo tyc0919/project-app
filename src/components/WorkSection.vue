@@ -77,7 +77,6 @@ function take_work() {
 }
 take_work()
 
-
 /* 獲得工作內容 */
 
 /* 更新工作 */
@@ -135,6 +134,21 @@ async function deleteWork() {
     })
 }
 /* 刪除工作 */
+
+/* 刪除分頁 */
+const delete_tab = (msg) => {
+    console.log(msg)
+    axios.get("/api/activity/" + route.params.EventId + "/job/" + msg + "/")
+        .then(response => {
+            let temp = {
+                id : response.data.id,
+                title : response.data.title
+            }
+            store.pushin(temp)
+        }
+        )
+}
+/* 刪除分頁 */
 
 /* 獲得工作細項 */
 
