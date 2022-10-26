@@ -92,107 +92,61 @@ const addActivity = async () => {
     }
 }
 
-const addUserName = async (targetData) =>{
+const addUserName = async (targetData) => {
     let activityId = targetData.id
     await axios.get("/api/activity/<int:activity_id>/").then(response => {
 
     })
 }
+// 更換篩選條件
+const changeFilter = async (status) => {
+    pages.value = []
 
-const show_f = async () => {
-    pageNumber.value = 1
-    pages.value.length = 0
-    await axios.get('/api/activity/').then(function (response) {
-        let temp = []
-        temp = response.data
-        activityData.value.length = 0
-        for (let i of temp) {
-            if (i.is_finished == 1) {
-                activityData.value.push(i)
-                console.log(activityData.value)
-            }
+    let candidates = []
+    for (let activity of activityData.value) {
+        if (activity.is_finished == status) {
+            candidates.push(activity)
         }
-    })
-    //add user_name into data
-    for(let activity of activityData.value){
-        await axios.get("/api/activity/"+ activity.id +"/").then(response =>{
-            activity["user_name"] = response.data.user_name
-        })
     }
-    // divide data to each page
+
     let pageData = []
-    for (let [i, s] of activityData.value.entries()) {  
-        pageData.push(s)
-        if (pageData.length >= quantum || i == activityData.value.length - 1) {
-            pages.value.push(pageData)
-            pageData = []
-        }
-    }
-
-
-}
-const show_un = async () => {
-    pageNumber.value = 1
-    pages.value.length = 0
-    await axios.get('/api/activity/').then(function (response) {
-        let temp = []
-        temp = response.data
-        activityData.value.length = 0
-        for (let i of temp) {
-            if (i.is_finished == 0) {
-                activityData.value.push(i)
-                console.log(activityData.value)
-            }
-        }
-    })
-    //add user_name into data
-    for(let activity of activityData.value){
-        await axios.get("/api/activity/"+ activity.id +"/").then(response =>{
-            activity["user_name"] = response.data.user_name
-        })
-    }
-    // divide data to each page
-    let pageData = []
-    for (let [i, s] of activityData.value.entries()) {  
-        pageData.push(s)
-        if (pageData.length >= quantum || i == activityData.value.length - 1) {
+    for (let [index, data] of candidates.entries()) {
+        pageData.push(data)
+        if (pageData.length >= quantum || index == candidates.length - 1) {
             pages.value.push(pageData)
             pageData = []
         }
     }
 }
-
-// const changeFilter = async(status) =>{
-//     pages.value.length = 0
-//     pageNumber.value = 1
-//     for(let data of activityData){
-//         if()
-//     }
-// }
 const show_all = async () => {
     pages.value.length = 0
     pageNumber.value = 1
     await axios.get('/api/activity/').then(function (response) {
         activityData.value = response.data
+
     })
-    
+
     //add user_name into data
-    for(let activity of activityData.value){
-        await axios.get("/api/activity/"+ activity.id +"/").then(response =>{
+    for (let activity of activityData.value) {
+        await axios.get("/api/activity/" + activity.id + "/").then(response => {
             activity["user_name"] = response.data.user_name
         })
     }
     // divide data to each page
     let pageData = []
-    for (let [i, s] of activityData.value.entries()) {  
+    for (let [i, s] of activityData.value.entries()) {
         pageData.push(s)
         if (pageData.length >= quantum || i == activityData.value.length - 1) {
             pages.value.push(pageData)
             pageData = []
         }
     }
+
+
+    console.log(activityData.value)
 }
 show_all()
+
 </script>
 
 <template>
@@ -276,9 +230,9 @@ show_all()
                 <div class="inline-flex justify-around">
                     <div id="radios">
                         <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" />
-                        <label class="radioLable text-base" for="radio1" @click="show_f()">完成</label>
+                        <label class="radioLable text-base" for="radio1" @click="changeFilter(1)">完成</label>
                         <input id="radio2" class="radioInput hidden" type="radio" name="radio" value="radio2" />
-                        <label class="radioLable text-base" for="radio2" @click="show_un()">未完成</label>
+                        <label class="radioLable text-base" for="radio2" @click="changeFilter(0)">未完成</label>
                         <input id="radio3" class="radioInput hidden" type="radio" name="radio" value="radio3" checked />
                         <label class="radioLable text-base" for="radio3" @click="show_all()">全部</label>
                     </div>
@@ -294,7 +248,7 @@ show_all()
 
         <div class="grid grid-cols-3 grid-gap-1rem items-center justify-center my-4">
             <!-- cards -->
-            <router-link v-for="item in pages[pageNumber-1]" :to="{ path: '/events/' + item.id }">
+            <router-link v-for="item in pages[pageNumber - 1]" :to="{ path: '/events/' + item.id }">
                 <MainDeFaultCard :name="item.activity_name" :owner="item.user_name" :tracePercentage="100"
                     :costMoney="item.activity_expenditure" :budgetMoney="item.activity_budget"></MainDeFaultCard>
             </router-link>
