@@ -14,7 +14,6 @@ const props = defineProps({
     rating: String,
     date: String,
 })
-let star = props.rating
 </script>
 
 <template>
@@ -28,7 +27,7 @@ let star = props.rating
                 <!-- ! stars -->
                 <div class="ratings relative mr-2 text-gray-200 text-2xl">
                     <div class="empty_star">★★★★★</div>
-                    <div :style="{ width: star }" class="full_star absolute text-yellow-400">★★★★★</div>
+                    <div :style="{ width: props.rating }" class="full_star absolute text-yellow-400">★★★★★</div>
                 </div>
                 <!-- ! stars -->
                 <div class="review-time text-xl font text-gray-400 cursor-text">
@@ -36,8 +35,8 @@ let star = props.rating
                 </div>
             </div>
 
-            <div class="review-content text-base font-bold">
-                <span class="content-container cursor-text" :class="{ 'ellipsis-4': !show }">
+            <div class="review-content text-base">
+                <span class="content-container cursor-text whitespace-pre-wrap" :class="{ 'ellipsis-4': !show }">
                     {{ content }}
                 </span>
                 <div

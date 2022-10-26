@@ -4,58 +4,87 @@ import Invite from './invite.vue'
 import SocialPageReviewCard from './SocialPageReviewCard.vue'
 import SocialPageWorkCard from './SocialPageWorkCard.vue'
 import BarChart from './BarChart.vue'
-import Modal from './Modal.vue'
 import axios from 'axios'
+import Modal from './Modal.vue'
 import { useRoute } from 'vue-router'
 import { getCookie } from '../assets/modules'
 
 let socialData = ref([])
+let collabData = ref([])
 let workData = ref([])
 let reviewData = ref([])
-let userData = ref([])
+let reviewId = ''
+let userData = []
+let userName = ref()
+let userEmail = ''
+let userComment = ref('')
 let reviewPercentage = ref([])
-let user = ref()
-let activity = ref()
 
-let isDisabled = ref(true)
-
-const route = useRoute()
-const showModal = ref(false)
-const toggleModal = () => {
-    showModal.value = !showModal.value
-    isDisabled.value = true
+let errorMessage = {
+    commentErrorMessage: ref(''),
+    starErrorMessage: ref(),
 }
+const route = useRoute()
 
 axios.get('/api/social/' + route.params.PostId).then(function (response) {
     socialData.value = response.data
-    activity.value = socialData.value.activity_name
     document.getElementById('description').innerHTML = socialData.value.activity_description
 })
 axios.get('/api/activity/' + route.params.PostId + '/job/').then(function (response) {
     workData.value = response.data
 })
 axios.get('/api/userprofile/').then(function (response) {
-    userData.value = response.data
-    user.value = userData.value.user_name
+    userData = response.data
+    userName.value = userData.user_name
+    userEmail = userData.user_email
 })
 
 axios.get('/api/social/' + route.params.PostId + '/review/').then(function (response) {
     reviewData.value = response.data
     ratingPercentage(reviewData.value)
-    console.log(reviewPercentage.value)
+    getCurrentReview()
 })
 
-function ratingPercentage(star) {
+axios.get('/api/activity/' + route.params.PostId + '/collaborator/').then(function (response) {
+    collabData.value = response.data
+})
+
+const showModal_add = ref(false)
+const toggleModal_add = () => {
+    showModal_add.value = !showModal_add.value
+}
+
+const showModal_edit = ref(false)
+const toggleModal_edit = () => {
+    showModal_edit.value = !showModal_edit.value
+}
+
+const getCurrentReview = () => {
+    for (let i of reviewData.value) {
+        if (i.reviewer == userEmail) {
+            userComment.value = i.content
+            reviewId = i.id
+            document.getElementById('' + i.review_star + '').checked = true
+        }
+    }
+}
+const cleanErrorMessage = () => {
+    //  清空錯誤訊息
+    for (let key of Object.keys(errorMessage)) {
+        errorMessage[key].value = ''
+    }
+}
+
+const ratingPercentage = (star) => {
     for (let i of star) {
         let rate = (i.review_star * 20).toString() + '%'
         reviewPercentage.value.push(rate)
     }
 }
-
-function addReview() {
+const editReview = async () => {
+    toggleModal_edit()
     let comment = document.getElementById('comment').value
-    let star = document.querySelector('input[name="rating"]:checked').value
-
+    let star = document.querySelector('input[type=radio]:checked')
     let csrftoken = getCookie()
     let config = {
         headers: {
@@ -64,14 +93,13 @@ function addReview() {
         mode: 'same-origin',
     }
 
-    axios
+    await axios
         .post(
-            '/api/social/post-review/',
+            '/api/social/update-review/',
             {
-                activity_id: route.params.PostId,
-                user_email: userData.value.user_email,
+                id: reviewId,
                 content: comment,
-                review_star: star,
+                review_star: star.value,
             },
             config
         )
@@ -83,80 +111,100 @@ function addReview() {
             })
         })
 }
+const addReview = async () => {
+    getCurrentReview()
+    for (let key of Object.keys(errorMessage)) {
+        errorMessage[key].value = ''
+    }
+    let comment = document.getElementById('comment').value
+    let star = document.querySelector('input[type=radio]:checked')
+    let csrftoken = getCookie()
+    let config = {
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+        mode: 'same-origin',
+    }
 
-function enableBtn() {
-    isDisabled.value = false
+    await axios
+        .post(
+            '/api/social/post-review/',
+            {
+                activity_id: route.params.PostId,
+                user_email: userData.user_email,
+                content: comment,
+                review_star: star.value,
+            },
+            config
+        )
+        .then(async function (res) {
+            await axios.get('/api/social/' + route.params.PostId + '/review/', config).then(function (response) {
+                reviewData.value = response.data
+                reviewPercentage.value.length = 0
+                ratingPercentage(reviewData.value)
+            })
+        })
+    toggleModal_add()
 }
+const reload = () => {
+    window.location.reload()
+}
+cleanErrorMessage()
+getCurrentReview()
 </script>
 
 <template>
-    <!-- <Teleport to="body">
-      
-        <modal :show="showModal" @close="toggleModal()">
+    <!-- 送出評論  -->
+    <Teleport to="body">
+        <modal :show="showModal_add">
             <template #header>
                 <div class="border-b-4 w-full px-4 py-4">
-                    <div class="font-bold text-2xl">{{ activity }}</div>
+                    <div class="font-bold text-2xl">送出成功！</div>
                 </div>
             </template>
-
             <template #body>
-                <div class="overflow-y-auto max-h-96 pr-4">
-                    <div class="reviewer flex justify-start items-center mb-8">
-                        <div class="reviewer-img mr-2"></div>
-                        <div class="reviewer-name text-xl cursor-text">{{ user }}</div>
-                    </div>
-
-                 
-                    <div class="flex justify-center items-end mb-2">
-                        <div class="rating text-2xl">
-                            <input @click="enableBtn()" type="radio" name="rating" value="5" id="5" /><label for="5"
-                                >☆</label
-                            >
-                            <input @click="enableBtn()" type="radio" name="rating" value="4" id="4" /><label for="4"
-                                >☆</label
-                            >
-                            <input @click="enableBtn()" type="radio" name="rating" value="3" id="3" /><label for="3"
-                                >☆</label
-                            >
-                            <input @click="enableBtn()" type="radio" name="rating" value="2" id="2" /><label for="2"
-                                >☆</label
-                            >
-                            <input @click="enableBtn()" type="radio" name="rating" value="1" id="1" /><label for="1"
-                                >☆</label
-                            >
-                        </div>
-                    </div>
-                
-
-                    <div class="flex center mt-8">
-                        <textarea
-                            id="comment"
-                            placeholder="寫下你的評論"
-                            class="p-2 w-full h-48 border border-2 border-black"
-                        ></textarea>
-                    </div>
-                </div>
+                {{ messageS }}
             </template>
-
             <template #footer>
-                <div class="border-t-2 pt-2">
-                    <button
-                        :disabled="isDisabled"
-                        @click="toggleModal(), addReview()"
-                        class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
-                    >
-                        新增
-                    </button>
-                    <button
-                        @click="toggleModal()"
-                        class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold"
-                    >
-                        取消
-                    </button>
-                </div>
+                <button
+                    @click="toggleModal_add(), reload()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
+                >
+                    確定
+                </button>
             </template>
         </modal>
-    </Teleport> -->
+    </Teleport>
+    <!-- 送出評論  -->
+
+    <!-- 編輯評論  -->
+    <Teleport to="body">
+        <modal :show="showModal_edit">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">確定要修改目前的評論嗎？</div>
+                </div>
+            </template>
+            <template #body>
+                {{ messageS }}
+            </template>
+            <template #footer>
+                <button
+                    @click="editReview(), toggleModal_add()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
+                >
+                    確定
+                </button>
+                <button
+                    @click="toggleModal_edit()"
+                    class="py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold"
+                >
+                    取消
+                </button>
+            </template>
+        </modal>
+    </Teleport>
+    <!-- 編輯評論  -->
 
     <div class="mx-12 px-4 py-4">
         <div class="top-container flex justify-between">
@@ -166,20 +214,12 @@ function enableBtn() {
             </div>
 
             <!-- ? people management -->
-            <div class="flex flex-col justify-between w-1/4">
+            <div class="flex flex-col w-1/4">
                 <div class="title w-fit h-fit px-4 py-2 rounded-full bg-white text-2xl text-cyan-800 font-bold my-4">
                     所有人員
                 </div>
                 <div class="invite h-auto bg-white flex flex-col items-center p-4 overflow-y-scroll">
-                    <Invite></Invite>
-                    <Invite></Invite>
-                    <Invite></Invite>
-                    <Invite></Invite>
-                    <Invite></Invite>
-                    <Invite></Invite>
-                    <Invite></Invite>
-                    <Invite></Invite>
-                    <Invite></Invite>
+                    <Invite v-for="item of collabData" :name="item.user_name"></Invite>
                 </div>
             </div>
         </div>
@@ -189,9 +229,7 @@ function enableBtn() {
             <div class="title w-fit px-4 py-2 rounded-full bg-white text-2xl text-cyan-800 font-bold my-4">
                 活動簡介
             </div>
-            <div id="description" class="px-10 text-xl font-bold">
-                2019花在彰化活動將從2月5日到2月19日新春期間，在溪州公園盛大開幕，展出各式的彰化在地花卉，結合彰化縣燈會，邀請全國民眾利用春節期間攜家帶眷，前來彰化參觀走春，並到溪州公園白日看花、晚間遊園賞燈，期間還有各式豐富精采的表演，歡迎來彰化玩！
-            </div>
+            <div id="description" class="px-10 text-xl font-bold"></div>
         </div>
 
         <div class="flex justify-between">
@@ -205,7 +243,7 @@ function enableBtn() {
                 </div>
             </div>
             <!-- ? all works-->
-            <div class="flex flex-col w-auto">
+            <div class="flex flex-col w-1/2">
                 <div class="title w-fit px-4 py-2 rounded-full bg-white text-2xl text-cyan-800 font-bold my-4">
                     所有工作
                 </div>
@@ -226,45 +264,54 @@ function enableBtn() {
                 <div class="overflow-y-auto max-h-96 px-20">
                     <div class="reviewer flex justify-start items-center mb-8">
                         <div class="reviewer-img mr-2"></div>
-                        <div class="reviewer-name text-xl cursor-text">{{ user }}</div>
+                        <div class="reviewer-name text-xl cursor-text">{{ userName }}</div>
                     </div>
 
                     <!-- 星號 -->
                     <div class="flex items-end mb-2">
                         <div class="rating text-2xl">
-                            <input @click="enableBtn()" type="radio" name="rating" value="5" id="5" /><label for="5"
-                                >☆</label
-                            >
-                            <input @click="enableBtn()" type="radio" name="rating" value="4" id="4" /><label for="4"
-                                >☆</label
-                            >
-                            <input @click="enableBtn()" type="radio" name="rating" value="3" id="3" /><label for="3"
-                                >☆</label
-                            >
-                            <input @click="enableBtn()" type="radio" name="rating" value="2" id="2" /><label for="2"
-                                >☆</label
-                            >
-                            <input @click="enableBtn()" type="radio" name="rating" value="1" id="1" /><label for="1"
-                                >☆</label
-                            >
+                            <input type="radio" name="rating" value="5" id="5" />
+                            <label for="5">☆</label>
+                            <input type="radio" name="rating" value="4" id="4" />
+                            <label for="4">☆</label>
+                            <input type="radio" name="rating" value="3" id="3" />
+                            <label for="3">☆</label>
+                            <input type="radio" name="rating" value="2" id="2" />
+                            <label for="2">☆</label>
+                            <input type="radio" name="rating" value="1" id="1" />
+                            <label for="1">☆</label>
+                            <input type="radio" name="rating" value="null" id="0" checked />
                         </div>
                     </div>
+                    <span class="text-red-500">{{ errorMessage.starErrorMessage.value }}</span>
                     <!-- 星號 -->
 
                     <div class="mt-8">
                         <textarea
                             id="comment"
-                            placeholder="寫下你的評論"
+                            placeholder="寫下你的評論 (500字以內)"
                             class="p-2 w-full h-48 border border-2 border-black rounded"
-                        ></textarea>
+                            >{{ userComment }}</textarea
+                        >
+                        <span class="text-red-500">{{ errorMessage.commentErrorMessage.value }}</span>
                     </div>
                 </div>
                 <div class="flex justify-center">
                     <button
-                        @click="toggleModal(), addReview()"
+                        v-if="userComment == ''"
+                        @click="addReview()"
                         class="my-4 py-2 px-4 rounded hover:text-[#2b6cb0] border border-[#2b6cb0] hover:bg-transparent text-white bg-sky-700 font-semibold"
+                        id="commentBtn"
                     >
                         送出評論
+                    </button>
+                    <button
+                        v-else
+                        @click="editReview()"
+                        class="my-4 py-2 px-4 rounded hover:text-[#2b6cb0] border border-[#2b6cb0] hover:bg-transparent text-white bg-sky-700 font-semibold"
+                        id="commentBtn"
+                    >
+                        修改評論
                     </button>
                 </div>
             </div>
@@ -272,7 +319,7 @@ function enableBtn() {
             <div class="flex flex-col-reverse">
                 <SocialPageReviewCard
                     v-for="(item, index) of reviewData"
-                    :reviewer="item.reviewer"
+                    :reviewer="item.user_name"
                     :rating="reviewPercentage[index]"
                     :content="item.content"
                     :date="item.review_time"

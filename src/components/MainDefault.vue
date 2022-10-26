@@ -15,6 +15,13 @@ let config = {
     mode: 'same-origin',
 }
 
+let pages = ref([])
+const quantum = 3
+let pageNumber = ref(1)
+const changePage = (targetPage) => {
+    pageNumber.value = targetPage
+}
+
 const modalController = {
     addActivityModal: ref(false),
     noticeModal: ref(false),
@@ -24,10 +31,7 @@ const toggleModal = (modalName) => {
     modalController[modalName].value = !modalController[modalName].value
 }
 
-axios.get('/api/activity/', config).then(function (response) {
-    activityData.value = response.data
-})
-axios.get('/api/userprofile/', config).then(function (response) {
+axios.get('/api/userprofile/').then(function (response) {
     let temp = response.data
     activityOwner = temp.user_email
 })
@@ -44,7 +48,6 @@ const cleanErrorMessage = () => {
     }
 }
 const addActivity = async () => {
-
     for (let key of Object.keys(errorMessage)) {
         errorMessage[key].value = ''
     }
@@ -66,7 +69,7 @@ const addActivity = async () => {
                 config
             )
             .then(function (res) {
-                axios.get('/api/activity/', config).then(function (response) {
+                axios.get('/api/activity/').then(function (response) {
                     activityData.value = response.data
                 })
                 toggleModal('addActivityModal')
@@ -88,6 +91,51 @@ const addActivity = async () => {
         }
     }
 }
+
+const addUserName = async (targetData) => {
+    let activityId = targetData.id
+    await axios.get("/api/activity/<int:activity_id>/").then(response => {
+
+    })
+}
+// 更換篩選條件
+const changeFilter = async (status) => {
+    pages.value = []
+    pageNumber.value = 1
+    let candidates = []
+    for (let activity of activityData.value) {
+        if (status == 999) {
+            candidates = activityData.value
+        }
+        if (activity.is_finished == status) {
+            candidates.push(activity)
+        }
+    }
+
+    let pageData = []
+    for (let [index, data] of candidates.entries()) {
+        pageData.push(data)
+        if (pageData.length >= quantum || index == candidates.length - 1) {
+            pages.value.push(pageData)
+            pageData = []
+        }
+    }
+}
+const getData = async () => {
+    await axios.get('/api/activity/').then(function (response) {
+        activityData.value = response.data
+    })
+    //add user_name into data
+    for (let activity of activityData.value) {
+        await axios.get("/api/activity/" + activity.id + "/").then(response => {
+            activity["user_name"] = response.data.user_name
+        })
+    }
+    changeFilter(999)
+}
+
+getData()
+
 </script>
 
 <template>
@@ -139,10 +187,9 @@ const addActivity = async () => {
                             class="px-1 py-1 w-full text-base border border-2 border-slate-400" placeholder="10000" />
                     </div>
                     <span class="text-red-500">{{ errorMessage.budgetErrorMessage.value }}</span>
-                    <div class="text-base font-bold">活動圖片</div>
-                    <input id="activityImage" type="file" />
+
                     <div class="text-base font-bold">活動簡介</div>
-                    <textarea id="activityContent" class="text-base font-bold border border-2 border-slate-400 w-full"
+                    <textarea id="activityContent" class="px-1 py-1 text-base border border-2 border-slate-400 w-full"
                         placeholder="這次的活動，我們將要帶領大家..."></textarea>
                     <span class="text-red-500">{{ errorMessage.descriptionErrorMessage.value }}</span>
                 </div>
@@ -165,38 +212,104 @@ const addActivity = async () => {
 
     <!-- content -->
 
-    <div class="contain er w-full px-8 py-8">
-        <!-- options -->
-        <div id="options" class="inline-flex justify-between items-center my-4 w-full">
-            <div class="inline-flex justify-around">
-                <div id="radios">
-                    <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" checked />
-                    <label class="radioLable text-base" for="radio1">完成</label>
-                    <input id="radio2" class="radioInput hidden" type="radio" name="radio" value="radio2" />
-                    <label class="radioLable text-base" for="radio2">未完成</label>
-                    <input id="radio3" class="radioInput hidden" type="radio" name="radio" value="radio3" />
-                    <label class="radioLable text-base" for="radio3">全部</label>
+    <div class="container w-full px-8 py-8">
+        <div class="flex justify-between">
+            <!-- options -->
+            <div id="options" class="flex items-center my-4">
+                <div class="inline-flex justify-around">
+                    <div id="radios">
+                        <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" />
+                        <label class="radioLable text-base" for="radio1" @click="changeFilter(1)">完成</label>
+                        <input id="radio2" class="radioInput hidden" type="radio" name="radio" value="radio2" />
+                        <label class="radioLable text-base" for="radio2" @click="changeFilter(0)">未完成</label>
+                        <input id="radio3" class="radioInput hidden" type="radio" name="radio" value="radio3" checked />
+                        <label class="radioLable text-base" for="radio3" @click="changeFilter(999)">全部</label>
+                    </div>
                 </div>
             </div>
-
             <div id="optionsRight" class="flex justify-end align-center">
                 <button @click="toggleModal('addActivityModal')"
-                    class="btnCreateEvent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                    class="btnCreateEvent hover: font-semibold hover:text-white px-4 border border-blue-500 hover:border-transparent rounded">
                     新增活動
                 </button>
             </div>
         </div>
 
-        <div class="grid grid-cols-3 grid-gap-1rem items-center justify-center">
+        <div class="grid grid-cols-3 grid-gap-1rem items-center justify-center my-4">
             <!-- cards -->
-            <router-link v-for="item in activityData" :to="{ path: '/events/' + item.id }">
-                <MainDeFaultCard :name="item.activity_name" :owner="item.owner" :tracePercentage="100"
+            <router-link v-for="item in pages[pageNumber - 1]" :to="{ path: '/events/' + item.id }">
+                <MainDeFaultCard :name="item.activity_name" :owner="item.user_name" :tracePercentage="100"
                     :costMoney="item.activity_expenditure" :budgetMoney="item.activity_budget"></MainDeFaultCard>
             </router-link>
 
             <!-- cards end -->
         </div>
+        <!--換頁-->
+        <div class="flex justify-center pb-10">
+            <nav aria-label="Page navigation example">
+                <ul class="inline-flex -space-x-px text-xl shadow-primary">
+                    <li v-if="pageNumber - 1 > 0" @click="changePage(pageNumber - 1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 ml-0 rounded-l-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        上一頁
+                    </li>
+                    <li v-else
+                        class="shadow-none text-opacity-30 bg-white border border-gray-300 text-gray-500 rounded-l-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">
+                        上一頁
+                    </li>
+                    <li v-if="pageNumber - 2 > 1" @click="changePage(1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        1
+                    </li>
+                    <li v-if="pageNumber - 2 > 1"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        ...
+                    </li>
+
+                    <li v-if="pageNumber - 2 >= 1" @click="changePage(pageNumber - 2)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        {{ pageNumber - 2 }}
+                    </li>
+                    <li v-if="pageNumber - 1 >= 1" @click="changePage(pageNumber - 1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        {{ pageNumber - 1 }}
+                    </li>
+
+                    <li
+                        class="bg-blue-50 border border-gray-300 text-blue-600 hover:bg-blue-100 hover:text-blue-700 py-2 px-3 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
+                        {{ pageNumber }}
+                    </li>
+
+                    <li v-if="pageNumber + 1 <= pages.length" @click="changePage(pageNumber + 1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        {{ pageNumber + 1 }}
+                    </li>
+                    <li v-if="pageNumber + 2 <= pages.length" @click="changePage(pageNumber + 2)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        {{ pageNumber + 2 }}
+                    </li>
+
+                    <li v-if="pageNumber + 2 < pages.length"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        ...
+                    </li>
+                    <li v-if="pageNumber + 2 < pages.length" @click="changePage(pages.length)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        {{ pages.length }}
+                    </li>
+
+                    <li v-if="pageNumber < pages.length" @click="changePage(pageNumber + 1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-r-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        下一頁
+                    </li>
+                    <li v-else
+                        class="shadow-none text-opacity-30 bg-white border border-gray-300 text-gray-500  rounded-r-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">
+                        下一頁
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
+
 </template>
 
 <style scoped>
