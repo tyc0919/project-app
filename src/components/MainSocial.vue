@@ -3,23 +3,28 @@ import SocialPost from './SocialPost.vue'
 import { ref } from 'vue'
 import axios from 'axios'
 
-const quantum = 2
-let pageNumber = ref(1)
-
 // get data
 let socialData = ref([])
 let pages = ref([])
-
+const quantum = 2
+let pageNumber = ref(1)
 const changePage = (targetPage) => {
     pageNumber.value = targetPage
 }
 
-const show_all = async () => {
-    pages.value.length = 0
-    pageNumber.value = 1
+const getData = async () => {
     // add social data
-    await axios.get('/api/social/').then(function (response) {
+    await axios.get('/api/social/').then(async function (response) {
         socialData.value = response.data
+        for (let social of socialData.value) {
+            await axios.get('/api/activity/' + social.id + '/').then(function (response) {
+                let temp = []
+                temp = response.data
+                console.log(temp)
+
+                social['user_name'] = temp.user_name
+            })
+        }
     })
 
     // add total starCount into each activity
@@ -39,104 +44,32 @@ const show_all = async () => {
             }
         })
     }
-
-    // divide data to each page
-    let pageData = []
-    for (let [i, s] of socialData.value.entries()) {
-        pageData.push(s)
-        if (pageData.length >= quantum || i == socialData.value.length - 1) {
-            pages.value.push(pageData)
-            pageData = []
-        }
-    }
+    changeFilter(999)
 }
-const show_f = async () => {
+
+const changeFilter = async (status) => {
+    pages.value = []
     pageNumber.value = 1
-    pages.value.length = 0
-    socialData.value.length = 0
-    // add social data
-    await axios.get('/api/social/').then(function (response) {
-        let temp = response.data
-        for (let i of temp) {
-            if (i.is_finished == 1) {
-                socialData.value.push(i)
-            }
+    let candidates = []
+    for (let work of socialData.value) {
+        if (status == 999) {
+            candidates = socialData.value
         }
-    })
-
-    // add total starCount into each activity
-    for (let s of socialData.value) {
-        let stars = []
-        s['total_star'] = 0
-        s['star_percent'] = '0%'
-        await axios.get('/api/social/' + s.id + '/review/').then(function (response) {
-            if (response.data.length > 0) {
-                let total = 0
-                for (let rv of response.data) {
-                    stars.push(rv.review_star)
-                    total += rv.review_star
-                }
-                s['total_star'] = total / stars.length
-                s['star_percent'] = (s['total_star'] * 20).toString() + '%'
-            }
-        })
+        if (work.is_finished == status) {
+            candidates.push(work)
+        }
     }
 
-    // divide data to each page
     let pageData = []
-    for (let [i, s] of socialData.value.entries()) {
-        pageData.push(s)
-        if (pageData.length >= quantum || i == socialData.value.length - 1) {
+    for (let [index, data] of candidates.entries()) {
+        pageData.push(data)
+        if (pageData.length >= quantum || index == candidates.length - 1) {
             pages.value.push(pageData)
             pageData = []
         }
     }
 }
-const show_un = async () => {
-    pageNumber.value = 1
-    pages.value.length = 0
-    socialData.value.length = 0
-
-    // add social data
-    await axios.get('/api/social/').then(function (response) {
-        let temp = []
-        temp = response.data
-        for (let i of temp) {
-            if (i.is_finished == 0) {
-                socialData.value.push(i)
-            }
-        }
-    })
-
-    // add total starCount into each activity
-    for (let s of socialData.value) {
-        let stars = []
-        s['total_star'] = 0
-        s['star_percent'] = '0%'
-        await axios.get('/api/social/' + s.id + '/review/').then(function (response) {
-            if (response.data.length > 0) {
-                let total = 0
-                for (let rv of response.data) {
-                    stars.push(rv.review_star)
-                    total += rv.review_star
-                }
-                s['total_star'] = total / stars.length
-                s['star_percent'] = (s['total_star'] * 20).toString() + '%'
-            }
-        })
-    }
-
-    // divide data to each page
-    let pageData = []
-    for (let [i, s] of socialData.value.entries()) {
-        pageData.push(s)
-        if (pageData.length >= quantum || i == socialData.value.length - 1) {
-            pages.value.push(pageData)
-            pageData = []
-        }
-    }
-}
-show_all()
+getData()
 </script>
 
 <template>
@@ -149,11 +82,11 @@ show_all()
                 <div class="inline-flex justify-around">
                     <div id="radios">
                         <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" />
-                        <label class="radioLable text-base" for="radio1" @click="show_f">完成</label>
+                        <label class="radioLable text-base" for="radio1" @click="changeFilter(1)">完成</label>
                         <input id="radio2" class="radioInput hidden" type="radio" name="radio" value="radio2" />
-                        <label class="radioLable text-base" for="radio2" @click="show_un">未完成</label>
+                        <label class="radioLable text-base" for="radio2" @click="changeFilter(0)">未完成</label>
                         <input id="radio3" class="radioInput hidden" type="radio" name="radio" value="radio3" checked />
-                        <label class="radioLable text-base" for="radio3" @click="show_all">全部</label>
+                        <label class="radioLable text-base" for="radio3" @click="changeFilter(999)">全部</label>
                     </div>
                 </div>
             </div>
@@ -166,7 +99,7 @@ show_all()
             >
                 <SocialPost
                     :title="item.activity_name"
-                    :owner="item.owner"
+                    :owner="item.user_name"
                     :rating="item.star_percent"
                     :content="item.content"
                 ></SocialPost>
@@ -265,7 +198,7 @@ show_all()
                     </li>
                     <li
                         v-else
-                        class="shadow-none text-opacity-30 bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-r-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                        class="shadow-none text-opacity-30 bg-white border border-gray-300 text-gray-500 rounded-r-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
                     >
                         下一頁
                     </li>
