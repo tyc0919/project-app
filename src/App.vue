@@ -13,7 +13,7 @@ const toggleUserMenu = () => {
 
     <div class="flex h-full w-full">
     <!--Nav start-->
-        <div class="sidebar bg-primary h-full ">
+        <!-- <div class="sidebar bg-primary h-full ">
             <div class="logo">
                 <img src="/src/assets/images/Logo.svg" class=" w-60 h-24" alt="">
             </div>
@@ -36,7 +36,7 @@ const toggleUserMenu = () => {
                 <a href="#" class="w-12 h-8 text-center"><i class="fa-brands fa-instagram flex h-full items-center justify-center"></i></a>
               </div>
           </div>
-        </div>
+        </div> -->
     <!--Nav end-->
         <div class="wrapper w-full">
           <!-- Header start -->
@@ -48,7 +48,7 @@ const toggleUserMenu = () => {
             </div>
             <div class="avatar">
               <img @click="toggleUserMenu" class="avatar w-12 h-12 rounded-full object-cover cursor-pointer" src="/src/assets/images/default_avatar.svg">
-              <div v-if="showUserMenu" class="absolute w-40 h-18 top-16 right-8 py-2 bg-white text-black flex flex-col rounded-lg border-2 ">
+              <div v-if="showUserMenu" class="absolute w-40 h-18 top-16 right-8 py-2 bg-white text-black flex flex-col rounded-lg border-2 z-10">
                   <router-link :to="{name: 'user-profile'}" class="mb-2 hover:bg-blue-600 hover:text-white rounded-lg">
                     個人檔案
                   </router-link>
