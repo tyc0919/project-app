@@ -22,25 +22,34 @@ takeActivityTitle()
 
 <template>
     <div class="wrapper">
-        <div class="bookmark h-12 flex">
-            <div class="w-full flex text-center items-center">
-                <router-link :to="{ name: 'event-works' }" class="flex-1 mask main-switch">
-                    <div class="w-half px-4 h-full flex items-center mask_p">
-                        {{ activity_data.activity_name }}
-                    </div>
+        <div class="h-12 flex mb-4">
+            <div class="w-full flex text-center items-center ">
+
+                <router-link :to="{ name: 'event-works' }"
+                    class="w-fit px-4 py-2  rounded-full bg-slate-200 text-base text-black  mr-2 main-switch">
+
+                    活動內容
+
                 </router-link>
 
-                <router-link :to="{ name: 'budget' }" class="flex-1 mask main-switch">
-                    <div class="w-half px-4 h-full flex items-center mask_p">
-                        預算編輯
-                    </div>
+                <router-link :to="{ name: 'budget' }"
+                    class="w-fit px-4 py-2  rounded-full bg-slate-200 text-base text-black  mr-2 main-switch">
+                    預算編輯
                 </router-link>
 
-                <router-link :to="{ name: 'overview' }" class="flex-1 mask main-switch">
+                <router-link :to="{ name: 'overview' }"
+                    class="w-fit px-4 py-2  rounded-full bg-slate-200 text-base text-black  mr-2 main-switch  ">
+                    總覽
+                </router-link>
+
+
+                <!-- 以免之後又要用梯形分頁 先保存
+                    <router-link :to="{ name: 'overview' }" class="flex-1 mask main-switch">
                     <div class="w-half px-4 h-full flex items-center mask_p">
                         總覽
                     </div>
-                </router-link>
+                </router-link> 
+                -->
             </div>
             <router-link :to="{ name: 'main-default' }" class="flex items-center pr-4 mx-3">
                 <img src="/src/assets/images/home.svg" class="h-8" />
@@ -48,7 +57,6 @@ takeActivityTitle()
         </div>
 
         <div class="content bg-[CEE5F2] overflow-y-auto">
-            <!-- 把你寫的Component放在這裡測試，要上github前這個檔案更動要discard掉-->
             <router-view />
         </div>
     </div>
@@ -56,7 +64,8 @@ takeActivityTitle()
 
 <style scoped>
 .main-switch.router-link-exact-active {
-    border-color: transparent transparent #cee5f2;
+    background-color: #3056D3;
+    color: white;
 }
 
 .wrapper {
@@ -71,6 +80,7 @@ takeActivityTitle()
     background-color: #cee5f2;
 }
 
+/* 梯形分頁
 .mask {
     border-width: 0 20px 50px 20px;
     border-style: none solid solid;
@@ -83,5 +93,6 @@ takeActivityTitle()
     margin-top: 1.5rem;
     left: 50%;
     transform: translateX(-50%);
-}
+} 
+*/
 </style>
