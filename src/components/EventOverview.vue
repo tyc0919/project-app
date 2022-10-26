@@ -8,19 +8,7 @@ import EventOverviewLog from './EventOverviewLog.vue'
         <div class="mx-10 p-14 border-b-2 border-[#c0c0c0]">
             <div class="w-full h-80 bg-white overflow-auto text-xl font-bold">
                 <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
+ 
             </div>
         </div>
         <!-- Log紀錄 -->

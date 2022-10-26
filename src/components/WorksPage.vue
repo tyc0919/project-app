@@ -33,10 +33,19 @@ const trans_tab = (msg) => {
     axios.get("/api/activity/" + route.params.EventId + "/job/" + msg + "/")
         .then(response => {
             let temp = {
-                id : response.data.id,
-                title : response.data.title
+                id: response.data.id,
+                title: response.data.title
             }
-            store.pushin(temp)
+            let isHave = false
+            store.tabs.forEach(function (item, index) {
+                if (item.id == temp.id) {
+                    isHave = true
+                }
+            })
+            if (!isHave) {
+                store.pushin(temp)
+            }
+
         }
         )
 }
@@ -164,6 +173,19 @@ async function job_take() {
                 Object.assign(A_job_data.value[i], { 'countY': countY })
             })
     }
+
+    let collaboratorData = ref([])
+    await axios.get("/api/activity/" + route.params.EventId + "/collaborator/")
+        .then(response => {
+            collaboratorData.value = response.data
+            for (let job of A_job_data.value) {
+                for (let colla of collaboratorData.value) {
+                    if (job.person_in_charge_email == colla.user_email) {
+                        job["user_name"] = colla.user_name
+                    }
+                }
+            }
+        })
 }
 
 job_take()
@@ -299,7 +321,7 @@ const toggleModal_fail = () => {
                     </div>
 
                     <div class="text-base font-bold">工作說明</div>
-                    <textarea class=" px-1 py-1 text-base font-bold border border-2 border-slate-400 w-full"
+                    <textarea class=" px-1 py-1 text-base border border-2 border-slate-400 w-full"
                         placeholder="這次的活動，我們將要帶領大家..." v-model="nworkContent"></textarea>
 
                     <div class="text-base font-bold ">負責人</div>
@@ -379,7 +401,7 @@ const toggleModal_fail = () => {
                             <div class="flex align-center mb-2 items-center">
                                 <div class="avatar"></div>
                                 <div class="text-sm text-[#1D5E9F] ellipsis italic ml-2">
-                                    {{ item.person_in_charge_email }}
+                                    {{ item.user_name }}
                                 </div>
                             </div>
                             <div class="workTitle text-xl font-bold ellipsis mb-2">

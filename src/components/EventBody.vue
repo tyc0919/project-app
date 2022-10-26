@@ -7,7 +7,6 @@ import { useRouter } from "vue-router";
 import { getCookie } from '../assets/modules'
 import { usePageStoretest } from "../stores/page"
 
-/* 取得使用者帳號 */
 const user_data = ref()
 const store = usePageStoretest()
 const route = useRoute()
@@ -29,6 +28,8 @@ let formData = new FormData()
 let finishStatus = ref(false)
 let publicStatus = ref(false)
 
+let isOwner = ref(false)
+
 /* 活動資訊 */
 async function take_activity() {
     await axios.get("/api/userprofile/")
@@ -47,6 +48,8 @@ async function take_activity() {
             console.log(error)
         })
 
+    console.log(activity_data.value)
+    activity_data.value["is_owner"] = activity_data.value.owner == user_e ? true : false
     if (activity_data.value.is_finished == 1) {
         finishStatus.value = true
     }
@@ -111,10 +114,7 @@ async function publish_Activity() {
 
 /* 編輯活動 */
 
-function fileUpload() {
-    formData.append('file', file.value.files[0])
-    formData.append('activity_id', route.params.EventId)
-}
+
 
 async function update_Activity() {
     let csrftoken = getCookie()
@@ -124,13 +124,7 @@ async function update_Activity() {
         },
         mode: 'same-origin'
     }
-    let configf = {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-            'X-CSRFToken': csrftoken
-        },
-        mode: 'same-origin'
-    }
+
     const activity_n = document.getElementById("test1")
     const activity_t = document.getElementById("test2")
 
@@ -153,13 +147,6 @@ async function update_Activity() {
             testF1 = true
         })
 
-    await axios.post("/api/upload/activity_pic/", formData, configf)
-        .then(function (response) {
-            testS2 = true
-        })
-        .catch(function (error) {
-            testF2 = true
-        })
 
     if (testS1 & testS2) {
         messageS.value = "更新成功"
@@ -178,6 +165,29 @@ async function update_Activity() {
     take_activity()
 }
 /* 編輯活動 */
+
+
+/* 編輯圖片 */
+function fileUpload() {
+    formData.append('file', file.value.files[0])
+    formData.append('activity_id', route.params.EventId)
+    let configf = {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            'X-CSRFToken': csrftoken
+        },
+        mode: 'same-origin'
+    }
+
+    axios.post("/api/upload/activity_pic/", formData, configf)
+        .then(function (response) {
+            alert("good")
+        })
+        .catch(function (error) {
+            alert("bad")
+        })
+}
+/* 編輯圖片 */
 
 /* 刪除活動 */
 async function delete_Activity() {
@@ -204,6 +214,13 @@ async function delete_Activity() {
     })
 }
 /* 刪除活動 */
+
+/* 信箱姓名處理 */
+const email_name = () => {
+    axios.get("/api/activity/" + route.params.EventId + "/collaborator/")
+        .then
+}
+/* 信箱姓名處理 */
 
 /* 彈出視窗 */
 const showModal_publish = ref(false)
@@ -241,12 +258,19 @@ const toggleModal_fail = () => {
     <div class="content bg-[CEE5F2]">
         <div class="w-full flex">
             <div class="w-2/3 m-1.5 ">
-                <img src="../assets/images/FirstPart.png" class="event_main_img">
+                <picture>
+                    <label for="image">
+                        <input @change="fileUpload()" ref="file" type="file" id="image" class="file_img"
+                            accept="image/*" />
+                        <img src="../assets/images/FirstPart.png" class="event_main_img">
+                    </label>
+                </picture>
+
 
                 <form action="">
-                    <div class="flex justify-around w-full">
+                    <div v-if="activity_data.is_owner" class="flex justify-around w-full">
 
-                        <div v-if="finishStatus" class="button2 hover2" @click="toggleModal_finish()">
+                        <div v-if="finishStatus" class="button2 hover2 " @click="toggleModal_finish()">
                             <input type="button" value="完成活動">
                         </div>
                         <div v-else class="button hover" @click="toggleModal_finish()" id="Finish_btn">
@@ -267,13 +291,37 @@ const toggleModal_fail = () => {
                             <input type="button" value="刪除活動">
                         </div>
                     </div>
+
+                    <div v-else class="flex justify-around w-full">
+
+                        <div v-if="finishStatus" class="button3  " @click="toggleModal_finish()">
+                            <input type="button" value="完成活動" disabled>
+                        </div>
+                        <div v-else class="button4" @click="toggleModal_finish()" id="Finish_btn">
+                            <input type="button" value="完成活動" disabled>
+                        </div>
+
+                        <div v-if="publicStatus" class="button3 " @click="toggleModal_publish()">
+                            <input type="button" value="發布活動" disabled>
+                        </div>
+                        <div v-else class="button4 " @click="toggleModal_publish()" id="Public_btn">
+                            <input type="button" value="發布活動" disabled>
+                        </div>
+
+                        <div class="button4 " @click="toggleModal_update()">
+                            <input type="button" value="編輯活動" disabled>
+                        </div>
+                        <div class="button5" @click="toggleModal_delete()">
+                            <input type="button" value="刪除活動" disabled>
+                        </div>
+                    </div>
                 </form>
 
             </div>
 
             <div class="w-1/3 border-solid border border-black m-1.5 mr-10 bg-white relative">
                 <p class="text-base2x m-1.5 text-[696969]"> {{ activity_data.activity_name }} </p>
-                <p class="text-base m-1.5 text-[696969]">提案人 {{ activity_data.owner }} </p>
+                <p class="text-base m-1.5 text-[696969]">提案人 {{ activity_data.user_name }} </p>
                 <p class="text-base m-1.5 text-[696969] overflow-y intro2">
                     {{ activity_data.activity_description }}
                 </p>
@@ -483,7 +531,6 @@ const toggleModal_fail = () => {
         <router-link class="bookmark2-box text-xl bg-white" v-for="work in store.tabs"
             :to="{ name: 'event-work-detail', params: { WorkId: work.id } }">
             {{ work.title }}
-
         </router-link>
 
         <a class="bookmark2-menu">
@@ -574,6 +621,7 @@ const toggleModal_fail = () => {
 .event_main_img {
     height: 500px;
     width: 85%;
+    max-width: 85%;
     margin: 0 auto;
 }
 
@@ -594,6 +642,42 @@ const toggleModal_fail = () => {
     height: 45px;
     line-height: 45px;
     background-color: green;
+    margin: 1.5rem;
+    color: white;
+    text-align: center;
+    font-size: 1.5rem;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.button3 {
+    width: 250px;
+    height: 45px;
+    line-height: 45px;
+    background-color: rgba(173, 252, 173, 0.996);
+    margin: 1.5rem;
+    color: white;
+    text-align: center;
+    font-size: 1.5rem;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.button4 {
+    width: 250px;
+    height: 45px;
+    line-height: 45px;
+    background-color: #a5d2ff;
+    margin: 1.5rem;
+    color: white;
+    text-align: center;
+    font-size: 1.5rem;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.button5 {
+    width: 250px;
+    height: 45px;
+    line-height: 45px;
+    background-color: #fbb9b9;
     margin: 1.5rem;
     color: white;
     text-align: center;
@@ -669,6 +753,10 @@ const toggleModal_fail = () => {
 
 .router-link-active.router-link-exact-active {
     background-color: #C0C0C080;
+}
+
+.file_img {
+    display: none;
 }
 
 /* eventBody end */

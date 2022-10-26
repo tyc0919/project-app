@@ -207,7 +207,7 @@ async function statusJobDetail() {
                             v-model="ujob_detailName">
 
                         <div class="text-base font-bold">工作細項內容</div>
-                        <textarea class=" px-1 py-1 text-base font-bold border border-2 border-slate-400 w-full"
+                        <textarea class=" px-1 py-1 text-base border border-2 border-slate-400 w-full"
                             v-model="ujob_detailContent">
                         </textarea>
                     </div>
