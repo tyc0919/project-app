@@ -38,7 +38,6 @@ const getData = async () => {
         })
     }
     changeFilter(999)
-    console.log(socialData.value)
 }
 
 const changeFilter = async (status) => {
@@ -64,6 +63,7 @@ const changeFilter = async (status) => {
     }
 }
 getData()
+
 </script>
 
 <template>
