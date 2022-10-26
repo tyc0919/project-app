@@ -7,6 +7,8 @@ import { ref } from 'vue'
 import { getCookie } from '../assets/modules'
 import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
+import { usePageStoretest } from "../stores/page"
+import { objectToString } from '@vue/shared'
 
 const showModal1 = ref(false)
 const toggleModal1 = () => {
@@ -48,7 +50,6 @@ let respon_gmail
 let uworkName = ref('')
 let uworkDate = ref('')
 let uworkBudget = ref('')
-let uworkExpenditure = ref('')
 let uworkContent = ref('')
 
 let job = ref('')
@@ -68,7 +69,6 @@ axios.get('/api/activity/' + route.params.EventId + '/collaborator/').then((resp
 /* 取得活動協作者 */
 
 /* 獲得工作內容 */
-
 function take_work() {
     axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/")
         .then(response => {
@@ -76,7 +76,6 @@ function take_work() {
         })
 }
 take_work()
-
 /* 獲得工作內容 */
 
 /* 更新工作 */
@@ -94,7 +93,6 @@ async function updateWork() {
         dead_line: uworkDate.value,
         content: uworkContent.value,
         job_budget: uworkBudget.value,
-        job_expenditure: uworkExpenditure.value,
     }
 
 
@@ -135,10 +133,25 @@ async function deleteWork() {
 }
 /* 刪除工作 */
 
+/* 刪除分頁 */
+const delete_tab = (msg) => {
+    console.log(msg)
+    axios.get("/api/activity/" + route.params.EventId + "/job/" + msg + "/")
+        .then(response => {
+            let temp = {
+                id: response.data.id,
+                title: response.data.title
+            }
+            store.pushin(temp)
+        }
+        )
+}
+/* 刪除分頁 */
+
 /* 獲得工作細項 */
 
-function take_job_detail() {
-    axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/job_detail/")
+async function take_job_detail() {
+    await axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/job_detail/")
         .then(response => {
             job_detail.value = response.data
         }
@@ -158,6 +171,13 @@ function take_job_detail() {
         })
 }
 take_job_detail()
+
+async function take_job_detail_test() {
+    take_job_detail()
+    messageS.value = "成功更新活動狀態"
+    toggleModal_success()
+}
+
 
 function take_job_detailF() {
     axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/job_detail/")
@@ -221,6 +241,25 @@ function newJobDetail() {
         })
 }
 /* 新增工作細項 */
+
+/* 關閉分頁 */
+
+const closePage = () => {
+    const store = usePageStoretest()
+    let deleteWorkID = route.params.WorkId
+    for (const [index, item] of store.tabs.entries()) {
+        if (item.id == deleteWorkID) {
+            store.tabs.splice(index, 1);
+        }
+    }
+    router.push({
+        path: '',
+        name: 'event-works'
+    })
+
+}
+
+/* 關閉分頁 */
 </script>
 
 <template>
@@ -233,11 +272,12 @@ function newJobDetail() {
                 <!--全部、未完成、完成狀態-->
                 <div>
                     <div id="radios">
-                        <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1"/>
+                        <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" />
                         <label class="radioLable text-base" for="radio1" @click="take_job_detailF()">完成</label>
                         <input id="radio2" class="radioInput hidden " type="radio" name="radio" value="radio2" />
                         <label class="radioLable text-base" for="radio2" @click="take_job_detailNF()">未完成</label>
-                        <input id="radio3" class="radioInput hidden " type="radio" name="radio" value="radio3" checked/>
+                        <input id="radio3" class="radioInput hidden " type="radio" name="radio" value="radio3"
+                            checked />
                         <label class="radioLable text-base" for="radio3" @click="take_job_detail()">全部</label>
                     </div>
                 </div>
@@ -276,7 +316,8 @@ function newJobDetail() {
                         刪除工作
                     </button>
                     <button
-                        class="py-2 px-4 rounded text-base font-bold bg-white border border-[#ff0000] text-[#ff0000] shadow-btn btn_click2">
+                        class="py-2 px-4 rounded text-base font-bold bg-white border border-[#ff0000] text-[#ff0000] shadow-btn btn_click2"
+                        @click="closePage()">
                         關閉分頁
                     </button>
                 </div>
@@ -324,13 +365,11 @@ function newJobDetail() {
                             新增細項 +
                         </button>
                         <button
-                            class="w-full items-center bg-[#1d5e9f] rounded-lg border-w-3 border-[#006eaf] py-[10px] text-white shadow-btn mb-[20px]"
-                        >
+                            class="w-full items-center bg-[#1d5e9f] rounded-lg border-w-3 border-[#006eaf] py-[10px] text-white shadow-btn mb-[20px]">
                             完成
                         </button>
                         <button
-                            class="w-full items-center bg-[#ffcccc] rounded-lg border-w-3 border-[#ff0000] py-[10px] text-[#ff0000] shadow-btn"
-                        >
+                            class="w-full items-center bg-[#ffcccc] rounded-lg border-w-3 border-[#ff0000] py-[10px] text-[#ff0000] shadow-btn">
                             取消完成
                         </button>
                     </div>
@@ -338,11 +377,13 @@ function newJobDetail() {
 
                     <!-- 工作細項 -->
                     <template v-for="item in job_detail_Y" :key="item.job_detail_id">
-                        <JobDetail :jobDetail=item @refresh="take_job_detail"></JobDetail>
+                        <JobDetail :jobDetail=item @refresh="take_job_detail" @refresh2="take_job_detail_test">
+                        </JobDetail>
                     </template>
 
                     <template v-for="item in job_detail_N" :key="item.job_detail_id">
-                        <JobDetail :jobDetail=item @refresh="take_job_detail"></JobDetail>
+                        <JobDetail :jobDetail=item @refresh="take_job_detail" @refresh2="take_job_detail_test">
+                        </JobDetail>
                     </template>
                     <!-- 工作細項 -->
                 </div>
@@ -380,22 +421,13 @@ function newJobDetail() {
                             <input type="number" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
                                 placeholder="10000" v-model="uworkBudget">
                         </div>
-
-                        <div class="text-base font-bold">已使用工作預算</div>
-                        <div class="flex items-center justify-start space-x-3">
-                            <span class="italic font-bold">$</span>
-                            <input type="number" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                                placeholder="10000" v-model="uworkExpenditure">
-                        </div>
-
                         <div class="text-base font-bold">工作說明</div>
-                        <textarea class=" px-1 py-1 text-base font-bold border border-2 border-slate-400 w-full"
+                        <textarea class=" px-1 py-1 text-base border border-2 border-slate-400 w-full"
                             placeholder="這次的活動，我們將要帶領大家..." v-model="uworkContent"></textarea>
 
                         <div class="text-base font-bold ">負責人</div>
                         <select class="px-1 py-1 w-full font-bold border border-2 border-slate-500"
                             name="responsibility" @change="get_responGmail()">
-                            <option class="text-red-400 font-bold">未定</option>
                             <option v-for="c_email in colla">{{ c_email.user_email }}</option>
                         </select>
                     </div>
@@ -461,7 +493,7 @@ function newJobDetail() {
                             v-model="njob_detailName">
 
                         <div class="text-base font-bold">工作細項內容</div>
-                        <textarea class=" px-1 py-1 text-base font-bold border border-2 border-slate-400 w-full"
+                        <textarea class=" px-1 py-1 text-base border border-2 border-slate-400 w-full"
                             v-model="njob_detailContent">
                                     </textarea>
                     </div>
@@ -590,12 +622,11 @@ function newJobDetail() {
     background: #52708f;
 }
 
-.btn_click1:hover{
+.btn_click1:hover {
     background-color: #b9cfe4;
 }
 
-.btn_click2:hover{
+.btn_click2:hover {
     background-color: #ffcccc;
 }
-
 </style>

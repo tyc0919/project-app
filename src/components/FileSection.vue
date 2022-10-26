@@ -17,18 +17,8 @@ const props = defineProps({
 const mode = props.mode
 const route = useRoute()
 let csrftoken = getCookie()
-let config = {
-    headers: {
-        'X-CSRFToken': csrftoken
-    },
-    mode: 'same-origin'
-}
-
-const showModal = ref(false)
 let id = 0
-const toggleModal = () => {
-    showModal.value = !showModal.value
-}
+
 
 const data = ref([])
 const c_email = ref([])
@@ -37,23 +27,18 @@ let formData = new FormData()
 
 /* 邀請 */
 const invite = () => {
-
     console.log('send email')
-
     toggleModal()
 }
 /* 邀請 */
 
-/* 上傳1 */
+/* 上傳檔案 */
 function fileUpload() {
     formData.append('file', file.value.files[0])
-    formData.append('serial_number', route.params.WorkId)
-    formData.append('activity_id', route.params.EventId)
+    formData.append('job_id', route.params.WorkId)
 }
-/* 上傳1 */
 
-/* 上傳2 */
-const upload = () => {
+const upload = async () => {
     let configf = {
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -62,7 +47,7 @@ const upload = () => {
         mode: 'same-origin'
     }
 
-    axios.post('/api/upload/job/',
+    await axios.post('/api/upload/job/',
         formData,
         configf
     ).then(response => {
@@ -70,41 +55,40 @@ const upload = () => {
     })
 
     toggleModal()
+
+    take_file()
 }
-/* 上傳 */
+/* 上傳檔案 */
 
 
-
-const deleteFile = (id) => {
-    console.log(`send delete axios ${id}`)
-}
-
-if (mode === 1) {
-    // get coop users
+/* 獲得檔案或協作者 */
+const take_colla = () => {
     axios.get("/api/activity/" + route.params.EventId + "/collaborator/")
         .then(response => {
             data.value = response.data
         })
-} else {
-    // get files for current work
-    data.value = [
-        {
-            id: id++,
-            fname: 'test1',
-            upload_time: '2020/07/10'
-        },
-        {
-            id: id++,
-            fname: 'test2',
-            upload_time: '2021/04/01'
-        },
-        {
-            id: id++,
-            fname: 'test3',
-            upload_time: '2022/11/12'
-        }]
 }
 
+const take_file = () => {
+    axios.get("/api/file/job/" + route.params.WorkId + "/")
+        .then(response => {
+            data.value = response.data
+        })
+}
+
+if (mode === 1) {
+    // get coop users
+    take_colla()
+} else {
+    // get files for current work
+    take_file()
+}
+/* 獲得檔案或協作者 */
+
+const showModal = ref(false)
+const toggleModal = () => {
+    showModal.value = !showModal.value
+}
 </script>
 
 <template>
@@ -141,8 +125,8 @@ if (mode === 1) {
                 <Invite v-for="user in data" :key="user.email" :email="user.user_email"></Invite>
             </div>
             <div v-else>
-                <File v-for="workFile in data" :key="workFile.id" @delete-file="deleteFile" :fname="workFile.fname"
-                    :upload_time="workFile.upload_time" />
+                <File v-for="workFile in data" :key="workFile.id" :fname="workFile.file_path" @deleteFile="take_file()"
+                    :upload_time="workFile.file_uploaded_time" />
             </div>
         </div>
     </div>

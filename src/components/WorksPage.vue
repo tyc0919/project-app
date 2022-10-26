@@ -1,11 +1,12 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import FileSection from './FileSection.vue'
 import Modal from './Modal.vue'
 import axios from 'axios'
 import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
 import { getCookie } from '../assets/modules'
+import { usePageStoretest } from "../stores/page"
 
 let csrftoken = getCookie()
 let config = {
@@ -16,6 +17,7 @@ let config = {
 }
 const route = useRoute()
 const router = useRouter()
+const store = usePageStoretest()
 
 let A_job_data = ref('')
 let colla = ref('')
@@ -23,6 +25,32 @@ let temp = ref('')
 let respon_gmail
 let messageS = ref("")
 let messageF = ref("")
+
+/* 分頁 */
+
+const trans_tab = (msg) => {
+    console.log(msg)
+    axios.get("/api/activity/" + route.params.EventId + "/job/" + msg + "/")
+        .then(response => {
+            let temp = {
+                id: response.data.id,
+                title: response.data.title
+            }
+            let isHave = false
+            store.tabs.forEach(function (item, index) {
+                if (item.id == temp.id) {
+                    isHave = true
+                }
+            })
+            if (!isHave) {
+                store.pushin(temp)
+            }
+
+        }
+        )
+}
+
+/* 分頁 */
 
 /* 篩選 */
 async function job_F_take() {
@@ -111,9 +139,6 @@ async function job_NF_take() {
 
 }
 
-
-
-
 /* 篩選 */
 
 /*  取出活動相關工作 */
@@ -148,6 +173,19 @@ async function job_take() {
                 Object.assign(A_job_data.value[i], { 'countY': countY })
             })
     }
+
+    let collaboratorData = ref([])
+    await axios.get("/api/activity/" + route.params.EventId + "/collaborator/")
+        .then(response => {
+            collaboratorData.value = response.data
+            for (let job of A_job_data.value) {
+                for (let colla of collaboratorData.value) {
+                    if (job.person_in_charge_email == colla.user_email) {
+                        job["user_name"] = colla.user_name
+                    }
+                }
+            }
+        })
 }
 
 job_take()
@@ -283,7 +321,7 @@ const toggleModal_fail = () => {
                     </div>
 
                     <div class="text-base font-bold">工作說明</div>
-                    <textarea class=" px-1 py-1 text-base font-bold border border-2 border-slate-400 w-full"
+                    <textarea class=" px-1 py-1 text-base border border-2 border-slate-400 w-full"
                         placeholder="這次的活動，我們將要帶領大家..." v-model="nworkContent"></textarea>
 
                     <div class="text-base font-bold ">負責人</div>
@@ -355,40 +393,41 @@ const toggleModal_fail = () => {
                 </div>
 
                 <div id="workContainer" class="grid grid-col3 grid-gap-1rem py-8 px-8 rounded-2xl bg-white shadow">
-                    <div class="work card h-22rem border-[#2b6cb0] px-2 py-2 flex flex-column justify-between rounded-2xl shadow relative"
-                        v-for="(item) in A_job_data" :key="item.id">
-                        <router-link :to="{name: 'event-work-detail', params: {WorkId: item.id}}">
-                            <div class="workTop flex flex-column justify-between">
-                                <div class="flex align-center mb-2 items-center">
-                                    <div class="avatar"></div>
-                                    <div class="text-sm text-[#1D5E9F] ellipsis italic ml-2">
-                                        {{ item.person_in_charge_email }}
-                                    </div>
-                                </div>
-                                <div class="workTitle text-xl font-bold ellipsis mb-2">
-                                    {{item.title}}
-                                </div>
 
-                                <div class="workContent text-base ellipsis mb-8">
-                                    {{ item.content }}
+                    <router-link :to="{ name: 'event-work-detail', params: { WorkId: item.id } }"
+                        class="work card h-22rem border-[#2b6cb0] px-2 py-2 flex flex-column justify-between rounded-2xl shadow relative"
+                        v-for="(item) in A_job_data" :key="item.id" @click="trans_tab(item.id)">
+                        <div class="workTop flex flex-column justify-between">
+                            <div class="flex align-center mb-2 items-center">
+                                <div class="avatar"></div>
+                                <div class="text-sm text-[#1D5E9F] ellipsis italic ml-2">
+                                    {{ item.user_name }}
                                 </div>
                             </div>
-                            <div class="workBottom font-bold inline-flex justify-between text-base pt-2 absolute">
-                                <div class="workBottomLeft inline-flex">
-                                    完成
-                                    <div class="mx-2 text-[#c70000]">{{ item.countY }}</div>
-                                    /
-                                    <div class="mx-2">{{ item.count }}</div>
-                                </div>
-
-                                <div class="workBottomRight inline-flex">
-                                    還剩
-                                    <div class="mx-2 text-[#c70000]">{{ item.Finish_dead_line }}</div>
-                                    天
-                                </div>
+                            <div class="workTitle text-xl font-bold ellipsis mb-2">
+                                {{ item.title }}
                             </div>
-                        </router-link>
-                    </div>
+
+                            <div class="workContent text-base ellipsis mb-8">
+                                {{ item.content }}
+                            </div>
+                        </div>
+                        <div class="workBottom font-bold inline-flex justify-between text-base pt-2 absolute">
+                            <div class="workBottomLeft inline-flex">
+                                完成
+                                <div class="mx-2 text-[#c70000]">{{ item.countY }}</div>
+                                /
+                                <div class="mx-2">{{ item.count }}</div>
+                            </div>
+
+                            <div class="workBottomRight inline-flex">
+                                還剩
+                                <div class="mx-2 text-[#c70000]">{{ item.Finish_dead_line }}</div>
+                                天
+                            </div>
+                        </div>
+
+                    </router-link>
                 </div>
             </div>
 

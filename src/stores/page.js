@@ -15,5 +15,23 @@ export const usePageStore = defineStore('counter', {
     // signupPage(){
     //   this.page = 'signup'
     // },
+  }
+})
+
+export const usePageStoretest = defineStore('test', {
+  state: () => {
+    return {
+      tabs: []
+    }
   },
+  getters: {
+    out: (state) => {return state.tabs.values}
+  },
+  actions: {
+    pushin(tab){
+      if(!this.tabs.includes(tab)){
+        this.tabs.push(tab)
+      }      
+    }
+  }
 })
