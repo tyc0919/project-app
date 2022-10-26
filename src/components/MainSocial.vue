@@ -45,12 +45,12 @@ const changeFilter = async (status) => {
     pages.value = []
 
     let candidates = []
-    for (let activity of socialData.value) {
+    for (let work of socialData.value) {
         if (status == 999) {
             candidates = socialData.value
         }
-        if (activity.is_finished == status) {
-            candidates.push(activity)
+        if (work.is_finished == status) {
+            candidates.push(work)
         }
     }
 

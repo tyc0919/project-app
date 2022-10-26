@@ -3,103 +3,52 @@ import MainWorksCard from './MainWorksCard.vue'
 import axios from 'axios'
 import { ref } from 'vue'
 
-let workData = []
-let work = ref([])
-let activityData = ref([])
-let activityName = ref([])
+let workData = ref([])
 
-const show_f = async () => {
-    workData.length = 0
-    work.value.length = 0
-    activityName.value.length = 0
-    axios
-        .get('/api/activity/')
-        .then(async function (response) {
-            activityData.value = response.data
-
-            for (let a of activityData.value) {
-                await axios.get('/api/activity/' + a.id + '/job/').then(function (response) {
-                    let temp = response.data
-                    for (let i of temp) {
-                        if (i.status == 3) {
-                            workData.push(i)
-                        }
-                    }
-                })
-            }
-        })
-        .finally(function (response) {
-            for (let wd of workData) {
-                work.value.push(wd)
-                for (let a of activityData.value) {
-                    if (a.id == wd.activity) {
-                        activityName.value.push(a.activity_name)
-                    }
-                }
-            }
-        })
+let pages = ref([])
+const quantum = 3
+let pageNumber = ref(1)
+const changePage = (targetPage) => {
+    pageNumber.value = targetPage
 }
 
-const show_un = () => {
-    workData.length = 0
-    work.value.length = 0
-    activityName.value.length = 0
-    axios
-        .get('/api/activity/')
-        .then(async function (response) {
-            activityData.value = response.data
+const getData = async () => {
+    await axios.get('/api/myjob/').then(response => {
+        workData.value = response.data
+    })
 
-            for (let a of activityData.value) {
-                await axios.get('/api/activity/' + a.id + '/job/').then(function (response) {
-                    let temp = response.data
-                    for (let i of temp) {
-                        if (i.status == 1) {
-                            workData.push(i)
-                        }
-                    }
-                })
-            }
+    for (let work of workData.value) {
+        await axios.get("/api/activity/" + work.activity + "/").then(response => {
+            work["activity_name"] = response.data.activity_name
         })
-        .finally(function (response) {
-            for (let wd of workData) {
-                work.value.push(wd)
-                for (let a of activityData.value) {
-                    if (a.id == wd.activity) {
-                        activityName.value.push(a.activity_name)
-                    }
-                }
-            }
-        })
+    }
+    changeFilter(999)
 }
-const show_all = () => {
-    workData.length = 0
-    work.value.length = 0
-    activityName.value.length = 0
-    axios
-        .get('/api/activity/')
-        .then(async function (response) {
-            activityData.value = response.data
 
-            for (let a of activityData.value) {
-                await axios.get('/api/activity/' + a.id + '/job/').then(function (response) {
-                    workData.push(response.data)
-                })
-            }
-        })
-        .finally(function (response) {
-            for (let wd of workData) {
-                for (let w of wd) {
-                    work.value.push(w)
-                    for (let a of activityData.value) {
-                        if (a.id == w.activity) {
-                            activityName.value.push(a.activity_name)
-                        }
-                    }
-                }
-            }
-        })
+// 更換篩選條件
+const changeFilter = async (status) => {
+    pages.value = []
+
+    let candidates = []
+    for (let work of workData.value) {
+        if (status == 999) {
+            candidates = workData.value
+        }
+        if (work.status == status) {
+            candidates.push(work)
+        }
+    }
+
+    let pageData = []
+    for (let [index, data] of candidates.entries()) {
+        pageData.push(data)
+        if (pageData.length >= quantum || index == candidates.length - 1) {
+            pages.value.push(pageData)
+            pageData = []
+        }
+    }
 }
-show_all()
+getData()
 </script>
 
 <template>
@@ -109,83 +58,84 @@ show_all()
             <div class="inline-flex justify-around">
                 <div id="radios">
                     <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" />
-                    <label class="radioLable text-base" for="radio1" @click="show_f">完成</label>
+                    <label class="radioLable text-base" for="radio1" @click="changeFilter(1)">完成</label>
                     <input id="radio2" class="radioInput hidden" type="radio" name="radio" value="radio2" />
-                    <label class="radioLable text-base" for="radio2" @click="show_un">未完成</label>
+                    <label class="radioLable text-base" for="radio2" @click="changeFilter(0)">未完成</label>
                     <input id="radio3" class="radioInput hidden" type="radio" name="radio" value="radio3" checked />
-                    <label class="radioLable text-base" for="radio3" @click="show_all">全部</label>
+                    <label class="radioLable text-base" for="radio3" @click="changeFilter(999)">全部</label>
                 </div>
             </div>
         </div>
 
         <div class="my-4 grid grid-cols-3 grid-gap-1rem items-center justify-center">
-            <router-link
-                v-for="(item, index) of work"
-                :to="{ name: 'event-work-detail', params: { EventId: item.activity, WorkId: item.id } }"
-            >
-                <MainWorksCard
-                    :work-title="item.title"
-                    :activity="activityName[index]"
-                    :content="item.content"
-                    :tracePercentage="100"
-                    :costMoney="item.job_expenditure"
-                    :budgetMoney="item.job_budget"
-                ></MainWorksCard>
+            <router-link v-for="(item, index) of pages[pageNumber - 1]"
+                :to="{ name: 'event-work-detail', params: { EventId: item.activity, WorkId: item.id } }">
+                <MainWorksCard :work-title="item.title" :activity="item.activity_name" :content="item.content"
+                    :tracePercentage="100" :costMoney="item.job_expenditure" :budgetMoney="item.job_budget">
+                </MainWorksCard>
             </router-link>
         </div>
 
-        <div class="flex justify-center py-10">
+        <!--換頁-->
+        <div class="flex justify-center pb-10">
             <nav aria-label="Page navigation example">
-                <ul class="inline-flex -space-x-px">
-                    <li>
-                        <a
-                            href="#"
-                            class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 ml-0 rounded-l-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                            >上一頁</a
-                        >
+                <ul class="inline-flex -space-x-px text-xl shadow-primary">
+                    <li v-if="pageNumber - 1 > 0" @click="changePage(pageNumber - 1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 ml-0 rounded-l-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        上一頁
                     </li>
-                    <li>
-                        <a
-                            href="#"
-                            class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                            >1</a
-                        >
+                    <li v-else
+                        class="shadow-none text-opacity-30 bg-white border border-gray-300 text-gray-500 rounded-l-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">
+                        上一頁
                     </li>
-                    <li>
-                        <a
-                            href="#"
-                            class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                            >2</a
-                        >
+                    <li v-if="pageNumber - 2 > 1" @click="changePage(1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        1
                     </li>
-                    <li>
-                        <a
-                            href="#"
-                            aria-current="page"
-                            class="bg-blue-50 border border-gray-300 text-blue-600 hover:bg-blue-100 hover:text-blue-700 py-2 px-3 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
-                            >3</a
-                        >
+                    <li v-if="pageNumber - 2 > 1"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        ...
                     </li>
-                    <li>
-                        <a
-                            href="#"
-                            class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                            >4</a
-                        >
+
+                    <li v-if="pageNumber - 2 >= 1" @click="changePage(pageNumber - 2)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        {{ pageNumber - 2 }}
                     </li>
-                    <li>
-                        <a
-                            href="#"
-                            class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                            >5</a
-                        >
+                    <li v-if="pageNumber - 1 >= 1" @click="changePage(pageNumber - 1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        {{ pageNumber - 1 }}
                     </li>
-                    <li>
-                        <a
-                            href="#"
-                            class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-r-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                            >下一頁</a
-                        >
+
+                    <li
+                        class="bg-blue-50 border border-gray-300 text-blue-600 hover:bg-blue-100 hover:text-blue-700 py-2 px-3 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
+                        {{ pageNumber }}
+                    </li>
+
+                    <li v-if="pageNumber + 1 <= pages.length" @click="changePage(pageNumber + 1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        {{ pageNumber + 1 }}
+                    </li>
+                    <li v-if="pageNumber + 2 <= pages.length" @click="changePage(pageNumber + 2)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        {{ pageNumber + 2 }}
+                    </li>
+
+                    <li v-if="pageNumber + 2 < pages.length"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        ...
+                    </li>
+                    <li v-if="pageNumber + 2 < pages.length" @click="changePage(pages.length)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        {{ pages.length }}
+                    </li>
+
+                    <li v-if="pageNumber < pages.length" @click="changePage(pageNumber + 1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-r-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        下一頁
+                    </li>
+                    <li v-else
+                        class="shadow-none text-opacity-30 bg-white border border-gray-300 text-gray-500  rounded-r-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">
+                        下一頁
                     </li>
                 </ul>
             </nav>
@@ -230,7 +180,7 @@ show_all()
     border-right: 1px solid #52708f;
 }
 
-.radioInput:checked + .radioLable {
+.radioInput:checked+.radioLable {
     background: #52708f;
 }
 
