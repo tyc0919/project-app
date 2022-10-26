@@ -165,7 +165,7 @@ const addActivity = async () => {
 
     <!-- content -->
 
-    <div class="contain er w-full px-8 py-8">
+    <div class="contain er w-full px-8 py-4">
         <!-- options -->
         <div id="options" class="inline-flex justify-between items-center my-4 w-full">
             <div class="inline-flex justify-around">

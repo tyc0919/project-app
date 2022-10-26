@@ -13,7 +13,7 @@ const toggleUserMenu = () => {
 
     <div class="flex h-full w-full">
     <!--Nav start-->
-        <div class="sidebar bg-primary h-full ">
+        <!-- <div class="sidebar bg-primary h-full ">
             <div class="logo">
                 <img src="/src/assets/images/Logo.svg" class=" w-60 h-24" alt="">
             </div>
@@ -36,7 +36,7 @@ const toggleUserMenu = () => {
                 <a href="#" class="w-12 h-8 text-center"><i class="fa-brands fa-instagram flex h-full items-center justify-center"></i></a>
               </div>
           </div>
-        </div>
+        </div> -->
     <!--Nav end-->
         <div class="wrapper w-full">
           <!-- Header start -->
