@@ -1,26 +1,36 @@
 <script setup>
 import EventOverviewFile from './EventOverviewFile.vue'
 import EventOverviewLog from './EventOverviewLog.vue'
+import axios from 'axios'
+import { ref } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+let logData = ref([])
+let logFile = ref([])
+
+const getData = () => {
+    axios.get('/api/log/' + route.params.EventId + '/').then(function (response) {
+        logData.value = response.data
+    })
+    axios.get('/api/file/activity/' + route.params.EventId + '/').then(function (response) {
+        logFile.value = response.data
+    })
+}
+
+getData()
 </script>
 <template>
     <div class="content bg-[CEE5F2]">
         <!-- Log紀錄 -->
         <div class="mx-10 p-14 border-b-2 border-[#c0c0c0]">
             <div class="w-full h-80 bg-white overflow-auto text-xl font-bold">
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
-                <EventOverviewLog></EventOverviewLog>
+                <EventOverviewLog
+                    v-for="log in logData"
+                    :time="log.time"
+                    :user="log.user_name"
+                    :action="log.action"
+                ></EventOverviewLog>
             </div>
         </div>
         <!-- Log紀錄 -->
@@ -42,8 +52,7 @@ import EventOverviewLog from './EventOverviewLog.vue'
 
             <!-- 檔案區-->
             <div class="m-8 border-2 border-dashed border-[#9747FF]">
-                <EventOverviewFile></EventOverviewFile>
-                <EventOverviewFile></EventOverviewFile><EventOverviewFile></EventOverviewFile>
+                <EventOverviewFile :name="FILE1" :date="TIME" :uploader="HSC" :job-belong="myjob"></EventOverviewFile>
             </div>
             <!-- 檔案區-->
 
