@@ -43,7 +43,7 @@ const getData = async () => {
 
 const changeFilter = async (status) => {
     pages.value = []
-
+    pageNumber.value = 1
     let candidates = []
     for (let work of socialData.value) {
         if (status == 999) {

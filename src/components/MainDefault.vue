@@ -101,7 +101,7 @@ const addUserName = async (targetData) => {
 // 更換篩選條件
 const changeFilter = async (status) => {
     pages.value = []
-
+    pageNumber.value = 1
     let candidates = []
     for (let activity of activityData.value) {
         if (status == 999) {

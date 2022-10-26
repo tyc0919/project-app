@@ -28,7 +28,7 @@ const getData = async () => {
 // 更換篩選條件
 const changeFilter = async (status) => {
     pages.value = []
-
+    pageNumber.value = 1
     let candidates = []
     for (let work of workData.value) {
         if (status == 999) {
