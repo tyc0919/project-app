@@ -121,23 +121,20 @@ const changeFilter = async (status) => {
         }
     }
 }
-const show_all = async () => {
-
+const getData = async () => {
     await axios.get('/api/activity/').then(function (response) {
         activityData.value = response.data
-
     })
-
     //add user_name into data
     for (let activity of activityData.value) {
         await axios.get("/api/activity/" + activity.id + "/").then(response => {
             activity["user_name"] = response.data.user_name
         })
     }
-
     changeFilter(999)
 }
-show_all()
+
+getData()
 
 </script>
 
