@@ -11,6 +11,8 @@ const props = defineProps({
     fname: String,
     upload_time: String
 })
+
+
 let csrftoken = getCookie()
 let config = {
     headers: {
@@ -18,6 +20,16 @@ let config = {
     },
     mode: 'same-origin'
 }
+let uploadTimeFormat = ref("")
+
+
+function timeFormat() {
+    let temp = new Date(props.upload_time)
+    uploadTimeFormat.value = temp.toLocaleDateString()
+}
+
+timeFormat()
+
 
 const showModal = ref(false)
 const toggleModal = () => {
@@ -35,7 +47,7 @@ const delete_file = async () => {
         .then(response => {
             console.log(response)
         })
-    
+
     toggleModal()
 
     emit('deleteFile')
@@ -44,18 +56,19 @@ const delete_file = async () => {
 </script>
 
 <template>
-    <div class="flex justify-between w-full mt-4 border-2 rounded-md p-2 border-sky-400 file-shadow">
-        <div class="flex">
-            <img src="" alt="" class="w-12 h-12 inline mr-2">
-            <div class="file-detail">
-                <!-- <span>檔案名稱.xlsx</span> -->
-                <span>{{ props.fname }}</span>
-                <!-- <span>上傳日期: 2022/07/20</span> -->
-                <span>上傳日期: {{ props.upload_time }}</span>
-            </div>
+
+    <div class="relative w-full p-2 mt-4 border-2 rounded-md border-sky-400">
+
+        <div>
+            {{ props.fname }}
         </div>
 
-        <button class="text-red-500" @click="toggleModal">X</button>
+        <div>
+            上傳日期: {{ uploadTimeFormat }}
+        </div>
+
+        <button class="text-red-500 btn-postion" @click="toggleModal">X</button>
+
     </div>
 
 
@@ -85,7 +98,11 @@ const delete_file = async () => {
 </template>
 
 <style scoped>
-.file-detail>span {
-    display: block;
+.btn-postion {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+
 }
 </style>

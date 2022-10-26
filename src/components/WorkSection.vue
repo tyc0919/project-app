@@ -50,7 +50,6 @@ let respon_gmail
 let uworkName = ref('')
 let uworkDate = ref('')
 let uworkBudget = ref('')
-let uworkExpenditure = ref('')
 let uworkContent = ref('')
 
 let job = ref('')
@@ -94,7 +93,6 @@ async function updateWork() {
         dead_line: uworkDate.value,
         content: uworkContent.value,
         job_budget: uworkBudget.value,
-        job_expenditure: uworkExpenditure.value,
     }
 
 
@@ -261,9 +259,6 @@ const closePage = () => {
 
 }
 
-
-
-
 /* 關閉分頁 */
 </script>
 
@@ -426,14 +421,6 @@ const closePage = () => {
                             <input type="number" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
                                 placeholder="10000" v-model="uworkBudget">
                         </div>
-
-                        <div class="text-base font-bold">已使用工作預算</div>
-                        <div class="flex items-center justify-start space-x-3">
-                            <span class="italic font-bold">$</span>
-                            <input type="number" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                                placeholder="10000" v-model="uworkExpenditure">
-                        </div>
-
                         <div class="text-base font-bold">工作說明</div>
                         <textarea class=" px-1 py-1 text-base border border-2 border-slate-400 w-full"
                             placeholder="這次的活動，我們將要帶領大家..." v-model="uworkContent"></textarea>
@@ -441,7 +428,6 @@ const closePage = () => {
                         <div class="text-base font-bold ">負責人</div>
                         <select class="px-1 py-1 w-full font-bold border border-2 border-slate-500"
                             name="responsibility" @change="get_responGmail()">
-                            <option class="text-red-400 font-bold">未定</option>
                             <option v-for="c_email in colla">{{ c_email.user_email }}</option>
                         </select>
                     </div>

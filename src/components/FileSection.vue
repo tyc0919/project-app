@@ -60,9 +60,7 @@ const upload = async () => {
 }
 /* 上傳檔案 */
 
-// const deleteFile = (id) => {
-//     console.log(`send delete axios ${id}`)
-// }
+
 /* 獲得檔案或協作者 */
 const take_colla = () => {
     axios.get("/api/activity/" + route.params.EventId + "/collaborator/")
@@ -127,10 +125,8 @@ const toggleModal = () => {
                 <Invite v-for="user in data" :key="user.email" :email="user.user_email"></Invite>
             </div>
             <div v-else>
-                <!-- <File v-for="workFile in data" :key="workFile.id" @delete-file="deleteFile" :fname="workFile.file_path"
-                    :upload_time="workFile.upload_time" /> -->
                 <File v-for="workFile in data" :key="workFile.id" :fname="workFile.file_path" @deleteFile="take_file()"
-                    :upload_time="workFile.upload_time" />
+                    :upload_time="workFile.file_uploaded_time" />
             </div>
         </div>
     </div>
