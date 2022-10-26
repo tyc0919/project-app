@@ -3,36 +3,140 @@ import SocialPost from './SocialPost.vue'
 import { ref } from 'vue'
 import axios from 'axios'
 
+
+// get data
 let socialData = ref([])
-let reviewData = ref([])
-let reviewRating = ref([])
-let ratingPercent = ref([])
-axios
-    .get('/api/social/')
-    .then(function (response) {
+
+let pages = ref([])
+const quantum = 2
+let pageNumber = ref(1)
+const changePage = (targetPage) => {
+    pageNumber.value = targetPage
+}
+
+const show_all = async () => {
+    pages.value.length = 0
+    pageNumber.value = 1
+    // add social data
+    await axios.get('/api/social/').then(function (response) {
         socialData.value = response.data
     })
-    .then(async function (res) {
-        for (let s of socialData.value) {
-            await axios.get('/api/social/' + s.id + '/review/').then(function (response) {
-                reviewData.value.push(response.data)
-            })
-        }
-        for (let rd of reviewData.value) {
-            reviewRating.value.length = 0
-            if (rd.length != 0) {
-                for (let i = 0; i < rd.length; i++) {
-                    reviewRating.value.push(rd[i].review_star)
-                }
-            } else {
-                reviewRating.value.push(0)
-            }
-            let tempSum = reviewRating.value.reduce((previousValue, currentValue) => previousValue + currentValue)
-            let tempPercent = ((tempSum / reviewRating.value.length) * 20).toString() + '%'
-            ratingPercent.value.push(tempPercent)
-        }
 
+    // add total starCount into each activity
+    for (let s of socialData.value) {
+        let stars = []
+        s['total_star'] = 0
+        s['star_percent'] = '0%'
+        await axios.get('/api/social/' + s.id + '/review/').then(function (response) {
+            if (response.data.length > 0) {
+                let total = 0
+                for (let rv of response.data) {
+                    stars.push(rv.review_star)
+                    total += rv.review_star
+                }
+                s['total_star'] = total / stars.length
+                s['star_percent'] = (s['total_star'] * 20).toString() + '%'
+            }
+        })
+    }
+
+    // divide data to each page
+    let pageData = []
+    for (let [i, s] of socialData.value.entries()) {
+        pageData.push(s)
+        if (pageData.length >= quantum || i == socialData.value.length - 1) {
+            pages.value.push(pageData)
+            pageData = []
+        }
+    }
+}
+const show_f = async () => {
+    pageNumber.value = 1
+    pages.value.length = 0
+    socialData.value.length = 0
+    // add social data
+    await axios.get('/api/social/').then(function (response) {
+        let temp = response.data
+        for (let i of temp) {
+            if (i.is_finished == 1) {
+                socialData.value.push(i)
+            }
+        }
     })
+
+    // add total starCount into each activity
+    for (let s of socialData.value) {
+        let stars = []
+        s['total_star'] = 0
+        s['star_percent'] = '0%'
+        await axios.get('/api/social/' + s.id + '/review/').then(function (response) {
+            if (response.data.length > 0) {
+                let total = 0
+                for (let rv of response.data) {
+                    stars.push(rv.review_star)
+                    total += rv.review_star
+                }
+                s['total_star'] = total / stars.length
+                s['star_percent'] = (s['total_star'] * 20).toString() + '%'
+            }
+        })
+    }
+
+    // divide data to each page
+    let pageData = []
+    for (let [i, s] of socialData.value.entries()) {
+        pageData.push(s)
+        if (pageData.length >= quantum || i == socialData.value.length - 1) {
+            pages.value.push(pageData)
+            pageData = []
+        }
+    }
+}
+const show_un = async () => {
+    pageNumber.value = 1
+    pages.value.length = 0
+    socialData.value.length = 0
+
+    // add social data
+    await axios.get('/api/social/').then(function (response) {
+        let temp = []
+        temp = response.data
+        for (let i of temp) {
+            if (i.is_finished == 0) {
+                socialData.value.push(i)
+            }
+        }
+    })
+
+    // add total starCount into each activity
+    for (let s of socialData.value) {
+        let stars = []
+        s['total_star'] = 0
+        s['star_percent'] = '0%'
+        await axios.get('/api/social/' + s.id + '/review/').then(function (response) {
+            if (response.data.length > 0) {
+                let total = 0
+                for (let rv of response.data) {
+                    stars.push(rv.review_star)
+                    total += rv.review_star
+                }
+                s['total_star'] = total / stars.length
+                s['star_percent'] = (s['total_star'] * 20).toString() + '%'
+            }
+        })
+    }
+
+    // divide data to each page
+    let pageData = []
+    for (let [i, s] of socialData.value.entries()) {
+        pageData.push(s)
+        if (pageData.length >= quantum || i == socialData.value.length - 1) {
+            pages.value.push(pageData)
+            pageData = []
+        }
+    }
+}
+show_all()
 </script>
 
 <template>
@@ -44,37 +148,129 @@ axios
             <div id="options" class="inline-flex justify-between items-center my-4 w-full">
                 <div class="inline-flex justify-around">
                     <div id="radios">
-                        <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" checked />
-                        <label class="radioLable text-base" for="radio1">完成</label>
+                        <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" />
+                        <label class="radioLable text-base" for="radio1" @click="show_f">完成</label>
                         <input id="radio2" class="radioInput hidden" type="radio" name="radio" value="radio2" />
-                        <label class="radioLable text-base" for="radio2">未完成</label>
-                        <input id="radio3" class="radioInput hidden" type="radio" name="radio" value="radio3" />
-                        <label class="radioLable text-base" for="radio3">全部</label>
+                        <label class="radioLable text-base" for="radio2" @click="show_un">未完成</label>
+                        <input id="radio3" class="radioInput hidden" type="radio" name="radio" value="radio3" checked />
+                        <label class="radioLable text-base" for="radio3" @click="show_all">全部</label>
                     </div>
                 </div>
             </div>
             <!--按鈕列-->
 
             <!--主要內容-->
-            <router-link v-for="(item, index) of socialData" :to="{ name: 'post', params: { PostId: item.id } }">
-                <SocialPost :title="item.activity_name" :owner="item.owner" :rating="ratingPercent[index]"
-                    :content="item.content"></SocialPost>
+            <router-link
+                v-for="(item, index) of pages[pageNumber - 1]"
+                :to="{ name: 'post', params: { PostId: item.id } }"
+            >
+                <SocialPost
+                    :title="item.activity_name"
+                    :owner="item.owner"
+                    :rating="item.star_percent"
+                    :content="item.content"
+                ></SocialPost>
             </router-link>
             <!--主要內容-->
         </div>
         <!--貼文、按鈕-->
 
         <!--換頁-->
-        <div class="pagination">
-            <ul>
-                <li class="prev"><span>上一頁</span></li>
-                <li class="number current"><span>1</span></li>
-                <li class="number"><span>2</span></li>
-                <li class="number"><span>3</span></li>
-                <li class="dot"><span>...</span></li>
-                <li class="number"><span>8</span></li>
-                <li class="next"><span>下一頁</span></li>
-            </ul>
+        <div class="flex justify-center pb-10">
+            <nav aria-label="Page navigation example">
+                <ul class="inline-flex -space-x-px text-xl shadow-primary">
+                    <li
+                        v-if="pageNumber - 1 > 0"
+                        @click="changePage(pageNumber - 1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 ml-0 rounded-l-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    >
+                        上一頁
+                    </li>
+                    <li
+                        v-else
+                        class="shadow-none text-opacity-30 bg-white border border-gray-300 text-gray-500 rounded-l-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
+                    >
+                        上一頁
+                    </li>
+                    <li
+                        v-if="pageNumber - 2 > 1"
+                        @click="changePage(1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    >
+                        1
+                    </li>
+                    <li
+                        v-if="pageNumber - 2 > 1"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    >
+                        ...
+                    </li>
+
+                    <li
+                        v-if="pageNumber - 2 >= 1"
+                        @click="changePage(pageNumber - 2)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    >
+                        {{ pageNumber - 2 }}
+                    </li>
+                    <li
+                        v-if="pageNumber - 1 >= 1"
+                        @click="changePage(pageNumber - 1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    >
+                        {{ pageNumber - 1 }}
+                    </li>
+
+                    <li
+                        class="bg-blue-50 border border-gray-300 text-blue-600 hover:bg-blue-100 hover:text-blue-700 py-2 px-3 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+                    >
+                        {{ pageNumber }}
+                    </li>
+
+                    <li
+                        v-if="pageNumber + 1 <= pages.length"
+                        @click="changePage(pageNumber + 1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    >
+                        {{ pageNumber + 1 }}
+                    </li>
+                    <li
+                        v-if="pageNumber + 2 <= pages.length"
+                        @click="changePage(pageNumber + 2)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    >
+                        {{ pageNumber + 2 }}
+                    </li>
+
+                    <li
+                        v-if="pageNumber + 2 < pages.length"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    >
+                        ...
+                    </li>
+                    <li
+                        v-if="pageNumber + 2 < pages.length"
+                        @click="changePage(pages.length)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    >
+                        {{ pages.length }}
+                    </li>
+
+                    <li
+                        v-if="pageNumber < pages.length"
+                        @click="changePage(pageNumber + 1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-r-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    >
+                        下一頁
+                    </li>
+                    <li
+                        v-else
+                        class="shadow-none text-opacity-30 bg-white border border-gray-300 text-gray-500  rounded-r-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
+                    >
+                        下一頁
+                    </li>
+                </ul>
+            </nav>
         </div>
 
         <!--換頁-->
@@ -141,7 +337,7 @@ axios
     border-right: 1px solid #52708f;
 }
 
-.radioInput:checked+.radioLable {
+.radioInput:checked + .radioLable {
     background: #52708f;
 }
 </style>
