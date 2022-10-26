@@ -104,6 +104,9 @@ const changeFilter = async (status) => {
 
     let candidates = []
     for (let activity of activityData.value) {
+        if (status == 999) {
+            candidates = activityData.value
+        }
         if (activity.is_finished == status) {
             candidates.push(activity)
         }
@@ -119,8 +122,7 @@ const changeFilter = async (status) => {
     }
 }
 const show_all = async () => {
-    pages.value.length = 0
-    pageNumber.value = 1
+
     await axios.get('/api/activity/').then(function (response) {
         activityData.value = response.data
 
@@ -132,18 +134,8 @@ const show_all = async () => {
             activity["user_name"] = response.data.user_name
         })
     }
-    // divide data to each page
-    let pageData = []
-    for (let [i, s] of activityData.value.entries()) {
-        pageData.push(s)
-        if (pageData.length >= quantum || i == activityData.value.length - 1) {
-            pages.value.push(pageData)
-            pageData = []
-        }
-    }
 
-
-    console.log(activityData.value)
+    changeFilter(999)
 }
 show_all()
 
@@ -234,7 +226,7 @@ show_all()
                         <input id="radio2" class="radioInput hidden" type="radio" name="radio" value="radio2" />
                         <label class="radioLable text-base" for="radio2" @click="changeFilter(0)">未完成</label>
                         <input id="radio3" class="radioInput hidden" type="radio" name="radio" value="radio3" checked />
-                        <label class="radioLable text-base" for="radio3" @click="show_all()">全部</label>
+                        <label class="radioLable text-base" for="radio3" @click="changeFilter(999)">全部</label>
                     </div>
                 </div>
             </div>
