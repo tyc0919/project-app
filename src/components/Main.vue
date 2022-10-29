@@ -21,12 +21,9 @@
             </router-link>
         </div>
         <div class="content bg-[CEE5F2] overflow-y-auto">
-            <!-- 把你寫的Component放在這裡測試，要上github前這個檔案更動要discard掉-->
-
             <router-view />
         </div>
     </div>
-    <router-link to="/events/2" class="text-sky-500">點擊前往Event.vue</router-link>
 </template>
 
 <style scoped>

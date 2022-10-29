@@ -1,6 +1,6 @@
 <script setup>
 const props = defineProps({
-    name: String,
+    email: String,
 })
 </script>
 
@@ -15,7 +15,7 @@ const props = defineProps({
         </div>
 
         <div class="flex">
-            <span>{{ props.name }}</span>
+            <span>{{ props.email }}</span>
         </div>
     </div>
 </template>

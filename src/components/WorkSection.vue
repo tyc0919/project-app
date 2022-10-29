@@ -265,7 +265,7 @@ const closePage = () => {
 <template>
 
     <!-- 主要內容 -->
-    <div class="flex px-8 py-4">
+    <div class="flex px-8 py-4 bg-white">
         <div class="w-3/4 mr-2">
             <!--功能列-->
             <div class="w-[50%]  inline-flex flex-wrap items-center my-4">
@@ -628,5 +628,6 @@ const closePage = () => {
 
 .btn_click2:hover {
     background-color: #ffcccc;
+    
 }
 </style>

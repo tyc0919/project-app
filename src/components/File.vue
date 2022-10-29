@@ -53,11 +53,15 @@ const delete_file = async () => {
     emit('deleteFile')
 }
 
+const downloadFile = () => {
+    window.open("/api/serve-file/"+ route.params.EventId +"/"+ props.fname)
+}
+
 </script>
 
 <template>
 
-    <div class="relative w-full p-2 mt-4 border-2 rounded-md border-sky-400">
+    <div class="relative w-full p-2 mt-4 border-2 rounded-md border-sky-400 cursor-pointer" @click="downloadFile()">
 
         <div>
             {{ props.fname }}
