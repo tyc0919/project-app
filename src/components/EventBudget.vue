@@ -4,7 +4,7 @@ import { ref } from 'vue';
 import { getCookie } from '../assets/modules'
 import axios from "axios";
 import { useRoute } from 'vue-router';
-
+import GraphPercentageCircle from './GraphPercentageCircle.vue';
 // components
 import Modal from './Modal.vue';
 
@@ -80,6 +80,7 @@ async function getData() {
                         }
                     }
                 }
+
                 // user_name
                 for (let i = 0; i < budget.value.expenditures.length; i++) {
                     for (let j = 0; j < collaborators.value.length; j++) {
@@ -89,6 +90,7 @@ async function getData() {
                         }
                     }
                 }
+
                 // adjust money notations
                 budget.value.activity_budget = budget.value.activity_budget.toLocaleString()
                 for (let expen of budget.value.expenditures) {
@@ -96,6 +98,12 @@ async function getData() {
                 }
                 budget.value.activity_expense = budget.value.activity_expense.toLocaleString();
                 console.log(budget.value);
+
+                // add download path
+                for (let expenditure of budget.value.expenditures) {
+                    expenditure["download_path"] = "/api/serve-file/" + activityId + "/" + expenditure.expenditure_receipt_path
+                }
+
             });
     } catch (error) {
         throw new Error(error);
@@ -222,8 +230,6 @@ const deleteExpenditure = async (fileName, jobId) => {
         console.log("error")
     }
 }
-
-
 </script>
 
 <template>
@@ -233,21 +239,23 @@ const deleteExpenditure = async (fileName, jobId) => {
     <div class="p-1 border-b mx-12 border-black">
         <!-- budget box start -->
         <div class="flex justify-around mt-8 mb-16">
+
             <div class="bg-green-400 flex flex-col items-center p-2 rounded shadow-md">
                 <p class="m-2 text-center">預算</p>
-                <p class="mb-2 text-2xl w-56 text-center">$ {{budget.activity_budget}}</p>
+                <p class="mb-2 text-2xl w-56 text-center">$ {{ budget.activity_budget }}</p>
+
             </div>
+
             <div class="bg-red-400 flex flex-col items-center p-2 rounded shadow-md">
                 <p class="m-2 text-center">支出</p>
-                <p class="mb-2 text-2xl w-56 text-center">$ {{budget.activity_expense}}</p>
+                <p class="mb-2 text-2xl w-56 text-center">$ {{ budget.activity_expense }}</p>
             </div>
         </div>
+
         <div class="flex justify-center w-full mb-8 items-center font-bold">
             <input id="budget-el" type="number" class="w-1/3 mr-4 p-2" />
             <button @click="updateActivityBudget()"
                 class="bg-sky-700 text-white px-4 py-2 rounded shadow-md">預算更新</button>
-
-
         </div>
 
         <!-- budget box end -->
@@ -264,7 +272,7 @@ const deleteExpenditure = async (fileName, jobId) => {
                 <template #body>
                     <div class="overflow-y-auto max-h-96 pr-4">
                         <div v-if="isSuccessUpdateBudget">
-                            預算更新為: <span class="text-red-500">$ {{budget.activity_budget}}</span>
+                            預算更新為: <span class="text-red-500">$ {{ budget.activity_budget }}</span>
                         </div>
                         <div v-if="!isSuccessUpdateBudget">
                             失敗原因: <span class="text-red-500">不可為負數或空值</span>
@@ -306,18 +314,18 @@ const deleteExpenditure = async (fileName, jobId) => {
                                     class="px-1 py-1 w-full text-base border border-2 border-slate-400"
                                     placeholder="10000">
                             </div>
-                            <span class="text-red-500">{{errorMessage.expenseErrorMessage.value}}</span>
+                            <span class="text-red-500">{{ errorMessage.expenseErrorMessage.value }}</span>
 
                             <div class="text-base font-bold">收據圖片證明</div>
                             <input ref="fileEl" type="file">
-                            <div class="text-red-500">{{errorMessage.fileErrorMessage.value}}</div>
+                            <div class="text-red-500">{{ errorMessage.fileErrorMessage.value }}</div>
 
                             <div class="text-base font-bold ">所屬工作</div>
                             <select id="job-el" class="px-1 py-1 w-full font-bold border border-2 border-slate-500">
                                 <option value="null" class="italic font-bold">--請選擇一個工作--</option>
-                                <option v-for="item in budget.user_jobs" :value="item.id">{{item.title}}</option>
+                                <option v-for="item in budget.user_jobs" :value="item.id">{{ item.title }}</option>
                             </select>
-                            <span class="text-red-500">{{errorMessage.jobErrorMessage.value}}</span>
+                            <span class="text-red-500">{{ errorMessage.jobErrorMessage.value }}</span>
                         </div>
                     </div>
                 </template>
@@ -343,9 +351,7 @@ const deleteExpenditure = async (fileName, jobId) => {
         <!-- analysis end -->
     </div>
     <div class="p-1 my-8 mx-12 flex items-center">
-        <canvas id="BudgetCanva" class="w-1/2">
-            圖表放置處
-        </canvas>
+
         <div class="w-full pt-4 pb-4 bg-white h-96 rounded-lg shadow-md flex flex-col ">
             <button @click="toggleModal('uploadFileModal')"
                 class="w-auto border-sky-700 border mx-8 mb-4 rounded text-sky-700">
@@ -353,30 +359,39 @@ const deleteExpenditure = async (fileName, jobId) => {
             <div class="overflow-y-auto flex flex-col flex-col-reverse">
                 <div v-for="item in budget.expenditures"
                     class="flex justify-between w-auto mt-4 mx-8 border-2 rounded-md py-2 pl-4 pr-2 border-gray-300 file-shadow">
+                    <div class="flex">
+                        <a :href="item.download_path" class="h-full w-48 border border-black mr-4">
+                            <img :src="item.download_path">
+                        </a>
 
-                    <div class="w-full whitespace-nowrap">
-                        <p class="font-bold">{{item.expenditure_receipt_path}}</p>
-                        <div class="w-full text-sm text-gray-500">
-                            <div class="text-red-500">
-                                <span>支出金額: </span>
-                                <span>$ </span>
-                                <span>{{item.expense}}</span>
-                            </div>
-                            <div>
-                                <span>所屬工作: </span>
-                                <span>{{item.job_title}}</span>
-                            </div>
-                            <div>
-                                <span>上傳者: </span>
-                                <span>{{item.user_name}}</span>
-                            </div>
+                        <div class="w-full whitespace-nowrap">
+                            <a :href="item.download_path">
+                                <p class="font-bold">{{ item.expenditure_receipt_path }}</p>
+                            </a>
 
-                            <div>
-                                <span>上傳日期: </span>
-                                <span>{{item.expenditure_uploaded_time}}</span>
-                            </div>
+                            <div class="w-full text-sm text-gray-500">
+                                <div class="text-red-500">
+                                    <span>支出金額: </span>
+                                    <span>$ </span>
+                                    <span>{{ item.expense }}</span>
+                                </div>
+                                <div>
+                                    <span>所屬工作: </span>
+                                    <span>{{ item.job_title }}</span>
+                                </div>
+                                <div>
+                                    <span>上傳者: </span>
+                                    <span>{{ item.user_name }}</span>
+                                </div>
 
+                                <div>
+                                    <span>上傳日期: </span>
+                                    <span>{{ item.expenditure_uploaded_time }}</span>
+                                </div>
+
+                            </div>
                         </div>
+
                     </div>
                     <button @click="deleteExpenditure(item.expenditure_receipt_path, item.job)"
                         class="text-red-500 p-2">X</button>
