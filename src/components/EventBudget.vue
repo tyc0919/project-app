@@ -23,6 +23,7 @@ const activityId = route.params.EventId
 // modal
 const modalController = {
     uploadFileModal: ref(false),
+    messageModal: ref(false),
     updateBudgetModal: ref(false),
 }
 const toggleModal = (modalName) => {
@@ -240,28 +241,42 @@ const deleteExpenditure = async (fileName, jobId) => {
         <!-- budget box start -->
         <div class="flex justify-around mt-8 mb-16">
 
-            <div class="bg-green-400 flex flex-col items-center p-2 rounded shadow-md">
-                <p class="m-2 text-center">預算</p>
-                <p class="mb-2 text-2xl w-56 text-center">$ {{ budget.activity_budget }}</p>
+            <div class="flex flex-col items-center">
+                <div class="bg-green-400  w-full rounded-t-xl shadow-md">
+                    <p class="m-2 text-center text-white">預算</p>
+                </div>
 
+                <div
+                    class="relative flex justify-start item-center h-fit p-4 shadow-md rounded-b-xl bg-white border-t border-grey-400">
+                    <p class=" text-2xl w-56 text-center text-green-400 font-bold">$ {{ budget.activity_budget }}</p>
+                    <svg @click="toggleModal('updateBudgetModal')" class="w-7 absolute cursor-pointer"
+                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                        <path
+                            d="M6 34.5V42h7.5l22.13-22.13-7.5-7.5L6 34.5zm35.41-20.41c.78-.78.78-2.05 0-2.83l-4.67-4.67c-.78-.78-2.05-.78-2.83 0l-3.66 3.66 7.5 7.5 3.66-3.66z"
+                            fill="#3056d3" class="fill-000000" />
+                        <path d="M0 0h48v48H0z" fill="none" />
+                    </svg>
+                </div>
             </div>
 
-            <div class="bg-red-400 flex flex-col items-center p-2 rounded shadow-md">
-                <p class="m-2 text-center">支出</p>
-                <p class="mb-2 text-2xl w-56 text-center">$ {{ budget.activity_expense }}</p>
-            </div>
-        </div>
 
-        <div class="flex justify-center w-full mb-8 items-center font-bold">
-            <input id="budget-el" type="number" class="w-1/3 mr-4 p-2" />
-            <button @click="updateActivityBudget()"
-                class="bg-sky-700 text-white px-4 py-2 rounded shadow-md">預算更新</button>
+            <div class="flex flex-col items-center">
+                <div class="bg-red-400  w-full rounded-t-xl shadow-md">
+                    <p class="m-2 text-center text-white">支出</p>
+                </div>
+                <div
+                    class="flex justify-start item-center h-fit p-4 shadow-md rounded-b-xl bg-white border-t border-grey-400">
+                    <p class="text-2xl w-56 text-center text-red-400 font-bold">$ {{ budget.activity_expense }}
+                    </p>
+                </div>
+
+            </div>
         </div>
 
         <!-- budget box end -->
         <Teleport to="body">
             <!-- use the modal component, pass in the prop -->
-            <modal :show="modalController.updateBudgetModal.value">
+            <modal :show="modalController.messageModal.value">
                 <template #header>
                     <div class="border-b-4 w-full px-4 py-4">
                         <div class="font-bold text-2xl">提醒</div>
@@ -283,7 +298,7 @@ const deleteExpenditure = async (fileName, jobId) => {
                 <template #footer>
                     <div class="border-t-2 pt-2">
 
-                        <button @click="toggleModal('updateBudgetModal')"
+                        <button @click="toggleModal('messageModal')"
                             class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
                             確定
                         </button>
@@ -337,6 +352,39 @@ const deleteExpenditure = async (fileName, jobId) => {
                             新增
                         </button>
                         <button @click="toggleModal('uploadFileModal')"
+                            class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                            取消
+                        </button>
+                    </div>
+                </template>
+            </modal>
+        </Teleport>
+
+        <!-- test block start -->
+        <Teleport to="body">
+            <!-- use the modal component, pass in the prop -->
+            <modal :show="modalController.updateBudgetModal.value">
+                <template #header>
+                    <div class="border-b-4 w-full px-4 py-4">
+                        <div class="font-bold text-2xl">更新預算</div>
+                    </div>
+
+                </template>
+
+                <template #body>
+                    <div class="overflow-y-auto max-h-96 pr-4">
+                        <input id="budget-el" type="number"
+                            class="px-1 py-1 w-full text-base border border-2 border-slate-400" placeholder="10000">
+                    </div>
+                </template>
+
+                <template #footer>
+                    <div class="border-t-2 pt-2">
+                        <button @click="updateActivityBudget()"
+                            class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                            新增
+                        </button>
+                        <button @click="toggleModal('updateBudgetModal')"
                             class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
                             取消
                         </button>
