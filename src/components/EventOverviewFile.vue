@@ -33,7 +33,7 @@ const toggleModal = (modalName) => {
 }
 // 刪除檔案操作
 let selectedFile = ref(null)
-const setSelectedFileId = (file) => {
+const setSelectedFile = (file) => {
     selectedFile.value = file
 }
 const deleteFile = async () => {
@@ -171,7 +171,7 @@ getData()
                 </div>
             </div>
         </div>
-        <button class="text-red-500 p-2" @click="[toggleModal('deleteModal'), setSelectedFileId(file)]">X</button>
+        <button class="text-red-500 p-2" @click="[toggleModal('deleteModal'), setSelectedFile(file)]">X</button>
     </div>
 
     <!--換頁-->
