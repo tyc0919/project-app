@@ -37,13 +37,12 @@ const toggleModal = (modalName) => {
     modalController[modalName].value = !modalController[modalName].value
 }
 
-
+// get data
 let budget = ref([]);
 const getData = async () => {
     try {
         await axios.get('/api/activity/' + activityId + '/budget/', config)
             .then(async function (response) {
-                // ? get userJobs in this activity.
                 budget.value = response.data;
             });
 
@@ -64,16 +63,21 @@ const getData = async () => {
         for (let job of budget.value.jobs) {
             if (job.person_in_charge_email == user.value.user_email) {
                 userJobs.value.push(job);
+
             }
         }
-        budget.value["user_jobs"] = userJobs.value;
+        budget.value["user_jobs"] = userJobs
 
         // append activity expense
         let activityExpense = ref(0);
         for (let i = 0; i < budget.value.jobs.length; i++) {
             activityExpense.value += budget.value.jobs[i].job_expenditure;
         }
+
         budget.value["activity_expense"] = activityExpense.value;
+
+        budget.value["expense_percentage"] = Math.round((activityExpense.value / budget.value.activity_budget) * 100)
+        console.log(budget.value)
 
         // append jobs data
         for (let expenditure of budget.value.expenditures) {
@@ -393,7 +397,7 @@ const deleteExpenditure = async (fileName, jobId) => {
                 </div>
 
             </div>
-            <GraphPercentageCircle></GraphPercentageCircle>
+            <GraphPercentageCircle :percentage="budget.expense_percentage"></GraphPercentageCircle>
         </div>
 
 

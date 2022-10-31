@@ -1,14 +1,14 @@
 <script setup>
-
-// 把percent render到 percentage裡
-let percentage = 50
-let degree = 360 * percentage / 100
+const props = defineProps({
+    percentage: Number
+})
 
 // 重設左右半圓的初值
 let rightDegree = "rotate(0deg)"
 let leftDegree = "rotate(0deg)"
 
-// 設定左右半圓的比率
+// 設定左右半圓的轉動角度
+let degree = 360 * props.percentage / 100
 if (degree < 180) {
     rightDegree = "rotate(" + degree + "deg)"
     leftDegree = "rotate(" + 0 + "deg)"
@@ -18,14 +18,14 @@ if (degree < 180) {
 }
 
 
-// 預設角度(只要調整這個就可以控制寬高)
+// 調整圖的大小(只要調整angle就可以控制寬高)
 let angle = 160
 
-// 變動寬高
+// angle : size
 let sizePower = 1.875
 let size = angle * sizePower
 
-// 變動font size
+// size : font
 let fontPower = 0.16
 let fontSize = size * fontPower
 
@@ -46,7 +46,7 @@ fontSize = fontSize + "px"
         <span :style="{ '--degree': rightDegree }" class=" progress-right">
             <span :style="{ '--angle': angle }" class="progress-bar"></span>
         </span>
-        <div :style="{ '--fontSize': fontSize }" class=" progress-value font-bold">{{ percentage }}%</div>
+        <div :style="{ '--fontSize': fontSize }" class=" progress-value font-bold">{{ props.percentage }}%</div>
     </div>
 </template>
 
