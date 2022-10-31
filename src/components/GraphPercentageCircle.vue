@@ -1,7 +1,7 @@
 <script setup>
 
 // 把percent render到 percentage裡
-let percentage = 70
+let percentage = 50
 let degree = 360 * percentage / 100
 
 // 重設左右半圓的初值
@@ -53,9 +53,10 @@ fontSize = fontSize + "px"
 
 <style scoped>
 /* 設定一般樣式 */
+
 .progress {
     background: none;
-    margin: 0 auto;
+    margin: 0 0;
     box-shadow: none;
     width: var(--size);
     height: var(--size);
@@ -66,12 +67,10 @@ fontSize = fontSize + "px"
 .progress:after {
     content: "";
     border-radius: 50%;
-    border: 10px solid #f2f5f5;
+    border: 20px solid #cadcff;
     position: absolute;
     width: 100%;
     height: 100%;
-    top: 0;
-    left: 0;
 }
 
 .progress>span {
@@ -88,7 +87,7 @@ fontSize = fontSize + "px"
 }
 
 .progress .progress-bar {
-    border-width: 10px;
+    border-width: 20px;
     border-style: solid;
     position: absolute;
     width: 100%;
@@ -161,6 +160,6 @@ fontSize = fontSize + "px"
 
 /* color */
 .progress.blue .progress-bar {
-    border-color: #26abfd;
+    border-color: #3056D3;
 }
 </style>

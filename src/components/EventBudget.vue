@@ -5,6 +5,7 @@ import { getCookie } from '../assets/modules'
 import axios from "axios";
 import { useRoute } from 'vue-router';
 import GraphPercentageCircle from './GraphPercentageCircle.vue';
+import GraphCircle from './GraphCircle.vue';
 // components
 import Modal from './Modal.vue';
 
@@ -33,79 +34,78 @@ const toggleModal = (modalName) => {
 
 
 let budget = ref([]);
-async function getData() {
+const getData = async () => {
     try {
-        axios.get('/api/activity/' + activityId + '/budget/', config)
+        await axios.get('/api/activity/' + activityId + '/budget/', config)
             .then(async function (response) {
                 // ? get userJobs in this activity.
                 budget.value = response.data;
-
-                let user = ref([]);
-                await axios.get('/api/userprofile/')
-                    .then(function (response) {
-                        user.value = response.data;
-                    });
-
-                let collaborators = ref([]);
-                await axios.get('/api/activity/' + activityId + '/collaborator/')
-                    .then(function (response) {
-                        collaborators.value = response.data;
-                    });
-
-                let userJobs = ref([]);
-                for (let job of budget.value.jobs) {
-                    if (job.person_in_charge_email == user.value.user_email) {
-                        userJobs.value.push(job);
-                    }
-                }
-                budget.value["user_jobs"] = userJobs.value;
-
-                // add activity expense
-                let activityExpense = ref(0);
-                for (let i = 0; i < budget.value.jobs.length; i++) {
-                    activityExpense.value += budget.value.jobs[i].job_expenditure;
-                }
-                budget.value["activity_expense"] = activityExpense.value;
-
-                // append jobs data
-                for (let i = 0; i < budget.value.expenditures.length; i++) {
-                    // adjust date style
-                    budget.value.expenditures[i].expenditure_uploaded_time = new Date(
-                        budget.value.expenditures[i].expenditure_uploaded_time).toLocaleDateString();
-                    // append job data
-                    for (let j = 0; j < budget.value.jobs.length; j++) {
-                        if (budget.value.expenditures[i].job ==
-                            budget.value.jobs[j].id) {
-                            budget.value.expenditures[i]["job_title"] = budget.value.jobs[j].title;
-                            budget.value.expenditures[i]["person_in_charge_email"] = budget.value.jobs[j].person_in_charge_email;
-                        }
-                    }
-                }
-
-                // user_name
-                for (let i = 0; i < budget.value.expenditures.length; i++) {
-                    for (let j = 0; j < collaborators.value.length; j++) {
-                        if (budget.value.expenditures[i].person_in_charge_email == collaborators.value[j].user_email) {
-
-                            budget.value.expenditures[i]['user_name'] = collaborators.value[j].user_name;
-                        }
-                    }
-                }
-
-                // adjust money notations
-                budget.value.activity_budget = budget.value.activity_budget.toLocaleString()
-                for (let expen of budget.value.expenditures) {
-                    expen.expense = expen.expense.toLocaleString();
-                }
-                budget.value.activity_expense = budget.value.activity_expense.toLocaleString();
-                console.log(budget.value);
-
-                // add download path
-                for (let expenditure of budget.value.expenditures) {
-                    expenditure["download_path"] = "/api/serve-file/" + activityId + "/" + expenditure.expenditure_receipt_path
-                }
-
             });
+
+        let user = ref([]);
+        await axios.get('/api/userprofile/')
+            .then(function (response) {
+                user.value = response.data;
+            });
+
+        let collaborators = ref([]);
+        await axios.get('/api/activity/' + activityId + '/collaborator/')
+            .then(function (response) {
+                collaborators.value = response.data;
+            });
+
+        let userJobs = ref([]);
+        for (let job of budget.value.jobs) {
+            if (job.person_in_charge_email == user.value.user_email) {
+                userJobs.value.push(job);
+            }
+        }
+        budget.value["user_jobs"] = userJobs.value;
+
+        // add activity expense
+        let activityExpense = ref(0);
+        for (let i = 0; i < budget.value.jobs.length; i++) {
+            activityExpense.value += budget.value.jobs[i].job_expenditure;
+        }
+        budget.value["activity_expense"] = activityExpense.value;
+
+        // append jobs data
+        for (let i = 0; i < budget.value.expenditures.length; i++) {
+            // adjust date style
+            budget.value.expenditures[i].expenditure_uploaded_time = new Date(
+                budget.value.expenditures[i].expenditure_uploaded_time).toLocaleDateString();
+            // append job data
+            for (let j = 0; j < budget.value.jobs.length; j++) {
+                if (budget.value.expenditures[i].job ==
+                    budget.value.jobs[j].id) {
+                    budget.value.expenditures[i]["job_title"] = budget.value.jobs[j].title;
+                    budget.value.expenditures[i]["person_in_charge_email"] = budget.value.jobs[j].person_in_charge_email;
+                }
+            }
+        }
+
+        // append user_name
+        for (let i = 0; i < budget.value.expenditures.length; i++) {
+            for (let j = 0; j < collaborators.value.length; j++) {
+                if (budget.value.expenditures[i].person_in_charge_email == collaborators.value[j].user_email) {
+
+                    budget.value.expenditures[i]['user_name'] = collaborators.value[j].user_name;
+                }
+            }
+        }
+
+        // adjust money notations
+        budget.value.activity_budget = budget.value.activity_budget.toLocaleString()
+        for (let expen of budget.value.expenditures) {
+            expen.expense = expen.expense.toLocaleString();
+        }
+        budget.value.activity_expense = budget.value.activity_expense.toLocaleString();
+        console.log(budget.value);
+
+        // add download path
+        for (let expenditure of budget.value.expenditures) {
+            expenditure["download_path"] = "/api/serve-file/" + activityId + "/" + expenditure.expenditure_receipt_path
+        }
     } catch (error) {
         throw new Error(error);
     }
@@ -140,6 +140,7 @@ const updateActivityBudget = async () => {
     } finally {
         budgetEl.value = ""
         toggleModal('updateBudgetModal')
+        toggleModal('messageModal')
     }
     getData();
 }
@@ -239,39 +240,45 @@ const deleteExpenditure = async (fileName, jobId) => {
     <!-- ? from EventBudgetUpper -->
     <div class="p-1 border-b mx-12 border-black">
         <!-- budget box start -->
-        <div class="flex justify-around mt-8 mb-16">
+        <div class="flex justify-around items-center  my-4 rounded-xl">
+            <div class="w-56 h-96 flex flex-col justify-around    mt-8 mb-16">
 
-            <div class="flex flex-col items-center">
-                <div class="bg-green-400  w-full rounded-t-xl shadow-md">
-                    <p class="m-2 text-center text-white">預算</p>
+                <div class="w-full flex flex-col items-center">
+                    <div class="bg-green-400 h-fit w-full rounded-t-xl shadow-md">
+                        <p class="m-2 text-center text-white">預算</p>
+                    </div>
+                    <div
+                        class="w-full h-full relative flex justify-start item-center  p-4 shadow-md rounded-b-xl bg-white border-t border-grey-400">
+                        <p class=" text-2xl w-56 text-center text-green-400 font-bold">
+                            $ {{ budget.activity_budget }}
+                        </p>
+                        <svg @click="toggleModal('updateBudgetModal')" class="w-7 absolute cursor-pointer"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                            <path
+                                d="M6 34.5V42h7.5l22.13-22.13-7.5-7.5L6 34.5zm35.41-20.41c.78-.78.78-2.05 0-2.83l-4.67-4.67c-.78-.78-2.05-.78-2.83 0l-3.66 3.66 7.5 7.5 3.66-3.66z"
+                                fill="#3056d3" class="fill-000000" />
+                            <path d="M0 0h48v48H0z" fill="none" />
+                        </svg>
+
+                    </div>
                 </div>
 
-                <div
-                    class="relative flex justify-start item-center h-fit p-4 shadow-md rounded-b-xl bg-white border-t border-grey-400">
-                    <p class=" text-2xl w-56 text-center text-green-400 font-bold">$ {{ budget.activity_budget }}</p>
-                    <svg @click="toggleModal('updateBudgetModal')" class="w-7 absolute cursor-pointer"
-                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-                        <path
-                            d="M6 34.5V42h7.5l22.13-22.13-7.5-7.5L6 34.5zm35.41-20.41c.78-.78.78-2.05 0-2.83l-4.67-4.67c-.78-.78-2.05-.78-2.83 0l-3.66 3.66 7.5 7.5 3.66-3.66z"
-                            fill="#3056d3" class="fill-000000" />
-                        <path d="M0 0h48v48H0z" fill="none" />
-                    </svg>
+
+                <div class="w-56 flex flex-col items-center">
+                    <div class="w-full bg-red-400  w-full rounded-t-xl shadow-md">
+                        <p class="m-2 text-center text-white">支出</p>
+                    </div>
+                    <div
+                        class="w-full flex justify-start item-center h-fit p-4 shadow-md rounded-b-xl bg-white border-t border-grey-400">
+                        <p class="text-2xl w-56 text-center text-red-400 font-bold">$ {{ budget.activity_expense }}
+                        </p>
+                    </div>
                 </div>
+
             </div>
-
-
-            <div class="flex flex-col items-center">
-                <div class="bg-red-400  w-full rounded-t-xl shadow-md">
-                    <p class="m-2 text-center text-white">支出</p>
-                </div>
-                <div
-                    class="flex justify-start item-center h-fit p-4 shadow-md rounded-b-xl bg-white border-t border-grey-400">
-                    <p class="text-2xl w-56 text-center text-red-400 font-bold">$ {{ budget.activity_expense }}
-                    </p>
-                </div>
-
-            </div>
+            <GraphPercentageCircle></GraphPercentageCircle>
         </div>
+
 
         <!-- budget box end -->
         <Teleport to="body">
@@ -398,9 +405,12 @@ const deleteExpenditure = async (fileName, jobId) => {
         <!-- analysis start -->
         <!-- analysis end -->
     </div>
-    <div class="p-1 my-8 mx-12 flex items-center">
+    <div class="p-1 my-8 mx-12 flex justify-between items-center">
+        <div class="h-96 w-1/2 border border-black">
 
-        <div class="w-full pt-4 pb-4 bg-white h-96 rounded-lg shadow-md flex flex-col ">
+        </div>
+
+        <div class="w-1/2 pt-4 pb-4 bg-white h-96 rounded-lg shadow-md flex flex-col ">
             <button @click="toggleModal('uploadFileModal')"
                 class="w-auto border-sky-700 border mx-8 mb-4 rounded text-sky-700">
                 上傳</button>
@@ -408,7 +418,8 @@ const deleteExpenditure = async (fileName, jobId) => {
                 <div v-for="item in budget.expenditures"
                     class="flex justify-between w-auto mt-4 mx-8 border-2 rounded-md py-2 pl-4 pr-2 border-gray-300 file-shadow">
                     <div class="flex">
-                        <a :href="item.download_path" class="h-full w-48 border border-black mr-4">
+                        <a :href="item.download_path"
+                            class="flex jusify-center item-center h-full w-48 border border-black mr-4 bg-[#cadcff]">
                             <img :src="item.download_path">
                         </a>
 
