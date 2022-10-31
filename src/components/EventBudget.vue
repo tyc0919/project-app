@@ -20,7 +20,12 @@ let config = {
 const route = useRoute();
 const activityId = route.params.EventId
 
-
+//select file
+let selectedFile = ref(null)
+const setSelectedFile = (file) => {
+    selectedFile.value = file;
+    console.log(selectedFile.value)
+}
 // modal
 const modalController = {
     uploadFileModal: ref(false),
@@ -42,6 +47,7 @@ const getData = async () => {
                 budget.value = response.data;
             });
 
+        // To append some extra information, need to get some supporting data
         let user = ref([]);
         await axios.get('/api/userprofile/')
             .then(function (response) {
@@ -62,7 +68,7 @@ const getData = async () => {
         }
         budget.value["user_jobs"] = userJobs.value;
 
-        // add activity expense
+        // append activity expense
         let activityExpense = ref(0);
         for (let i = 0; i < budget.value.jobs.length; i++) {
             activityExpense.value += budget.value.jobs[i].job_expenditure;
@@ -71,7 +77,7 @@ const getData = async () => {
 
         // append jobs data
         for (let i = 0; i < budget.value.expenditures.length; i++) {
-            // adjust date style
+            // adjust date format
             budget.value.expenditures[i].expenditure_uploaded_time = new Date(
                 budget.value.expenditures[i].expenditure_uploaded_time).toLocaleDateString();
             // append job data
@@ -100,7 +106,6 @@ const getData = async () => {
             expen.expense = expen.expense.toLocaleString();
         }
         budget.value.activity_expense = budget.value.activity_expense.toLocaleString();
-        console.log(budget.value);
 
         // add download path
         for (let expenditure of budget.value.expenditures) {
@@ -237,6 +242,125 @@ const deleteExpenditure = async (fileName, jobId) => {
 <template>
     <!-- 把你寫的Component放在這裡測試，要上github前這個檔案更動要discard掉-->
 
+    <!-- budget box end -->
+    <Teleport to="body">
+        <!-- use the modal component, pass in the prop -->
+        <modal :show="modalController.messageModal.value">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">提醒</div>
+                </div>
+
+            </template>
+
+            <template #body>
+                <div class="overflow-y-auto max-h-96 pr-4">
+                    <div v-if="isSuccessUpdateBudget">
+                        預算更新為: <span class="text-red-500">$ {{ budget.activity_budget }}</span>
+                    </div>
+                    <div v-if="!isSuccessUpdateBudget">
+                        失敗原因: <span class="text-red-500">不可為負數或空值</span>
+                    </div>
+                </div>
+            </template>
+
+            <template #footer>
+                <div class="border-t-2 pt-2">
+
+                    <button @click="toggleModal('messageModal')"
+                        class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                        確定
+                    </button>
+                </div>
+            </template>
+        </modal>
+    </Teleport>
+
+    <!-- test block start -->
+    <Teleport to="body">
+        <!-- use the modal component, pass in the prop -->
+        <modal :show="modalController.uploadFileModal.value">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">上傳收據</div>
+                </div>
+
+            </template>
+
+            <template #body>
+                <div class="overflow-y-auto max-h-96 pr-4">
+                    <div class="flex-col justify-between space-y-3">
+
+                        <div class="text-base font-bold">支出金額</div>
+                        <div class="flex items-center justify-start space-x-3">
+                            <span class="italic font-bold">$</span>
+                            <input id="expense-el" type="number"
+                                class="px-1 py-1 w-full text-base border border-2 border-slate-400" placeholder="10000">
+                        </div>
+                        <span class="text-red-500">{{ errorMessage.expenseErrorMessage.value }}</span>
+
+                        <div class="text-base font-bold">收據圖片證明</div>
+                        <input ref="fileEl" type="file">
+                        <div class="text-red-500">{{ errorMessage.fileErrorMessage.value }}</div>
+
+                        <div class="text-base font-bold ">所屬工作</div>
+                        <select id="job-el" class="px-1 py-1 w-full font-bold border border-2 border-slate-500">
+                            <option value="null" class="italic font-bold">--請選擇一個工作--</option>
+                            <option v-for="item in budget.user_jobs" :value="item.id">{{ item.title }}</option>
+                        </select>
+                        <span class="text-red-500">{{ errorMessage.jobErrorMessage.value }}</span>
+                    </div>
+                </div>
+            </template>
+
+            <template #footer>
+                <div class="border-t-2 pt-2">
+                    <button @click="[uploadExpenditure()]"
+                        class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                        新增
+                    </button>
+                    <button @click="toggleModal('uploadFileModal')"
+                        class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                        取消
+                    </button>
+                </div>
+            </template>
+        </modal>
+    </Teleport>
+
+    <!-- test block start -->
+    <Teleport to="body">
+        <!-- use the modal component, pass in the prop -->
+        <modal :show="modalController.updateBudgetModal.value">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">更新預算</div>
+                </div>
+
+            </template>
+
+            <template #body>
+                <div class="overflow-y-auto max-h-96 pr-4">
+                    <input id="budget-el" type="number"
+                        class="px-1 py-1 w-full text-base border border-2 border-slate-400" placeholder="10000">
+                </div>
+            </template>
+
+            <template #footer>
+                <div class="border-t-2 pt-2">
+                    <button @click="updateActivityBudget()"
+                        class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                        更新
+                    </button>
+                    <button @click="toggleModal('updateBudgetModal')"
+                        class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                        取消
+                    </button>
+                </div>
+            </template>
+        </modal>
+    </Teleport>
+
     <!-- ? from EventBudgetUpper -->
     <div class="p-1 border-b mx-12 border-black">
         <!-- budget box start -->
@@ -280,134 +404,11 @@ const deleteExpenditure = async (fileName, jobId) => {
         </div>
 
 
-        <!-- budget box end -->
-        <Teleport to="body">
-            <!-- use the modal component, pass in the prop -->
-            <modal :show="modalController.messageModal.value">
-                <template #header>
-                    <div class="border-b-4 w-full px-4 py-4">
-                        <div class="font-bold text-2xl">提醒</div>
-                    </div>
 
-                </template>
-
-                <template #body>
-                    <div class="overflow-y-auto max-h-96 pr-4">
-                        <div v-if="isSuccessUpdateBudget">
-                            預算更新為: <span class="text-red-500">$ {{ budget.activity_budget }}</span>
-                        </div>
-                        <div v-if="!isSuccessUpdateBudget">
-                            失敗原因: <span class="text-red-500">不可為負數或空值</span>
-                        </div>
-                    </div>
-                </template>
-
-                <template #footer>
-                    <div class="border-t-2 pt-2">
-
-                        <button @click="toggleModal('messageModal')"
-                            class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
-                            確定
-                        </button>
-                    </div>
-                </template>
-            </modal>
-        </Teleport>
-
-        <!-- test block start -->
-        <Teleport to="body">
-            <!-- use the modal component, pass in the prop -->
-            <modal :show="modalController.uploadFileModal.value">
-                <template #header>
-                    <div class="border-b-4 w-full px-4 py-4">
-                        <div class="font-bold text-2xl">上傳收據</div>
-                    </div>
-
-                </template>
-
-                <template #body>
-                    <div class="overflow-y-auto max-h-96 pr-4">
-                        <div class="flex-col justify-between space-y-3">
-
-                            <div class="text-base font-bold">支出金額</div>
-                            <div class="flex items-center justify-start space-x-3">
-                                <span class="italic font-bold">$</span>
-                                <input id="expense-el" type="number"
-                                    class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                                    placeholder="10000">
-                            </div>
-                            <span class="text-red-500">{{ errorMessage.expenseErrorMessage.value }}</span>
-
-                            <div class="text-base font-bold">收據圖片證明</div>
-                            <input ref="fileEl" type="file">
-                            <div class="text-red-500">{{ errorMessage.fileErrorMessage.value }}</div>
-
-                            <div class="text-base font-bold ">所屬工作</div>
-                            <select id="job-el" class="px-1 py-1 w-full font-bold border border-2 border-slate-500">
-                                <option value="null" class="italic font-bold">--請選擇一個工作--</option>
-                                <option v-for="item in budget.user_jobs" :value="item.id">{{ item.title }}</option>
-                            </select>
-                            <span class="text-red-500">{{ errorMessage.jobErrorMessage.value }}</span>
-                        </div>
-                    </div>
-                </template>
-
-                <template #footer>
-                    <div class="border-t-2 pt-2">
-                        <button @click="[uploadExpenditure()]"
-                            class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
-                            新增
-                        </button>
-                        <button @click="toggleModal('uploadFileModal')"
-                            class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
-                            取消
-                        </button>
-                    </div>
-                </template>
-            </modal>
-        </Teleport>
-
-        <!-- test block start -->
-        <Teleport to="body">
-            <!-- use the modal component, pass in the prop -->
-            <modal :show="modalController.updateBudgetModal.value">
-                <template #header>
-                    <div class="border-b-4 w-full px-4 py-4">
-                        <div class="font-bold text-2xl">更新預算</div>
-                    </div>
-
-                </template>
-
-                <template #body>
-                    <div class="overflow-y-auto max-h-96 pr-4">
-                        <input id="budget-el" type="number"
-                            class="px-1 py-1 w-full text-base border border-2 border-slate-400" placeholder="10000">
-                    </div>
-                </template>
-
-                <template #footer>
-                    <div class="border-t-2 pt-2">
-                        <button @click="updateActivityBudget()"
-                            class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
-                            新增
-                        </button>
-                        <button @click="toggleModal('updateBudgetModal')"
-                            class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
-                            取消
-                        </button>
-                    </div>
-                </template>
-            </modal>
-        </Teleport>
-        <!-- test block end -->
-
-
-        <!-- analysis start -->
-        <!-- analysis end -->
     </div>
     <div class="p-1 my-8 mx-12 flex justify-between items-center">
-        <div class="h-96 w-1/2 border border-black">
-
+        <div class="flex jusify-center item-center h-96 w-1/2 border border-black">
+            <img class="w-full" :src="selectedFile.download_path">
         </div>
 
         <div class="w-1/2 pt-4 pb-4 bg-white h-96 rounded-lg shadow-md flex flex-col ">
@@ -418,10 +419,10 @@ const deleteExpenditure = async (fileName, jobId) => {
                 <div v-for="item in budget.expenditures"
                     class="flex justify-between w-auto mt-4 mx-8 border-2 rounded-md py-2 pl-4 pr-2 border-gray-300 file-shadow">
                     <div class="flex">
-                        <a :href="item.download_path"
-                            class="flex jusify-center item-center h-full w-48 border border-black mr-4 bg-[#cadcff]">
+                        <div @click="setSelectedFile(item)"
+                            class="flex jusify-center item-center h-full w-48 border border-black mr-4 bg-[#cadcff] cursor-pointer">
                             <img :src="item.download_path">
-                        </a>
+                        </div>
 
                         <div class="w-full whitespace-nowrap">
                             <a :href="item.download_path">
