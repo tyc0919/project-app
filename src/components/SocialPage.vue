@@ -182,12 +182,10 @@ getCurrentReview()
         <modal :show="showModal_edit">
             <template #header>
                 <div class="border-b-4 w-full px-4 py-4">
-                    <div class="font-bold text-2xl">確定要修改目前的評論嗎？</div>
+                    <div class="font-bold text-2xl">提醒</div>
                 </div>
             </template>
-            <template #body>
-                {{ messageS }}
-            </template>
+            <template #body> 確定要修改目前的評論嗎？ </template>
             <template #footer>
                 <button
                     @click="editReview(), toggleModal_add()"
@@ -307,7 +305,7 @@ getCurrentReview()
                     </button>
                     <button
                         v-else
-                        @click="editReview()"
+                        @click="toggleModal_edit()"
                         class="my-4 py-2 px-4 rounded hover:text-[#2b6cb0] border border-[#2b6cb0] hover:bg-transparent text-white bg-sky-700 font-semibold"
                         id="commentBtn"
                     >

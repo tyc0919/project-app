@@ -31,25 +31,11 @@ getData()
         <!-- 檔案總覽 -->
 
         <div>
-            <div>
-                <!-- 下拉式選單 -->
-                <div class="flex justify-end mt-10">
-                    <select id="select" class="flex p-2 pr-20" @change="sorter()">
-                        <option value="time" selected>時間</option>
-                        <option value="job">工作</option>
-                        <option value="uploader">上傳者</option>
-                    </select>
-                </div>
-                <!-- 下拉式選單 -->
-            </div>
-
             <!-- 檔案區-->
             <div>
                 <EventOverviewFile></EventOverviewFile>
             </div>
             <!-- 檔案區-->
-
-
         </div>
 
         <!-- 檔案總覽 -->
