@@ -93,7 +93,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <template>
     <!-- card1 -->
-    <div class="shadow bg-white flex flex-col justify-between px-4 py-4 card align-start hover:card-float-up">
+    <div
+        class="shadow bg-white flex flex-col justify-between px-4 py-4 card align-start hover:border hover:border-gray-500"
+    >
         <div>
             <div class="cardTop mb-8">
                 <div class="mb-2 text-center flex flex-col justify-start items-center">
@@ -142,21 +144,8 @@ document.addEventListener('DOMContentLoaded', function () {
     border-color: #eee;
     transition: all 0.2s ease-in-out;
     box-shadow: 0 16px 32px 0 rgba(48, 55, 66, 0.15);
-    transform: translate(0, -5px);
     transition-delay: 0s;
     cursor: pointer;
-}
-
-.shadow-out {
-    box-shadow: 2px 2px 3px 1px rgb(157 157 157);
-}
-
-.shadow-inset {
-    box-shadow: inset 4px 4px 4px 0 rgb(157 157 157);
-}
-
-.shadow {
-    box-shadow: 10px 10px 10px 4px rgb(0 0 0 / 10%);
 }
 
 .ellipsis {
@@ -192,5 +181,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 .container {
     height: 100%;
+}
+
+.card {
+    border-radius: 20px;
+    border-width: 1px;
 }
 </style>

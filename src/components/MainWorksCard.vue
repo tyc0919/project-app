@@ -93,7 +93,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <template>
     <!-- card1 -->
-    <div class="h-96 shadow bg-white flex flex-col justify-between px-4 py-4 card align-start hover:card-float-up">
+    <div
+        class="h-96 shadow bg-white flex flex-col justify-between px-4 py-4 card align-start hover:border hover:border-gray-500"
+    >
         <div class="cardTop mb-8">
             <div class="text-2xl font-bold title ellipsis-2">
                 {{ workTitle }}
@@ -140,19 +142,6 @@ document.addEventListener('DOMContentLoaded', function () {
     transition-delay: 0s;
     cursor: pointer;
 }
-
-.shadow-out {
-    box-shadow: 2px 2px 3px 1px rgb(157 157 157);
-}
-
-.shadow-inset {
-    box-shadow: inset 4px 4px 4px 0 rgb(157 157 157);
-}
-
-.shadow {
-    box-shadow: 10px 10px 10px 4px rgb(0 0 0 / 10%);
-}
-
 .ellipsis {
     overflow: hidden;
     display: -webkit-box;
@@ -187,7 +176,10 @@ document.addEventListener('DOMContentLoaded', function () {
 .cardBottom {
     border-color: #000000;
 }
-
+.card {
+    border-radius: 20px;
+    border-width: 1px;
+}
 .pic {
     border: 1px solid #000000;
     height: 8rem;

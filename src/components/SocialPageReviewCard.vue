@@ -3,6 +3,8 @@ import { ref } from 'vue'
 
 let show = ref(false)
 let triggerMessage = ref('全文')
+let commentSpan = document.querySelector('content-container')
+let trigger = document.getElementById('trigger')
 const showCompleteContent = () => {
     show.value = !show.value
     triggerMessage.value = !show.value ? '全文' : '顯示部分'
@@ -14,6 +16,15 @@ const props = defineProps({
     rating: String,
     date: String,
 })
+
+// function isEllipsisActive(c) {
+//     if (c.offsetWidth <= c.scrollWidth) {
+//         trigger.style.display = 'hidden'
+//     } else {
+//         trigger.style.display = ''
+//     }
+// }
+// isEllipsisActive(commentSpan)
 </script>
 
 <template>
@@ -36,10 +47,15 @@ const props = defineProps({
             </div>
 
             <div class="review-content text-base">
-                <span class="content-container cursor-text whitespace-pre-wrap" :class="{ 'ellipsis-4': !show }">
+                <span
+                    id="commentSpan"
+                    class="content-container cursor-text whitespace-pre-wrap"
+                    :class="{ 'ellipsis-4': !show }"
+                >
                     {{ content }}
                 </span>
                 <div
+                    id="trigger"
                     @click="showCompleteContent()"
                     class="trigger-complete-content font-bold text-blue-500 hover:underline my-2"
                 >

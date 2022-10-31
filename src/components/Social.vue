@@ -15,19 +15,21 @@ axios.get('/api/social/' + route.params.PostId).then(function (response) {
 
 <template>
     <div class="wrapper">
-        <div class="bookmark h-12 flex">
+        <div class="bookmark h-12 flex mb-4">
             <div class="w-full flex text-center items-center justify-between">
-                <router-link :to="{ name: 'post' }" class="flex-[0.3_0.3_0%] mask main-switch">
+                <router-link
+                    :to="{ name: 'post' }"
+                    class="w-fit px-4 py-2 rounded-full bg-slate-200 text-base text-black main-switch"
+                >
                     <div id="title" class="w-half px-4 h-full flex items-center mask_p">北商大母親節活動</div>
                 </router-link>
-                <router-link :to="{ name: 'main-default' }" class="flex items-center pr-4 mx-3">
+                <router-link :to="{ name: 'main-default' }" class="flex items-center">
                     <img src="/src/assets/images/home.svg" class="h-8" />
                 </router-link>
             </div>
         </div>
 
-        <div class="content bg-[CEE5F2] overflow-y-auto">
-            <!-- 把你寫的Component放在這裡測試，要上github前這個檔案更動要discard掉-->
+        <div class="content bg-[#CEE5F2] overflow-y-auto">
             <router-view />
         </div>
     </div>
@@ -35,32 +37,12 @@ axios.get('/api/social/' + route.params.PostId).then(function (response) {
 
 <style scoped>
 .main-switch.router-link-exact-active {
-    border-color: transparent transparent #cee5f2;
+    background-color: #3056d3;
+    color: white;
 }
 
 .wrapper {
-    height: calc(100% - 7rem);
-}
-
-.content {
-    height: calc(100% - 3rem);
-}
-
-.bg-\[CEE5F2\] {
-    background-color: #cee5f2;
-}
-
-.mask {
-    border-width: 0 20px 50px 20px;
-    border-style: none solid solid;
-    border-color: transparent transparent rgb(212 212 216);
-    position: relative;
-}
-
-.mask_p {
-    position: absolute;
-    margin-top: 1.5rem;
-    left: 50%;
-    transform: translateX(-50%);
+    padding: 1rem 4rem;
+    background-color: #ecf4fa;
 }
 </style>

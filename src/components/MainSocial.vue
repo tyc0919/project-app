@@ -1,5 +1,5 @@
 <script setup>
-import SocialPost from './SocialPost.vue'
+import MainSocialPost from './MainSocialPost.vue'
 import { ref } from 'vue'
 import axios from 'axios'
 
@@ -20,7 +20,6 @@ const getData = async () => {
             await axios.get('/api/activity/' + social.id + '/').then(function (response) {
                 let temp = []
                 temp = response.data
-                console.log(temp)
 
                 social['user_name'] = temp.user_name
             })
@@ -97,12 +96,12 @@ getData()
                 v-for="(item, index) of pages[pageNumber - 1]"
                 :to="{ name: 'post', params: { PostId: item.id } }"
             >
-                <SocialPost
+                <MainSocialPost
                     :title="item.activity_name"
                     :owner="item.user_name"
                     :rating="item.star_percent"
                     :content="item.content"
-                ></SocialPost>
+                ></MainSocialPost>
             </router-link>
             <!--主要內容-->
         </div>
