@@ -76,41 +76,34 @@ const getData = async () => {
         budget.value["activity_expense"] = activityExpense.value;
 
         // append jobs data
-        for (let i = 0; i < budget.value.expenditures.length; i++) {
+        for (let expenditure of budget.value.expenditures) {
             // adjust date format
-            budget.value.expenditures[i].expenditure_uploaded_time = new Date(
-                budget.value.expenditures[i].expenditure_uploaded_time).toLocaleDateString();
+            expenditure.expenditure_uploaded_time = new Date(
+                expenditure.expenditure_uploaded_time).toLocaleDateString();
             // append job data
-            for (let j = 0; j < budget.value.jobs.length; j++) {
-                if (budget.value.expenditures[i].job ==
-                    budget.value.jobs[j].id) {
-                    budget.value.expenditures[i]["job_title"] = budget.value.jobs[j].title;
-                    budget.value.expenditures[i]["person_in_charge_email"] = budget.value.jobs[j].person_in_charge_email;
+            for (let job of budget.value.jobs) {
+                if (expenditure.job == job.id) {
+                    expenditure["job_title"] = job.title;
+                    expenditure["person_in_charge_email"] = job.person_in_charge_email;
                 }
             }
-        }
-
-        // append user_name
-        for (let i = 0; i < budget.value.expenditures.length; i++) {
-            for (let j = 0; j < collaborators.value.length; j++) {
-                if (budget.value.expenditures[i].person_in_charge_email == collaborators.value[j].user_email) {
-
-                    budget.value.expenditures[i]['user_name'] = collaborators.value[j].user_name;
+            // append user_name collaborators.value
+            for (let collaborator of collaborators.value) {
+                if (expenditure.person_in_charge_email == collaborator.user_email) {
+                    expenditure['user_name'] = collaborator.user_name;
                 }
             }
         }
 
         // adjust money notations
         budget.value.activity_budget = budget.value.activity_budget.toLocaleString()
-        for (let expen of budget.value.expenditures) {
-            expen.expense = expen.expense.toLocaleString();
+        for (let expenditure of budget.value.expenditures) {
+            expenditure.expense = expenditure.expense.toLocaleString();
+            // add download path
+            expenditure["download_path"] = "/api/serve-file/" + activityId + "/" + expenditure.expenditure_receipt_path
         }
         budget.value.activity_expense = budget.value.activity_expense.toLocaleString();
 
-        // add download path
-        for (let expenditure of budget.value.expenditures) {
-            expenditure["download_path"] = "/api/serve-file/" + activityId + "/" + expenditure.expenditure_receipt_path
-        }
     } catch (error) {
         throw new Error(error);
     }
