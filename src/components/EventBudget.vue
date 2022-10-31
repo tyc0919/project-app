@@ -408,7 +408,7 @@ const deleteExpenditure = async (fileName, jobId) => {
     </div>
     <div class="p-1 my-8 mx-12 flex justify-between items-center">
         <div class="flex jusify-center item-center h-96 w-1/2 border border-black">
-            <img class="w-full" :src="selectedFile.download_path">
+            <img v-if="!(selectedFile == null)" class="w-full" :src="selectedFile.download_path">
         </div>
 
         <div class="w-1/2 pt-4 pb-4 bg-white h-96 rounded-lg shadow-md flex flex-col ">
