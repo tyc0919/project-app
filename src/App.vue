@@ -12,11 +12,11 @@ const userPic = ref("")
 const takeUserPic = async () => {
   let path = ""
   await axios.get("/api/userprofile/")
-  .then(response => {
-    path = response.data.picture_path
-  })
-  userPic.value = "/api/serve-file/avatar/"+ path
-  
+    .then(response => {
+      path = response.data.picture_path
+    })
+  userPic.value = "/api/serve-file/avatar/" + path
+
 }
 takeUserPic()
 </script>
@@ -27,11 +27,11 @@ takeUserPic()
     <div class="wrapper w-full">
       <!-- Header start -->
       <div class="header flex justify-between px-4 bg-primary text-white text-center h-20">
-        <div class="detail">
-          1個專案
-          <br>
-          3個工作
-        </div>
+        <router-link :to="{ name: 'main' }" class="img-size">
+          <img src="../src/assets/images/Logo.svg" alt="">
+        </router-link>
+
+
         <div class="avatar">
           <img @click="toggleUserMenu" class="avatar w-12 h-12 rounded-full object-cover cursor-pointer"
             v-bind:src="userPic">
@@ -56,6 +56,13 @@ takeUserPic()
 </template>
 
 <style scoped>
+.img-size {
+  position: relative;
+  width: 200px;
+  height: 100px;
+  bottom: 20px;
+}
+
 .bg-primary {
   background: #3056D3;
 }

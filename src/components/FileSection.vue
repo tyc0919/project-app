@@ -122,7 +122,7 @@ const toggleModal = () => {
 
         <div class="file w-full overflow-auto">
             <div v-if="mode === 1">
-                <Invite v-for="user in data" :key="user.email" :email="user.user_email"></Invite>
+                <Invite v-for="user in data" :key="user.email" :email="user.user_email" :path="user.picture_path"></Invite>
             </div>
             <div v-else>
                 <File v-for="workFile in data" :key="workFile.id" :fname="workFile.file_path" @deleteFile="take_file()"
