@@ -253,6 +253,91 @@ const toggleModal_fail = () => {
 </script>
 
 <template>
+    <div id="bottomContainer" class="w-full bg">
+        <div class="flex w-full px-8 py-4">
+            <div class="w-3/4 mr-2">
+                <div id="options" class="inline-flex justify-between my-4 w-full">
+                    <div id="optionsLeft" class="inline-flex justify-around">
+                        <div id="radios">
+                            <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" />
+                            <label class="radioLable text-base" for="radio1" @click="job_F_take()">完成</label>
+
+                            <input id="radio2" class="radioInput hidden " type="radio" name="radio" value="radio2" />
+                            <label class="radioLable text-base" for="radio2" @click="job_NF_take()">未完成</label>
+
+                            <input id="radio3" class="radioInput hidden " type="radio" name="radio" value="radio3"
+                                checked />
+                            <label class="radioLable text-base" for="radio3" @click="job_take()">全部</label>
+                        </div>
+
+                        <form id="search" class="flex items-center shadow:focus mr-10">
+                            <label for="simple-search" class=""></label>
+                            <div class="relative w-full">
+                                <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                                    <svg aria-hidden="true" class="w-5 h-5 text-gray-500" fill="currentColor"
+                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" id="simple-search"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
+                                    placeholder="Search" required />
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="optionsRight" class="flex justify-end align-center">
+                        <button id="addNewWorkButton" @click="toggleModal()"
+                            class="bg-transparent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                            新增工作
+                        </button>
+                    </div>
+
+                </div>
+
+                <div id="workContainer" class="grid grid-col3 grid-gap-1rem py-8 px-8 rounded-2xl bg-white shadow">
+                    <router-link :to="{ name: 'event-work-detail', params: { WorkId: item.id } }"
+                        class="work card h-22rem border-[#2b6cb0] px-2 py-2 flex flex-column justify-between rounded-2xl shadow relative"
+                        v-for="(item) in A_job_data" :key="item.id" @click="trans_tab(item.id)">
+                        <div class="workTop flex flex-column justify-between">
+                            <div class="flex align-center mb-2 items-center">
+                                <div class="avatar"></div>
+                                <div class="text-sm text-[#1D5E9F] ellipsis italic ml-2">
+                                    {{ item.user_name }}
+                                </div>
+                            </div>
+                            <div class="workTitle text-xl font-bold ellipsis mb-2">
+                                {{ item.title }}
+                            </div>
+
+                            <div class="workContent text-base ellipsis mb-8">
+                                {{ item.content }}
+                            </div>
+                        </div>
+                        <div class="workBottom font-bold inline-flex justify-between text-base pt-2 absolute">
+                            <div class="workBottomLeft inline-flex">
+                                完成
+                                <div class="mx-2 text-[#c70000]">{{ item.countY }}</div>
+                                /
+                                <div class="mx-2">{{ item.count }}</div>
+                            </div>
+
+                            <div class="workBottomRight inline-flex">
+                                還剩
+                                <div class="mx-2 text-[#c70000]">{{ item.Finish_dead_line }}</div>
+                                天
+                            </div>
+                        </div>
+                    </router-link>
+                </div>
+            </div>
+
+            <FileSection />
+        </div>
+    </div>
+
     <!-- 正確訊息視窗 -->
     <Teleport to="body">
         <modal :show="showModal_success">
@@ -347,93 +432,6 @@ const toggleModal_fail = () => {
         </template>
     </Modal>
     <!-- 新增工作視窗 -->
-
-    <div id="bottomContainer" class="w-full">
-        <div class="flex w-full px-8 py-4">
-            <div class="w-3/4 mr-2">
-                <div id="options" class="inline-flex justify-between my-4 w-full">
-                    <div id="optionsLeft" class="inline-flex justify-around">
-                        <div id="radios">
-                            <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" />
-                            <label class="radioLable text-base" for="radio1" @click="job_F_take()">完成</label>
-
-                            <input id="radio2" class="radioInput hidden " type="radio" name="radio" value="radio2" />
-                            <label class="radioLable text-base" for="radio2" @click="job_NF_take()">未完成</label>
-
-                            <input id="radio3" class="radioInput hidden " type="radio" name="radio" value="radio3"
-                                checked />
-                            <label class="radioLable text-base" for="radio3" @click="job_take()">全部</label>
-                        </div>
-
-                        <form id="search" class="flex items-center shadow:focus mr-10">
-                            <label for="simple-search" class=""></label>
-                            <div class="relative w-full">
-                                <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                                    <svg aria-hidden="true" class="w-5 h-5 text-gray-500" fill="currentColor"
-                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd"
-                                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                </div>
-                                <input type="text" id="simple-search"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
-                                    placeholder="Search" required />
-                            </div>
-                        </form>
-                    </div>
-
-                    <div id="optionsRight" class="flex justify-end align-center">
-                        <button id="addNewWorkButton" @click="toggleModal()"
-                            class="bg-transparent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
-                            新增工作
-                        </button>
-                    </div>
-
-                </div>
-
-                <div id="workContainer" class="grid grid-col3 grid-gap-1rem py-8 px-8 rounded-2xl bg-white shadow">
-
-                    <router-link :to="{ name: 'event-work-detail', params: { WorkId: item.id } }"
-                        class="work card h-22rem border-[#2b6cb0] px-2 py-2 flex flex-column justify-between rounded-2xl shadow relative"
-                        v-for="(item) in A_job_data" :key="item.id" @click="trans_tab(item.id)">
-                        <div class="workTop flex flex-column justify-between">
-                            <div class="flex align-center mb-2 items-center">
-                                <div class="avatar"></div>
-                                <div class="text-sm text-[#1D5E9F] ellipsis italic ml-2">
-                                    {{ item.user_name }}
-                                </div>
-                            </div>
-                            <div class="workTitle text-xl font-bold ellipsis mb-2">
-                                {{ item.title }}
-                            </div>
-
-                            <div class="workContent text-base ellipsis mb-8">
-                                {{ item.content }}
-                            </div>
-                        </div>
-                        <div class="workBottom font-bold inline-flex justify-between text-base pt-2 absolute">
-                            <div class="workBottomLeft inline-flex">
-                                完成
-                                <div class="mx-2 text-[#c70000]">{{ item.countY }}</div>
-                                /
-                                <div class="mx-2">{{ item.count }}</div>
-                            </div>
-
-                            <div class="workBottomRight inline-flex">
-                                還剩
-                                <div class="mx-2 text-[#c70000]">{{ item.Finish_dead_line }}</div>
-                                天
-                            </div>
-                        </div>
-
-                    </router-link>
-                </div>
-            </div>
-
-            <FileSection />
-        </div>
-    </div>
 
 </template>
 
@@ -655,4 +653,12 @@ body {
 .radioInput:checked+.radioLable {
     background: #52708f;
 }
+
+.bg{
+    background-color: white;
+    border-left: 1px rgb(209, 213, 219) solid;
+    border-right: 1px rgb(209, 213, 219) solid;
+    border-bottom: 1px rgb(209, 213, 219) solid;
+}
+
 </style>

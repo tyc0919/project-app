@@ -58,6 +58,8 @@ let job_detail_Y = ref([])
 let job_detail_N = ref([])
 let njob_detailName = ref('')
 let njob_detailContent = ref('')
+let right = ref(false)
+
 
 let messageS = ref("")
 let messageF = ref("")
@@ -68,15 +70,34 @@ axios.get('/api/activity/' + route.params.EventId + '/collaborator/').then((resp
 })
 /* 取得活動協作者 */
 
-/* 獲得工作內容 */
-function take_work() {
-    axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/")
+/* 獲得工作內容和權限判斷 */
+async function take_work() {
+
+    await axios.get("/api/userprofile/")
+        .then(response => {
+            let user_data = response.data;
+        })
+
+    await axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/")
         .then(response => {
             job.value = response.data
         })
+
+    await axios.get("/api/activity/" + route.params.EventId + "/")
+        .then(response => {
+            let activity_data = response.data
+        })
+
+    if (user_data.user_email == job.value.person_in_charge_email || user_data.user_email == activity_data.owner) {
+        right = true
+    }
 }
 take_work()
 /* 獲得工作內容 */
+
+
+
+/* 權限 */
 
 /* 更新工作 */
 function get_responGmail() {
@@ -120,16 +141,17 @@ async function deleteWork() {
     await axios
         .post('/api/job/delete/', data, config)
         .then(function (response) {
-            console.log(response)
+            router.push({
+                path: '/events/' + route.params.EventId,
+                name: 'event-default',
+            })
         })
         .catch(function (error) {
-            console.log(error)
+            messageF.value = "刪除工作失敗"
+            toggleModal_fail()
         })
 
-    router.push({
-        path: '/events/' + route.params.EventId,
-        name: 'event-default',
-    })
+
 }
 /* 刪除工作 */
 
@@ -172,10 +194,17 @@ async function take_job_detail() {
 }
 take_job_detail()
 
-async function take_job_detail_test() {
+async function take_job_detail_test(x) {
     take_job_detail()
-    messageS.value = "成功更新活動狀態"
-    toggleModal_success()
+    if (x == true) {
+        messageS.value = "成功更新活動狀態"
+        toggleModal_success()
+
+    }
+    else{
+        messageF.value = "更新活動狀態失敗"
+        toggleModal_fail()
+    }
 }
 
 
@@ -265,7 +294,7 @@ const closePage = () => {
 <template>
 
     <!-- 主要內容 -->
-    <div class="flex px-8 py-4">
+    <div class="flex px-8 py-4 bg-white">
         <div class="w-3/4 mr-2">
             <!--功能列-->
             <div class="w-[50%]  inline-flex flex-wrap items-center my-4">
@@ -303,7 +332,7 @@ const closePage = () => {
                 <!--搜尋欄-->
             </div>
             <!--編輯、刪除工作，關閉分頁-->
-            <div class="w-[50%] py-[px] inline-flex flex-wrap justify-end">
+            <div v-if="right" class="w-[50%] py-[px] inline-flex flex-wrap justify-end">
                 <div class="ml-">
                     <button
                         class="py-2 px-4 rounded text-base font-bold border border-[#3491d9] bg-white text-[#3491d9] shadow-btn btn_click1"
@@ -322,6 +351,24 @@ const closePage = () => {
                     </button>
                 </div>
             </div>
+
+            <div v-else class="w-[50%] py-[px] inline-flex flex-wrap justify-end">
+                <div class="ml-">
+                    <button
+                        class="py-2 px-4 rounded text-base font-bold border border-[#3491d9] bg-white cursor-default shadow-btn hide-text-color">
+                        編輯工作
+                    </button>
+                    <button
+                        class="mx-2 py-2 px-4 rounded text-base font-bold bg-white border border-[#ff0000] cursor-default shadow-btn hide-text-color2">
+                        刪除工作
+                    </button>
+                    <button
+                        class="py-2 px-4 rounded text-base font-bold bg-white border border-[#ff0000] cursor-default shadow-btn hide-text-color2">
+                        關閉分頁
+                    </button>
+                </div>
+            </div>
+
             <!--編輯、刪除工作，關閉分頁-->
             <!--功能列-->
 
@@ -335,7 +382,7 @@ const closePage = () => {
 
                             <div class="ml-4 font-bold">${{ job.job_expenditure }}</div>
                             /
-                            <div class="font-bold">${{job.job_budget}}</div>
+                            <div class="font-bold">${{ job.job_budget }}</div>
                         </div>
                         <!--預算-->
 
@@ -350,15 +397,15 @@ const closePage = () => {
 
                     <!--工作標題、工作簡介說明-->
                     <div class="w-full py-[10px] mb-2 text-center text-base font-bold  border round_border">
-                        {{job.title}}
+                        {{ job.title }}
                     </div>
                     <div class="w-full p-[10px] pb-[150px] mb-2 text-base text-[#696969] border round_border">
-                        {{job.content}}
+                        {{ job.content }}
                     </div>
                     <!--工作標題、工作簡介說明-->
 
                     <!--新增細項、完成、取消完成-->
-                    <div>
+                    <div v-if="right">
                         <button
                             class="w-full items-center bg-white rounded-lg border-w-3 border-[#3491d9] py-[10px] text-[#3491d9] shadow-btn mb-[20px] btn_click1"
                             @click="toggleModal_new_job_detail()">
@@ -373,16 +420,35 @@ const closePage = () => {
                             取消完成
                         </button>
                     </div>
+
+                    <div v-else>
+                        <button
+                            class="w-full items-center bg-white rounded-lg border-w-3 border-[#3491d9] py-[10px] mb-[20px] cursor-default shadow-btn hide-text-color">
+                            新增細項 +
+                        </button>
+                        <button
+                            class="w-full items-center bg-[#1d5e9f] rounded-lg border-w-3 border-[#006eaf] py-[10px] mb-[20px] cursor-default shadow-btn hide-text-color3">
+                            完成
+                        </button>
+                        <button
+                            class="w-full items-center bg-[#ffcccc] rounded-lg border-w-3 border-[#ff0000] py-[10px] cursor-default shadow-btn hide-text-color2">
+                            取消完成
+                        </button>
+                    </div>
+
+
                     <!--新增細項、完成、取消完成-->
 
                     <!-- 工作細項 -->
                     <template v-for="item in job_detail_Y" :key="item.job_detail_id">
-                        <JobDetail :jobDetail=item @refresh="take_job_detail" @refresh2="take_job_detail_test">
+                        <JobDetail :jobDetail=item :jright=right @refresh="take_job_detail"
+                            @refresh2="take_job_detail_test()">
                         </JobDetail>
                     </template>
 
                     <template v-for="item in job_detail_N" :key="item.job_detail_id">
-                        <JobDetail :jobDetail=item @refresh="take_job_detail" @refresh2="take_job_detail_test">
+                        <JobDetail :jobDetail=item :jright=right @refresh="take_job_detail"
+                            @refresh2="take_job_detail_test()">
                         </JobDetail>
                     </template>
                     <!-- 工作細項 -->
@@ -595,6 +661,18 @@ const closePage = () => {
     border-radius: 1rem;
 }
 
+.hide-text-color {
+    color: #3491d957;
+}
+
+.hide-text-color2 {
+    color: #ff000057;
+}
+
+.hide-text-color3 {
+    color: #ffffff70;
+}
+
 
 /* radios */
 #radios {
@@ -628,5 +706,6 @@ const closePage = () => {
 
 .btn_click2:hover {
     background-color: #ffcccc;
+
 }
 </style>
