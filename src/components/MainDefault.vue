@@ -69,9 +69,7 @@ const addActivity = async () => {
                 config
             )
             .then(function (res) {
-                axios.get('/api/activity/').then(function (response) {
-                    activityData.value = response.data
-                })
+                getData()
                 toggleModal('addActivityModal')
                 toggleModal('noticeModal')
             })

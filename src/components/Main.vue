@@ -2,7 +2,7 @@
 
 <template>
     <div class="wrapper px-12">
-        <div class="bookmark h-12 flex px-8">
+        <div class="bookmark h-12 flex px-8 mt-8">
             <div class="w-full flex text-center items-center">
                 <router-link
                     class="main-switch w-half px-4 bg-zinc-300 h-full flex items-center revised-button"

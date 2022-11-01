@@ -29,7 +29,7 @@ axios.get('/api/social/' + route.params.PostId).then(function (response) {
             </div>
         </div>
 
-        <div class="content bg-[#CEE5F2] overflow-y-auto">
+        <div class="content bg-white border border-[#D1D5DB] overflow-y-auto">
             <router-view />
         </div>
     </div>

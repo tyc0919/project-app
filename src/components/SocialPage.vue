@@ -217,7 +217,11 @@ getCurrentReview()
                     所有人員
                 </div>
                 <div class="invite h-auto bg-white flex flex-col items-center p-4 overflow-y-scroll">
-                    <Invite v-for="item of collabData" :name="item.user_name"></Invite>
+                    <Invite
+                        v-for="item of collabData"
+                        :email="item.user_name"
+                        :picture_path="item.picture_path"
+                    ></Invite>
                 </div>
             </div>
         </div>
