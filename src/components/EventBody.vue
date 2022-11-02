@@ -28,8 +28,6 @@ let formData = new FormData()
 let finishStatus = ref(false)
 let publicStatus = ref(false)
 
-let isOwner = ref(false)
-
 /* 活動資訊 */
 async function take_activity() {
     await axios.get("/api/userprofile/")
@@ -49,6 +47,9 @@ async function take_activity() {
         })
 
     activity_data.value["is_owner"] = activity_data.value.owner == user_e ? true : false
+
+    activity_data.value["picPath"] = "/api/serve-file/activity-pic/" + activity_data.value.activity_picture
+
     if (activity_data.value.is_finished == 1) {
         finishStatus.value = true
     }
@@ -196,17 +197,8 @@ async function delete_Activity() {
             messageF.value = "刪除活動失敗"
             toggleModal_fail()
         })
-
-
 }
 /* 刪除活動 */
-
-/* 信箱姓名處理 */
-const email_name = () => {
-    axios.get("/api/activity/" + route.params.EventId + "/collaborator/")
-        .then
-}
-/* 信箱姓名處理 */
 
 /* 彈出視窗 */
 const showModal_publish = ref(false)
@@ -248,7 +240,7 @@ const toggleModal_fail = () => {
                     <label for="image">
                         <input @change="fileUpload()" ref="file" type="file" id="image" class="file_img"
                             accept="image/*" />
-                        <img src="../assets/images/FirstPart.png" class="event_main_img">
+                        <img v-bind:src="activity_data.picPath" class="event_main_img">
                     </label>
                 </picture>
 
@@ -256,36 +248,36 @@ const toggleModal_fail = () => {
                 <form action="">
                     <div v-if="activity_data.is_owner" class="flex justify-around w-full">
 
-                        <input v-if="finishStatus" class="button3" type="button" value="完成活動"
+                        <input v-if="finishStatus" class="button2" type="button" value="完成活動"
                             @click="toggleModal_finish()">
-                        <input v-else class="button4" type="button" value="完成活動" @click="toggleModal_finish()"
+                        <input v-else class="button1" type="button" value="完成活動" @click="toggleModal_finish()"
                             id="Finish_btn">
 
-                        <input v-if="publicStatus" class="button3" type="button" value="發布活動"
+                        <input v-if="publicStatus" class="button2" type="button" value="發布活動"
                             @click="toggleModal_publish()">
-                        <input v-else class="button4" @click="toggleModal_publish()" id="Public_btn" type="button"
+                        <input v-else class="button1" @click="toggleModal_publish()" id="Public_btn" type="button"
                             value="發布活動">
 
-                        <input type="button" value="編輯活動" class="button4 " @click="toggleModal_update()">
+                        <input type="button" value="編輯活動" class="button1" @click="toggleModal_update()">
 
-                        <input type="button" value="刪除活動" class="button5" @click="toggleModal_delete()">
+                        <input type="button" value="刪除活動" class="button6" @click="toggleModal_delete()">
                     </div>
 
                     <div v-else class="flex justify-around w-full">
 
                         <input v-if="finishStatus" class="button3" type="button" value="完成活動"
-                            @click="toggleModal_finish()" disabled>
-                        <input v-else class="button4" type="button" value="完成活動" @click="toggleModal_finish()" disabled
+                             disabled>
+                        <input v-else class="button4" type="button" value="完成活動" disabled
                             id="Finish_btn">
 
                         <input v-if="publicStatus" class="button3" type="button" value="發布活動"
-                            @click="toggleModal_publish()" disabled>
-                        <input v-else class="button4" @click="toggleModal_publish()" id="Public_btn" type="button"
+                             disabled>
+                        <input v-else class="button4"  id="Public_btn" type="button"
                             value="發布活動" disabled>
 
-                        <input type="button" value="編輯活動" class="button4 " @click="toggleModal_update()" disabled>
+                        <input type="button" value="編輯活動" class="button4" disabled>
 
-                        <input type="button" value="刪除活動" class="button5" @click="toggleModal_delete()" disabled>
+                        <input type="button" value="刪除活動" class="button5" disabled>
 
                     </div>
                 </form>
@@ -597,7 +589,7 @@ const toggleModal_fail = () => {
     margin: 0 auto;
 }
 
-.button {
+.button1 {
     width: 250px;
     height: 45px;
     line-height: 45px;
@@ -657,6 +649,18 @@ const toggleModal_fail = () => {
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
+.button6 {
+    width: 250px;
+    height: 45px;
+    line-height: 45px;
+    background-color: #FF0000;
+    margin: 1.5rem;
+    color: white;
+    text-align: center;
+    font-size: 1.5rem;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
 .hover:hover {
     background-color: white;
     color: #1D5E9F;
@@ -672,11 +676,7 @@ const toggleModal_fail = () => {
     color: white;
 }
 
-.button:nth-of-type(4) {
-    background-color: #FEEBD7;
-    color: #FF0000;
-    border: 1px solid #FF0000;
-}
+
 
 .bottom-down {
     bottom: 0;

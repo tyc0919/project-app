@@ -58,7 +58,8 @@ let job_detail_Y = ref([])
 let job_detail_N = ref([])
 let njob_detailName = ref('')
 let njob_detailContent = ref('')
-let right = ref(false)
+let right = ref(Boolean)
+
 
 
 let messageS = ref("")
@@ -72,26 +73,37 @@ axios.get('/api/activity/' + route.params.EventId + '/collaborator/').then((resp
 
 /* 獲得工作內容和權限判斷 */
 async function take_work() {
+    let user_data = ""
 
     await axios.get("/api/userprofile/")
         .then(response => {
-            let user_data = response.data;
+            user_data = response.data;
         })
 
     await axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/")
         .then(response => {
             job.value = response.data
+            let temp = new Date(job.value.dead_line)
+            job.value.dead_line = temp.toLocaleDateString()
         })
 
     await axios.get("/api/activity/" + route.params.EventId + "/")
         .then(response => {
             let activity_data = response.data
         })
+    
+    console.log(job.value.dead_line)
 
     if (user_data.user_email == job.value.person_in_charge_email || user_data.user_email == activity_data.owner) {
-        right = true
+        right.value = true
     }
+    else {
+        right.value = false
+    }
+
+
 }
+
 take_work()
 /* 獲得工作內容 */
 
@@ -201,7 +213,7 @@ async function take_job_detail_test(x) {
         toggleModal_success()
 
     }
-    else{
+    else {
         messageF.value = "更新活動狀態失敗"
         toggleModal_fail()
     }
@@ -383,6 +395,12 @@ const closePage = () => {
                             <div class="ml-4 font-bold">${{ job.job_expenditure }}</div>
                             /
                             <div class="font-bold">${{ job.job_budget }}</div>
+
+                            <div class="ml-4 text-[#696969] font-bold">到期日期</div>
+
+                            <div class="ml-4 font-bold">{{job.dead_line}}</div>
+                            
+
                         </div>
                         <!--預算-->
 

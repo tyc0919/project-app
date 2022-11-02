@@ -16,7 +16,10 @@ const takeUserPic = async () => {
     })
     userPic.value = '/api/serve-file/avatar/' + path
 }
+
+
 takeUserPic()
+
 </script>
 
 <template>
@@ -25,7 +28,7 @@ takeUserPic()
             <!-- Header start -->
             <div class="header flex justify-between px-4 bg-primary text-white text-center h-20">
                 <router-link :to="{ name: 'main-default' }" class="img-size">
-                    <img src="../src/assets/images/Logo.svg" alt="" />
+                    <img src="../src/assets/images/Logo.svg" />
                 </router-link>
 
                 <div class="avatar">
@@ -33,6 +36,7 @@ takeUserPic()
                         @click="toggleUserMenu"
                         class="avatar w-12 h-12 rounded-full object-cover cursor-pointer"
                         v-bind:src="userPic"
+                        id = "avatorId"
                     />
 
                     <div

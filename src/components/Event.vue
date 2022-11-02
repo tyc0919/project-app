@@ -23,20 +23,20 @@ takeActivityTitle()
 <template>
 
         <div class="wrapper">
-            <div class="h-12 flex mb-4">
+            <div class="h-12 flex mb-8">
                 <div class="w-full flex text-center items-center ">
                     <router-link :to="{ name: 'event-works' }"
-                        class="w-fit px-4 py-2  rounded-full bg-slate-200 text-base text-black  mr-2 main-switch">
+                        class="w-fit rounded-full bg-white text-base text-black mr-2 main-switch btn-title">
                         活動內容
                     </router-link>
 
                     <router-link :to="{ name: 'budget' }"
-                        class="w-fit px-4 py-2  rounded-full bg-slate-200 text-base text-black  mr-2 main-switch">
+                        class="w-fit rounded-full bg-white text-base text-black mr-2 main-switch btn-title">
                         預算編輯
                     </router-link>
 
                     <router-link :to="{ name: 'overview' }"
-                        class="w-fit px-4 py-2  rounded-full bg-slate-200 text-base text-black  mr-2 main-switch  ">
+                        class="w-fit rounded-full bg-white text-base text-black mr-2 main-switch btn-title">
                         總覽
                     </router-link>
 
@@ -73,8 +73,14 @@ takeActivityTitle()
 }
 
 .wrapper{
-    padding: 1rem 4rem;
+    padding: 2rem 5rem;
     background-color: #ecf4fa;
+}
+
+.btn-title{
+    width: 100px;
+    height: 45px;
+    line-height: 45px;
 }
 
 

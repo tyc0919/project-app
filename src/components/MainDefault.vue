@@ -219,7 +219,7 @@ getData()
     <div class="w-full px-8 py-8">
         <div class="flex justify-between">
             <!-- options -->
-            <div id="options" class="inline-flex justify-between items-center my-4 w-full">
+            <div id="options" class="inline-flex justify-between items-center w-full">
                 <div class="inline-flex justify-around">
                     <div id="radios">
                         <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" />

@@ -5,17 +5,17 @@
         <div class="bookmark h-12 flex px-8 mt-8">
             <div class="w-full flex text-center items-center">
                 <router-link
-                    class="main-switch w-half px-4 bg-zinc-300 h-full flex items-center revised-button"
+                    class="w-fit rounded-full bg-white text-base text-black mr-2 main-switch btn-title revised-button"
                     :to="{ name: 'main-default' }"
                     >所有活動</router-link
                 >
                 <router-link
-                    class="main-switch w-half px-4 bg-zinc-300 h-full flex items-center revised-button mx-4"
+                    class="w-fit rounded-full bg-white text-base text-black mr-2 main-switch btn-title revised-button"
                     :to="{ name: 'main-works' }"
                     >我的工作</router-link
                 >
                 <router-link
-                    class="main-switch w-half px-4 bg-zinc-300 h-full flex items-center revised-button"
+                    class="w-fit rounded-full bg-white text-base text-black mr-2 main-switch btn-title revised-button"
                     :to="{ name: 'main-social' }"
                     >社群中心</router-link
                 >
@@ -52,5 +52,11 @@
     border-radius: 50px;
     background-color: white;
     color: black;
+}
+
+.btn-title{
+    width: 100px;
+    height: 45px;
+    line-height: 45px;
 }
 </style>
