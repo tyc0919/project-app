@@ -1,23 +1,11 @@
 <script setup>
+import { ref, watch } from 'vue';
+import { onMounted, onBeforeUpdate, onUpdated, onBeforeMount } from 'vue'
 const props = defineProps({
-    percentage: Number
+    percentage: Number,
+    left: String,
+    right: String,
 })
-
-// 重設左右半圓的初值
-let rightDegree = "rotate(0deg)"
-let leftDegree = "rotate(0deg)"
-
-// 設定左右半圓的轉動角度
-let degree = 360 * props.percentage / 100
-if (degree < 180) {
-    rightDegree = "rotate(" + degree + "deg)"
-    leftDegree = "rotate(" + 0 + "deg)"
-} else {
-    rightDegree = "rotate(" + 180 + "deg)"
-    leftDegree = "rotate(" + (degree - 180) + "deg)"
-}
-
-
 // 調整圖的大小(只要調整angle就可以控制寬高)
 let angle = 160
 
@@ -33,17 +21,15 @@ let fontSize = size * fontPower
 angle = angle + "px"
 size = size + "px"
 fontSize = fontSize + "px"
-
-
 </script>
 
 
 <template>
     <div :style="{ '--size': size }" class="progress blue">
-        <span :style="{ '--degree': leftDegree }" class="progress-left">
+        <span :style="{ '--degree': props.left }" class="progress-left">
             <span :style="{ '--angle': angle }" class="progress-bar"></span>
         </span>
-        <span :style="{ '--degree': rightDegree }" class=" progress-right">
+        <span :style="{ '--degree': props.right }" class=" progress-right">
             <span :style="{ '--angle': angle }" class="progress-bar"></span>
         </span>
         <div :style="{ '--fontSize': fontSize }" class=" progress-value font-bold">{{ props.percentage }}%</div>

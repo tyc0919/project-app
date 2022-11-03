@@ -1,11 +1,10 @@
 <script setup>
 // moduals
-import { ref, watch } from 'vue';
+import { ref, watch, KeepAlive } from 'vue';
 import { getCookie } from '../assets/modules'
 import axios from "axios";
 import { useRoute } from 'vue-router';
 import GraphPercentageCircle from './GraphPercentageCircle.vue';
-import GraphCircle from './GraphCircle.vue';
 // components
 import Modal from './Modal.vue';
 
@@ -20,7 +19,27 @@ let config = {
 const route = useRoute();
 const activityId = route.params.EventId
 
+//計算比率圖
+let graphParam = ref({
+    left: "rotate(180deg)",
+    right: "rotate(180deg)"
+})
 
+const calcGraph = () => {
+    let percentage = budget.value.expense_percentage
+
+    let degree = 360 * percentage / 100
+
+    degree = 360 * percentage / 100
+    if (degree < 180) {
+        graphParam.value.right = "rotate(" + degree + "deg)"
+        graphParam.value.left = "rotate(" + 0 + "deg)"
+    } else {
+        graphParam.value.right = "rotate(" + 180 + "deg)"
+        graphParam.value.left = "rotate(" + (degree - 180) + "deg)"
+    }
+    console.log(graphParam.value)
+}
 
 //select file
 let selectedFile = ref(null)
@@ -78,6 +97,7 @@ const getData = async () => {
         budget.value["activity_expense"] = activityExpense.value;
         budget.value["expense_percentage"] = Math.round((activityExpense.value / budget.value.activity_budget) * 100)
         console.log(budget.value)
+        calcGraph() //計算比率圖
 
         // append jobs data
         for (let expenditure of budget.value.expenditures) {
@@ -167,7 +187,6 @@ const changeFile = () => {
         files = Array.prototype.slice.call(files);
         fileList.value = fileList.value.concat(files);
         fileName.value = fileList.value[fileList.value.length - 1].name
-
     }
 }
 
@@ -429,7 +448,9 @@ const deleteExpenditure = async (fileName, jobId) => {
 
             </div>
 
-            <GraphPercentageCircle :percentage="budget.expense_percentage"></GraphPercentageCircle>
+            <GraphPercentageCircle :percentage="budget.expense_percentage" :left="graphParam.left"
+                :right="graphParam.right">
+            </GraphPercentageCircle>
 
         </div>
 
