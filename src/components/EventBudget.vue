@@ -148,10 +148,27 @@ const updateActivityBudget = async () => {
 
 // 上傳檔案
 let fileEl = ref(null);
-let fileName = ref("null")
+let fileList = ref([])
+let fileName = ref("file_name")
 //偵測上傳檔名
+let isImage = ref(false)
+
+
 const changeFile = () => {
-    fileName.value = fileEl.value.value.substring(12)
+    errorMessage.fileErrorMessage.value = ""
+    if (fileEl.value.files[0].type.search('image') == -1) {
+        // file 不變
+        isImage.value = false
+        errorMessage.fileErrorMessage.value = '檔案格式錯誤(只接受jpg, png...等圖片格式)'
+    } else {
+        // 更新fileList
+        isImage.value = true
+        let files = fileEl.value.files
+        files = Array.prototype.slice.call(files);
+        fileList.value = fileList.value.concat(files);
+        fileName.value = fileList.value[fileList.value.length - 1].name
+
+    }
 }
 
 // 錯誤訊息
@@ -167,6 +184,7 @@ const cleanErrorMessage = () => {
     }
 }
 
+
 const uploadExpenditure = async () => {
     cleanErrorMessage()
 
@@ -177,7 +195,7 @@ const uploadExpenditure = async () => {
     try {
         // append data of POST api 
         let formData = new FormData();
-        formData.append('file', fileEl.value.files[0]);
+        formData.append('file', fileList.value[fileList.value.length - 1]);
         formData.append('job_id', jobEl.value) //工作序號
         formData.append('expense', expenseEl.value); //花費
 
@@ -213,7 +231,6 @@ const uploadExpenditure = async () => {
         if (jobEl.value == "null") {
             errorMessage.jobErrorMessage.value = '請選擇一項工作'
         }
-
     }
 
 }
