@@ -1,6 +1,6 @@
 <script setup>
 // moduals
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { getCookie } from '../assets/modules'
 import axios from "axios";
 import { useRoute } from 'vue-router';
@@ -20,11 +20,12 @@ let config = {
 const route = useRoute();
 const activityId = route.params.EventId
 
+
+
 //select file
 let selectedFile = ref(null)
 const setSelectedFile = (file) => {
     selectedFile.value = file;
-    console.log(selectedFile.value)
 }
 // modal
 const modalController = {
@@ -39,6 +40,7 @@ const toggleModal = (modalName) => {
 
 // get data
 let budget = ref([]);
+
 const getData = async () => {
     try {
         await axios.get('/api/activity/' + activityId + '/budget/', config)
@@ -73,9 +75,7 @@ const getData = async () => {
         for (let i = 0; i < budget.value.jobs.length; i++) {
             activityExpense.value += budget.value.jobs[i].job_expenditure;
         }
-
         budget.value["activity_expense"] = activityExpense.value;
-
         budget.value["expense_percentage"] = Math.round((activityExpense.value / budget.value.activity_budget) * 100)
         console.log(budget.value)
 
@@ -111,8 +111,6 @@ const getData = async () => {
     } catch (error) {
         throw new Error(error);
     }
-
-
 }
 getData()
 
@@ -150,6 +148,12 @@ const updateActivityBudget = async () => {
 
 // 上傳檔案
 let fileEl = ref(null);
+let fileName = ref("null")
+//偵測上傳檔名
+const changeFile = () => {
+    fileName.value = fileEl.value.value.substring(12)
+}
+
 // 錯誤訊息
 let errorMessage = {
     expenseErrorMessage: ref(),
@@ -297,7 +301,17 @@ const deleteExpenditure = async (fileName, jobId) => {
                         <span class="text-red-500">{{ errorMessage.expenseErrorMessage.value }}</span>
 
                         <div class="text-base font-bold">收據圖片證明</div>
-                        <input ref="fileEl" type="file">
+                        <button @click="fileEl.click()"
+                            class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                            新增檔案
+                        </button>
+                        <span class="text-base">
+                            <span class="p-2 border-2">
+                                {{ fileName }}
+                            </span>
+                        </span>
+
+                        <input @change="changeFile()" ref="fileEl" class="hidden" type="file">
                         <div class="text-red-500">{{ errorMessage.fileErrorMessage.value }}</div>
 
                         <div class="text-base font-bold ">所屬工作</div>
@@ -397,7 +411,9 @@ const deleteExpenditure = async (fileName, jobId) => {
                 </div>
 
             </div>
+
             <GraphPercentageCircle :percentage="budget.expense_percentage"></GraphPercentageCircle>
+
         </div>
 
 
