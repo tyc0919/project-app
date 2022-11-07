@@ -1,27 +1,27 @@
 <script setup>
 import axios from 'axios'
 import { useRoute } from 'vue-router'
+import { ref } from 'vue'
 
 let socialData = []
-let activity
+let activity = ref('')
 const route = useRoute()
 
 axios.get('/api/social/' + route.params.PostId).then(function (response) {
     socialData = response.data
-    activity = socialData.activity_name
-    document.getElementById('title').innerHTML = activity
+    activity.value = socialData.activity_name
 })
 </script>
 
 <template>
-    <div class="wrapper">
-        <div class="bookmark h-12 flex mb-4">
+    <div class="wrapper px-12">
+        <div class="bookmark h-12 flex px-8 mt-8 mb-4">
             <div class="w-full flex text-center items-center justify-between">
                 <router-link
                     :to="{ name: 'post' }"
                     class="w-fit px-4 py-2 rounded-full bg-slate-200 text-base text-black main-switch"
                 >
-                    <div id="title" class="w-half px-4 h-full flex items-center mask_p">北商大母親節活動</div>
+                    <div id="title" class="w-half px-4 h-full flex items-center mask_p">{{ activity }}</div>
                 </router-link>
                 <router-link :to="{ name: 'main-default' }" class="flex items-center">
                     <img src="/src/assets/images/home.svg" class="h-8" />
@@ -29,7 +29,7 @@ axios.get('/api/social/' + route.params.PostId).then(function (response) {
             </div>
         </div>
 
-        <div class="content bg-white border border-[#D1D5DB] overflow-y-auto">
+        <div class="content overflow-y-auto">
             <router-view />
         </div>
     </div>
@@ -42,7 +42,7 @@ axios.get('/api/social/' + route.params.PostId).then(function (response) {
 }
 
 .wrapper {
-    padding: 1rem 4rem;
+    height: calc(100% - 7rem);
     background-color: #ecf4fa;
 }
 </style>

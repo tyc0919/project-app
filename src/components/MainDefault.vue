@@ -13,10 +13,11 @@ let config = {
         'X-CSRFToken': csrftoken,
     },
     mode: 'same-origin',
+    withCredentials: true,
 }
 
 let pages = ref([])
-const quantum = 5
+const quantum = 6
 let pageNumber = ref(1)
 const changePage = (targetPage) => {
     pageNumber.value = targetPage
@@ -25,6 +26,8 @@ const changePage = (targetPage) => {
 const modalController = {
     addActivityModal: ref(false),
     noticeModal: ref(false),
+    joinActivityModal: ref(false),
+    joinNoticeModal: ref(false),
 }
 const toggleModal = (modalName) => {
     cleanErrorMessage()
@@ -40,6 +43,7 @@ let errorMessage = {
     titleErrorMessage: ref(''),
     descriptionErrorMessage: ref(),
     budgetErrorMessage: ref(),
+    invitationErrorMessage: ref(''),
 }
 const cleanErrorMessage = () => {
     //  清空錯誤訊息
@@ -88,6 +92,38 @@ const addActivity = async () => {
         }
     }
 }
+
+const joinActivity = async () => {
+    for (let key of Object.keys(errorMessage)) {
+        errorMessage[key].value = ''
+    }
+
+    let invitation = document.getElementById('invitationCode').value
+
+    await axios
+        .post(
+            '/api/join-activity/code/',
+            {
+                invitation_code: invitation,
+            },
+            config
+        )
+        .then(function (res) {
+            getData()
+            toggleModal('joinActivityModal')
+            toggleModal('noticeModal')
+        })
+        .catch((error) => {
+            if (invitation == '') {
+                errorMessage.invitationErrorMessage.value = '請輸入邀請碼'
+            } else if (error.response.data.error == '已經是協作者了!') {
+                errorMessage.invitationErrorMessage.value = '已加入此活動'
+            } else {
+                errorMessage.invitationErrorMessage.value = '邀請碼不存在'
+            }
+        })
+}
+
 // 更換篩選條件
 const changeFilter = async (status) => {
     pages.value = []
@@ -155,7 +191,7 @@ getData()
             </template>
         </modal>
     </Teleport>
-
+    <!-- 新增活動 -->
     <Modal :show="modalController['addActivityModal'].value">
         <template #header>
             <div class="border-b-4 w-full px-4 py-4">
@@ -214,12 +250,79 @@ getData()
             </div>
         </template>
     </Modal>
+    <!-- 新增活動 -->
+
+    <!-- 加入活動 -->
+    <Modal :show="modalController['joinActivityModal'].value">
+        <template #header>
+            <div class="border-b-4 w-full px-4 py-4">
+                <div class="font-bold text-2xl">加入活動</div>
+            </div>
+        </template>
+
+        <template #body>
+            <div class="overflow-y-auto max-h-96 pr-4">
+                <div class="flex-row justify-between space-y-3">
+                    <div class="text-base font-bold">活動邀請碼</div>
+                    <input
+                        id="invitationCode"
+                        type="text"
+                        class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                    />
+                    <span class="text-red-500">{{ errorMessage.invitationErrorMessage.value }}</span>
+                </div>
+            </div>
+        </template>
+
+        <template #footer>
+            <div class="border-t-2 pt-2">
+                <button
+                    @click="joinActivity()"
+                    class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
+                >
+                    新增
+                </button>
+                <button
+                    @click="toggleModal('joinActivityModal')"
+                    class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold"
+                >
+                    取消
+                </button>
+            </div>
+        </template>
+    </Modal>
+    <!-- 加入活動 -->
+
+    <Modal :show="modalController.joinNoticeModal.value">
+        <template #header>
+            <div class="border-b-4 w-full px-4 py-4">
+                <div class="font-bold text-2xl">提醒</div>
+            </div>
+        </template>
+
+        <template #body>
+            <div class="overflow-y-auto max-h-96 pr-4">
+                <div>加入活動成功</div>
+            </div>
+        </template>
+
+        <template #footer>
+            <div class="border-t-2 pt-2">
+                <button
+                    @click="toggleModal('joinNoticeModal')"
+                    class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold"
+                >
+                    確定
+                </button>
+            </div>
+        </template>
+    </Modal>
 
     <!-- content -->
     <div class="w-full px-8 py-8">
+        <!-- options -->
         <div class="flex justify-between">
-            <!-- options -->
-            <div id="options" class="inline-flex justify-between items-center w-full">
+            <div id="options" class="inline-flex my-4">
                 <div class="inline-flex justify-around">
                     <div id="radios">
                         <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" />
@@ -230,7 +333,17 @@ getData()
                         <label class="radioLable text-base" for="radio3" @click="changeFilter(999)">全部</label>
                     </div>
                 </div>
-                <div id="optionsRight" class="flex justify-end align-center">
+            </div>
+            <div class="inline-flex">
+                <div class="mr-4">
+                    <button
+                        @click="toggleModal('joinActivityModal')"
+                        class="btnCreateEvent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                    >
+                        加入活動
+                    </button>
+                </div>
+                <div class="ml-4">
                     <button
                         @click="toggleModal('addActivityModal')"
                         class="btnCreateEvent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"

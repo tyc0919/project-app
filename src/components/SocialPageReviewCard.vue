@@ -3,8 +3,6 @@ import { ref } from 'vue'
 
 let show = ref(false)
 let triggerMessage = ref('全文')
-let commentSpan = document.querySelector('content-container')
-let trigger = document.getElementById('trigger')
 const showCompleteContent = () => {
     show.value = !show.value
     triggerMessage.value = !show.value ? '全文' : '顯示部分'
@@ -16,19 +14,12 @@ const props = defineProps({
     rating: String,
     date: String,
 })
-
-// function isEllipsisActive(c) {
-//     if (c.offsetWidth <= c.scrollWidth) {
-//         trigger.style.display = 'hidden'
-//     } else {
-//         trigger.style.display = ''
-//     }
-// }
-// isEllipsisActive(commentSpan)
 </script>
 
 <template>
-    <div class="shadow bg-white flex flex-col px-4 py-4 my-2 justify-start items-center hover:card-float-up">
+    <div
+        class="flex flex-col px-4 py-4 my-2 justify-start items-center hover:card-float-up rounded-2xl border border-[#2b6cb0]"
+    >
         <div class="review-card w-full h-fit">
             <div class="reviewer flex justify-start items-center mb-2">
                 <div class="reviewer-img mr-2"></div>
@@ -47,15 +38,10 @@ const props = defineProps({
             </div>
 
             <div class="review-content text-base">
-                <span
-                    id="commentSpan"
-                    class="content-container cursor-text whitespace-pre-wrap"
-                    :class="{ 'ellipsis-4': !show }"
-                >
+                <span class="content-container cursor-text whitespace-pre-wrap" :class="{ 'ellipsis-4': !show }">
                     {{ content }}
                 </span>
                 <div
-                    id="trigger"
                     @click="showCompleteContent()"
                     class="trigger-complete-content font-bold text-blue-500 hover:underline my-2"
                 >
@@ -111,9 +97,9 @@ const props = defineProps({
 }
 
 .hover\:card-float-up:hover {
-    border-color: #eee;
+    border-color: #2b6cb0;
     transition: all 0.2s ease-in-out;
-    box-shadow: 0 16px 32px 0 rgba(48, 55, 66, 0.15);
+    box-shadow: 3px 6px 13px 0 rgba(8, 9, 13, 0.15);
     transform: translate(0, -5px);
     transition-delay: 0s;
 }

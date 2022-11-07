@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <template>
     <!-- card1 -->
     <div
-        class="shadow bg-white flex flex-col justify-between px-4 py-4 card align-start hover:border hover:border-gray-500"
+        class="shadow bg-white flex flex-col justify-between px-4 py-8 card align-start hover:border hover:border-gray-500"
     >
         <div>
             <div class="cardTop mb-8">

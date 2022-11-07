@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import Invite from './invite.vue'
 import SocialPageReviewCard from './SocialPageReviewCard.vue'
 import SocialPageWorkCard from './SocialPageWorkCard.vue'
@@ -20,41 +20,44 @@ let userEmail = ''
 let userComment = ref('')
 let reviewPercentage = ref([])
 
+const route = useRoute()
+const showModal_edit = ref(false)
+const showModal_add = ref(false)
+
 let errorMessage = {
     commentErrorMessage: ref(''),
     starErrorMessage: ref(),
 }
-const route = useRoute()
 
-axios.get('/api/social/' + route.params.PostId).then(function (response) {
-    socialData.value = response.data
-    document.getElementById('description').innerHTML = socialData.value.activity_description
-})
-axios.get('/api/activity/' + route.params.PostId + '/job/').then(function (response) {
-    workData.value = response.data
-})
-axios.get('/api/userprofile/').then(function (response) {
-    userData = response.data
-    userName.value = userData.user_name
-    userEmail = userData.user_email
-})
+const getData = async () => {
+    axios.get('/api/social/' + route.params.PostId).then(function (response) {
+        socialData.value = response.data
+        document.getElementById('description').innerHTML = socialData.value.activity_description
+    })
+    await axios.get('/api/userprofile/').then(function (response) {
+        userData = response.data
+        userName.value = userData.user_name
+        userEmail = userData.user_email
+        console.log(userEmail)
+    })
+    await axios.get('/api/social/' + route.params.PostId + '/review/').then(function (response) {
+        reviewData.value = response.data
+        ratingPercentage(reviewData.value)
+        getCurrentReview()
+    })
 
-axios.get('/api/social/' + route.params.PostId + '/review/').then(function (response) {
-    reviewData.value = response.data
-    ratingPercentage(reviewData.value)
-    getCurrentReview()
-})
+    axios.get('/api/activity/' + route.params.PostId + '/job/').then(function (response) {
+        workData.value = response.data
+    })
+    axios.get('/api/activity/' + route.params.PostId + '/collaborator/').then(function (response) {
+        collabData.value = response.data
+    })
+}
 
-axios.get('/api/activity/' + route.params.PostId + '/collaborator/').then(function (response) {
-    collabData.value = response.data
-})
-
-const showModal_add = ref(false)
 const toggleModal_add = () => {
     showModal_add.value = !showModal_add.value
 }
 
-const showModal_edit = ref(false)
 const toggleModal_edit = () => {
     showModal_edit.value = !showModal_edit.value
 }
@@ -91,6 +94,7 @@ const editReview = async () => {
             'X-CSRFToken': csrftoken,
         },
         mode: 'same-origin',
+        withCredentials: true,
     }
 
     await axios
@@ -125,32 +129,40 @@ const addReview = async () => {
         },
         mode: 'same-origin',
     }
-
-    await axios
-        .post(
-            '/api/social/post-review/',
-            {
-                activity_id: route.params.PostId,
-                user_email: userData.user_email,
-                content: comment,
-                review_star: star.value,
-            },
-            config
-        )
-        .then(async function (res) {
-            await axios.get('/api/social/' + route.params.PostId + '/review/', config).then(function (response) {
-                reviewData.value = response.data
-                reviewPercentage.value.length = 0
-                ratingPercentage(reviewData.value)
+    try {
+        await axios
+            .post(
+                '/api/social/post-review/',
+                {
+                    activity_id: route.params.PostId,
+                    user_email: userData.user_email,
+                    content: comment,
+                    review_star: star.value,
+                },
+                config
+            )
+            .then(async function (res) {
+                await axios.get('/api/social/' + route.params.PostId + '/review/', config).then(function (response) {
+                    reviewData.value = response.data
+                    reviewPercentage.value.length = 0
+                    ratingPercentage(reviewData.value)
+                })
             })
-        })
-    toggleModal_add()
+        toggleModal_add()
+    } catch (error) {
+        if (comment == '') {
+            errorMessage.commentErrorMessage.value = '請輸入評論內容'
+        }
+        if ((star = 'null')) {
+            errorMessage.starErrorMessage.value = '請選擇星級'
+        }
+    }
 }
 const reload = () => {
     window.location.reload()
 }
+getData()
 cleanErrorMessage()
-getCurrentReview()
 </script>
 
 <template>
@@ -204,19 +216,21 @@ getCurrentReview()
     </Teleport>
     <!-- 編輯評論  -->
 
-    <div class="mx-12 px-4 py-4">
-        <div class="top-container flex justify-between">
+    <div class="p-8">
+        <div class="top-container flex justify-between bg-white pr-24 border border-[#D1D5DB]">
             <!--? banner -->
-            <div class="flex justify-center w-3/4">
+            <div class="inline-flex justify-center w-3/4 my-8">
                 <img src="../assets/images/FirstPart.png" class="event_main_img w-3/4" />
             </div>
 
             <!-- ? people management -->
-            <div class="flex flex-col w-1/4">
-                <div class="title w-fit h-fit px-4 py-2 rounded-full bg-white text-2xl text-cyan-800 font-bold my-4">
+            <div class="flex flex-col w-1/4 px-2 my-8">
+                <div
+                    class="title w-fit h-fit px-4 py-2 rounded-full bg-[#ccdff6] text-[#1a73e8] text-2xl font-bold mb-4"
+                >
                     所有人員
                 </div>
-                <div class="invite h-auto bg-white flex flex-col items-center p-4 overflow-y-scroll">
+                <div class="invite h-full flex flex-col items-center p-4 overflow-y-scroll border border-black">
                     <Invite
                         v-for="item of collabData"
                         :email="item.user_name"
@@ -226,30 +240,32 @@ getCurrentReview()
             </div>
         </div>
 
-        <!-- ? The description of the activity -->
+        <!-- 活動簡介 -->
         <div class="description my-4 flex flex-col">
-            <div class="title w-fit px-4 py-2 rounded-full bg-white text-2xl text-cyan-800 font-bold my-4">
+            <div class="title w-fit px-4 py-2 rounded-full bg-[#ccdff6] text-[#1a73e8] text-2xl font-bold my-4">
                 活動簡介
             </div>
-            <div id="description" class="px-10 text-xl font-bold"></div>
+            <div id="description" class="px-2 py-4 text-xl font-bold bg-white border border-[#D1D5DB]"></div>
         </div>
+        <!-- 活動簡介 -->
 
-        <div class="flex justify-between">
+        <!-- 預算支出、所有工作 -->
+        <div class="flex justify-between my-8 py-4">
             <!-- ? Expense -->
             <div class="flex flex-col">
-                <div class="title w-fit px-4 py-2 rounded-full bg-white text-2xl text-cyan-800 font-bold my-4">
+                <div class="title w-fit px-4 py-2 rounded-full bg-[#ccdff6] text-[#1a73e8] text-2xl font-bold my-4">
                     預算支出
                 </div>
-                <div class="expense h-fit">
+                <div class="expense p-8 h-full bg-white border border-[#D1D5DB]">
                     <BarChart></BarChart>
                 </div>
             </div>
             <!-- ? all works-->
             <div class="flex flex-col w-1/2">
-                <div class="title w-fit px-4 py-2 rounded-full bg-white text-2xl text-cyan-800 font-bold my-4">
+                <div class="title w-fit px-4 py-2 rounded-full bg-[#ccdff6] text-[#1a73e8] text-2xl font-bold my-4">
                     所有工作
                 </div>
-                <div class="works-container px-2 py-2 overflow-y-auto">
+                <div class="works-container px-8 py-2 overflow-y-auto bg-white border border-[#D1D5DB]">
                     <SocialPageWorkCard
                         v-for="item of workData"
                         :title="item.title"
@@ -258,82 +274,88 @@ getCurrentReview()
                 </div>
             </div>
         </div>
+        <!-- 預算支出、所有工作 -->
 
-        <!-- ? Review -->
-        <div class="title w-fit px-4 py-2 rounded-full bg-white text-2xl text-cyan-800 font-bold my-4">評論</div>
-        <div class="flex flex-col justify-between mt-4">
-            <div class="flex flex-col my-4 p-4 pt-8 bg-white rounded">
-                <div class="overflow-y-auto max-h-96 px-20">
-                    <div class="reviewer flex justify-start items-center mb-8">
-                        <div class="reviewer-img mr-2"></div>
-                        <div class="reviewer-name text-xl cursor-text">{{ userName }}</div>
-                    </div>
+        <div class="title w-fit px-4 py-2 my-4 rounded-full bg-[#ccdff6] text-[#1a73e8] text-2xl font-bold">評論</div>
+        <!-- 撰寫評論 -->
+        <div class="w-full bg-white mb-8 py-4 border border-[#D1D5DB]">
+            <div class="flex flex-col justify-between">
+                <div class="flex flex-col">
+                    <div class="overflow-y-auto max-h-[30rem] px-20 py-4 rounded-2xl">
+                        <div class="reviewer flex justify-start items-center mb-8">
+                            <div class="reviewer-img mr-2"></div>
+                            <div class="reviewer-name text-xl cursor-text">{{ userName }}</div>
+                        </div>
 
-                    <!-- 星號 -->
-                    <div class="flex items-end mb-2">
-                        <div class="rating text-2xl">
-                            <input type="radio" name="rating" value="5" id="5" />
-                            <label for="5">☆</label>
-                            <input type="radio" name="rating" value="4" id="4" />
-                            <label for="4">☆</label>
-                            <input type="radio" name="rating" value="3" id="3" />
-                            <label for="3">☆</label>
-                            <input type="radio" name="rating" value="2" id="2" />
-                            <label for="2">☆</label>
-                            <input type="radio" name="rating" value="1" id="1" />
-                            <label for="1">☆</label>
-                            <input type="radio" name="rating" value="null" id="0" checked />
+                        <!-- 星號 -->
+                        <div class="flex items-end mb-2">
+                            <div class="rating text-2xl">
+                                <input type="radio" name="rating" value="5" id="5" />
+                                <label for="5">☆</label>
+                                <input type="radio" name="rating" value="4" id="4" />
+                                <label for="4">☆</label>
+                                <input type="radio" name="rating" value="3" id="3" />
+                                <label for="3">☆</label>
+                                <input type="radio" name="rating" value="2" id="2" />
+                                <label for="2">☆</label>
+                                <input type="radio" name="rating" value="1" id="1" />
+                                <label for="1">☆</label>
+                                <input type="radio" name="rating" value="null" id="0" checked />
+                            </div>
+                        </div>
+                        <span class="text-red-500">{{ errorMessage.starErrorMessage.value }}</span>
+                        <!-- 星號 -->
+
+                        <div class="mt-8">
+                            <textarea
+                                id="comment"
+                                placeholder="寫下你的評論 (最多500字)"
+                                class="p-2 w-full h-48 border border-2 border-black rounded"
+                                maxlength="500"
+                                >{{ userComment }}</textarea
+                            >
+                            <span class="text-red-500">{{ errorMessage.commentErrorMessage.value }}</span>
+                        </div>
+                        <div class="flex justify-center">
+                            <button
+                                v-if="userComment == ''"
+                                @click="addReview()"
+                                class="my-4 py-2 px-4 rounded hover:text-[#2b6cb0] border border-[#2b6cb0] hover:bg-transparent text-white bg-sky-700 font-semibold"
+                                id="commentBtn"
+                            >
+                                送出評論
+                            </button>
+                            <button
+                                v-else
+                                @click="editReview()"
+                                class="my-4 py-2 px-4 rounded hover:text-[#2b6cb0] border border-[#2b6cb0] hover:bg-transparent text-white bg-sky-700 font-semibold"
+                                id="commentBtn"
+                            >
+                                修改評論
+                            </button>
                         </div>
                     </div>
-                    <span class="text-red-500">{{ errorMessage.starErrorMessage.value }}</span>
-                    <!-- 星號 -->
-
-                    <div class="mt-8">
-                        <textarea
-                            id="comment"
-                            placeholder="寫下你的評論 (500字以內)"
-                            class="p-2 w-full h-48 border border-2 border-black rounded"
-                            >{{ userComment }}</textarea
-                        >
-                        <span class="text-red-500">{{ errorMessage.commentErrorMessage.value }}</span>
-                    </div>
-                </div>
-                <div class="flex justify-center">
-                    <button
-                        v-if="userComment == ''"
-                        @click="addReview()"
-                        class="my-4 py-2 px-4 rounded hover:text-[#2b6cb0] border border-[#2b6cb0] hover:bg-transparent text-white bg-sky-700 font-semibold"
-                        id="commentBtn"
-                    >
-                        送出評論
-                    </button>
-                    <button
-                        v-else
-                        @click="toggleModal_edit()"
-                        class="my-4 py-2 px-4 rounded hover:text-[#2b6cb0] border border-[#2b6cb0] hover:bg-transparent text-white bg-sky-700 font-semibold"
-                        id="commentBtn"
-                    >
-                        修改評論
-                    </button>
                 </div>
             </div>
-
-            <div class="flex flex-col-reverse">
-                <SocialPageReviewCard
-                    v-for="(item, index) of reviewData"
-                    :reviewer="item.user_name"
-                    :rating="reviewPercentage[index]"
-                    :content="item.content"
-                    :date="item.review_time"
-                ></SocialPageReviewCard>
-            </div>
+            <!-- 撰寫評論 -->
         </div>
+        <!-- 評論區 -->
+        <div class="flex flex-col-reverse px-10 py-8 bg-white border border-[#D1D5DB]">
+            <SocialPageReviewCard
+                v-for="(item, index) of reviewData"
+                :reviewer="item.user_name"
+                :rating="reviewPercentage[index]"
+                :content="item.content"
+                :date="item.review_time"
+            ></SocialPageReviewCard>
+        </div>
+        <!-- 評論區 -->
     </div>
 </template>
 
 <style scoped>
 .expense {
-    width: 40rem;
+    width: 50rem;
 }
 
 .rating {
@@ -428,9 +450,6 @@ getCurrentReview()
     height: 60vh;
 }
 
-.event_main_img {
-    height: 60vh;
-}
 button:disabled {
     border: 1px solid rgba(118, 118, 118, 0.3);
     background-color: rgba(239, 239, 239, 0.3);

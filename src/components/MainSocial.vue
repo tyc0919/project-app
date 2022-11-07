@@ -6,7 +6,7 @@ import axios from 'axios'
 // get data
 let socialData = ref([])
 let pages = ref([])
-const quantum = 2
+const quantum = 6
 let pageNumber = ref(1)
 const changePage = (targetPage) => {
     pageNumber.value = targetPage
@@ -75,7 +75,7 @@ getData()
     <!--Component here-->
     <div class="h-full">
         <!--貼文、按鈕-->
-        <div class="px-8 py-8">
+        <div class="p-8">
             <!--按鈕列-->
             <div id="options" class="inline-flex justify-between items-center my-4 w-full">
                 <div class="inline-flex justify-around">

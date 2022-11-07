@@ -13,6 +13,7 @@ let config = {
         'X-CSRFToken': csrftoken,
     },
     mode: 'same-origin',
+    withCredentials: true,
 }
 
 // 分頁準備

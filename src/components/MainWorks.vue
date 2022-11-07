@@ -6,7 +6,7 @@ import { ref } from 'vue'
 let workData = ref([])
 
 let pages = ref([])
-const quantum = 3
+const quantum = 6
 let pageNumber = ref(1)
 const changePage = (targetPage) => {
     pageNumber.value = targetPage
