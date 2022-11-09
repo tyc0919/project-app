@@ -1,10 +1,11 @@
 <script setup>
 // moduals
-import { ref } from 'vue';
+import { ref, onBeforeMount } from 'vue';
 import { getCookie } from '../assets/modules'
 import axios from "axios";
 import { useRoute } from 'vue-router';
-
+import "vue3-circle-progress/dist/circle-progress.css";
+import CircleProgress from "vue3-circle-progress";
 // components
 import Modal from './Modal.vue';
 
@@ -19,10 +20,38 @@ let config = {
 const route = useRoute();
 const activityId = route.params.EventId
 
+//計算比率圖
+let graphParam = ref({
+    left: "rotate(180deg)",
+    right: "rotate(180deg)"
+})
+const calcGraph = () => {
+    let percentage = budget.value.expense_percentage
 
+    let degree = 360 * percentage / 100
+
+    degree = 360 * percentage / 100
+    if (degree < 180) {
+        graphParam.value.right = "rotate(" + degree + "deg)"
+        graphParam.value.left = "rotate(" + 0 + "deg)"
+    } else {
+        graphParam.value.right = "rotate(" + 180 + "deg)"
+        graphParam.value.left = "rotate(" + (degree - 180) + "deg)"
+    }
+    console.log(graphParam.value)
+}
+
+
+
+//select file
+let selectedFile = ref(null)
+const setSelectedFile = (file) => {
+    selectedFile.value = file;
+}
 // modal
 const modalController = {
     uploadFileModal: ref(false),
+    messageModal: ref(false),
     updateBudgetModal: ref(false),
 }
 const toggleModal = (modalName) => {
@@ -30,78 +59,86 @@ const toggleModal = (modalName) => {
     modalController[modalName].value = !modalController[modalName].value
 }
 
-
+// get data
 let budget = ref([]);
-async function getData() {
+
+const getData = async () => {
     try {
-        axios.get('/api/activity/' + activityId + '/budget/', config)
+        await axios.get('/api/activity/' + activityId + '/budget/', config)
             .then(async function (response) {
-                // ? get userJobs in this activity.
                 budget.value = response.data;
-
-                let user = ref([]);
-                await axios.get('/api/userprofile/')
-                    .then(function (response) {
-                        user.value = response.data;
-                    });
-
-                let collaborators = ref([]);
-                await axios.get('/api/activity/' + activityId + '/collaborator/')
-                    .then(function (response) {
-                        collaborators.value = response.data;
-                    });
-
-                let userJobs = ref([]);
-                for (let job of budget.value.jobs) {
-                    if (job.person_in_charge_email == user.value.user_email) {
-                        userJobs.value.push(job);
-                    }
-                }
-                budget.value["user_jobs"] = userJobs.value;
-
-                // add activity expense
-                let activityExpense = ref(0);
-                for (let i = 0; i < budget.value.jobs.length; i++) {
-                    activityExpense.value += budget.value.jobs[i].job_expenditure;
-                }
-                budget.value["activity_expense"] = activityExpense.value;
-
-                // append jobs data
-                for (let i = 0; i < budget.value.expenditures.length; i++) {
-                    // adjust date style
-                    budget.value.expenditures[i].expenditure_uploaded_time = new Date(
-                        budget.value.expenditures[i].expenditure_uploaded_time).toLocaleDateString();
-                    // append job data
-                    for (let j = 0; j < budget.value.jobs.length; j++) {
-                        if (budget.value.expenditures[i].job ==
-                            budget.value.jobs[j].id) {
-                            budget.value.expenditures[i]["job_title"] = budget.value.jobs[j].title;
-                            budget.value.expenditures[i]["person_in_charge_email"] = budget.value.jobs[j].person_in_charge_email;
-                        }
-                    }
-                }
-                // user_name
-                for (let i = 0; i < budget.value.expenditures.length; i++) {
-                    for (let j = 0; j < collaborators.value.length; j++) {
-                        if (budget.value.expenditures[i].person_in_charge_email == collaborators.value[j].user_email) {
-
-                            budget.value.expenditures[i]['user_name'] = collaborators.value[j].user_name;
-                        }
-                    }
-                }
-                // adjust money notations
-                budget.value.activity_budget = budget.value.activity_budget.toLocaleString()
-                for (let expen of budget.value.expenditures) {
-                    expen.expense = expen.expense.toLocaleString();
-                }
-                budget.value.activity_expense = budget.value.activity_expense.toLocaleString();
-                console.log(budget.value);
             });
+
+        // To append some extra information, need to get some supporting data
+        let user = ref([]);
+        await axios.get('/api/userprofile/')
+            .then(function (response) {
+                user.value = response.data;
+            });
+
+        let collaborators = ref([]);
+        await axios.get('/api/activity/' + activityId + '/collaborator/')
+            .then(function (response) {
+                collaborators.value = response.data;
+            });
+
+        let userJobs = ref([]);
+        for (let job of budget.value.jobs) {
+            if (job.person_in_charge_email == user.value.user_email) {
+                userJobs.value.push(job);
+
+            }
+        }
+
+        if (user.user_email == budget.owner) {
+            budget.value['is_owner'] = true;
+        } else {
+            budget.value['is_owner'] = false;
+        }
+        budget.value["user_jobs"] = userJobs
+
+        // append activity expense
+        let activityExpense = ref(0);
+        for (let i = 0; i < budget.value.jobs.length; i++) {
+            activityExpense.value += budget.value.jobs[i].job_expenditure;
+        }
+        budget.value["activity_expense"] = activityExpense.value;
+        budget.value["expense_percentage"] = Math.round((activityExpense.value / budget.value.activity_budget) * 100)
+        console.log(budget.value)
+        calcGraph() //計算比率圖
+
+        // append jobs data
+        for (let expenditure of budget.value.expenditures) {
+            // adjust date format
+            expenditure.expenditure_uploaded_time = new Date(
+                expenditure.expenditure_uploaded_time).toLocaleDateString();
+            // append job data
+            for (let job of budget.value.jobs) {
+                if (expenditure.job == job.id) {
+                    expenditure["job_title"] = job.title;
+                    expenditure["person_in_charge_email"] = job.person_in_charge_email;
+                }
+            }
+            // append user_name collaborators.value
+            for (let collaborator of collaborators.value) {
+                if (expenditure.person_in_charge_email == collaborator.user_email) {
+                    expenditure['user_name'] = collaborator.user_name;
+                }
+            }
+        }
+
+        // adjust money notations
+        budget.value.activity_budget = budget.value.activity_budget.toLocaleString()
+        for (let expenditure of budget.value.expenditures) {
+            expenditure.expense = expenditure.expense.toLocaleString();
+            // add download path
+            expenditure["download_path"] = "/api/serve-file/" + activityId + "/" + expenditure.expenditure_receipt_path
+        }
+        budget.value.activity_expense = budget.value.activity_expense.toLocaleString();
+
     } catch (error) {
         throw new Error(error);
     }
-
-
 }
 getData()
 
@@ -131,6 +168,7 @@ const updateActivityBudget = async () => {
     } finally {
         budgetEl.value = ""
         toggleModal('updateBudgetModal')
+        toggleModal('messageModal')
     }
     getData();
 }
@@ -138,6 +176,28 @@ const updateActivityBudget = async () => {
 
 // 上傳檔案
 let fileEl = ref(null);
+let fileList = ref([])
+let fileName = ref("file_name")
+//偵測上傳檔名
+let isImage = ref(false)
+
+
+const changeFile = () => {
+    errorMessage.fileErrorMessage.value = ""
+    if (fileEl.value.files[0].type.search('image') == -1) {
+        // file 不變
+        isImage.value = false
+        errorMessage.fileErrorMessage.value = '檔案格式錯誤(只接受jpg, png...等圖片格式)'
+    } else {
+        // 更新fileList
+        isImage.value = true
+        let files = fileEl.value.files
+        files = Array.prototype.slice.call(files);
+        fileList.value = fileList.value.concat(files);
+        fileName.value = fileList.value[fileList.value.length - 1].name
+    }
+}
+
 // 錯誤訊息
 let errorMessage = {
     expenseErrorMessage: ref(),
@@ -151,6 +211,7 @@ const cleanErrorMessage = () => {
     }
 }
 
+
 const uploadExpenditure = async () => {
     cleanErrorMessage()
 
@@ -161,7 +222,7 @@ const uploadExpenditure = async () => {
     try {
         // append data of POST api 
         let formData = new FormData();
-        formData.append('file', fileEl.value.files[0]);
+        formData.append('file', fileList.value[fileList.value.length - 1]);
         formData.append('job_id', jobEl.value) //工作序號
         formData.append('expense', expenseEl.value); //花費
 
@@ -197,7 +258,6 @@ const uploadExpenditure = async () => {
         if (jobEl.value == "null") {
             errorMessage.jobErrorMessage.value = '請選擇一項工作'
         }
-
     }
 
 }
@@ -222,161 +282,241 @@ const deleteExpenditure = async (fileName, jobId) => {
         console.log("error")
     }
 }
-
-
 </script>
 
 <template>
     <!-- 把你寫的Component放在這裡測試，要上github前這個檔案更動要discard掉-->
 
-    <!-- ? from EventBudgetUpper -->
-    <div class="p-1 border-b mx-12 border-black">
-        <!-- budget box start -->
-        <div class="flex justify-around mt-8 mb-16">
-            <div class="bg-green-400 flex flex-col items-center p-2 rounded shadow-md">
-                <p class="m-2 text-center">預算</p>
-                <p class="mb-2 text-2xl w-56 text-center">$ {{budget.activity_budget}}</p>
-            </div>
-            <div class="bg-red-400 flex flex-col items-center p-2 rounded shadow-md">
-                <p class="m-2 text-center">支出</p>
-                <p class="mb-2 text-2xl w-56 text-center">$ {{budget.activity_expense}}</p>
-            </div>
-        </div>
-        <div class="flex justify-center w-full mb-8 items-center font-bold">
-            <input id="budget-el" type="number" class="w-1/3 mr-4 p-2" />
-            <button @click="updateActivityBudget()"
-                class="bg-sky-700 text-white px-4 py-2 rounded shadow-md">預算更新</button>
+    <!-- budget box end -->
+    <Teleport to="body">
+        <!-- use the modal component, pass in the prop -->
+        <modal :show="modalController.messageModal.value">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">提醒</div>
+                </div>
 
+            </template>
 
-        </div>
-
-        <!-- budget box end -->
-        <Teleport to="body">
-            <!-- use the modal component, pass in the prop -->
-            <modal :show="modalController.updateBudgetModal.value">
-                <template #header>
-                    <div class="border-b-4 w-full px-4 py-4">
-                        <div class="font-bold text-2xl">提醒</div>
+            <template #body>
+                <div class="overflow-y-auto max-h-96 pr-4">
+                    <div v-if="isSuccessUpdateBudget">
+                        預算更新為: <span class="text-red-500">$ {{ budget.activity_budget }}</span>
                     </div>
+                    <div v-if="!isSuccessUpdateBudget">
+                        失敗原因: <span class="text-red-500">不可為負數或空值</span>
+                    </div>
+                </div>
+            </template>
 
-                </template>
+            <template #footer>
+                <div class="border-t-2 pt-2">
 
-                <template #body>
-                    <div class="overflow-y-auto max-h-96 pr-4">
-                        <div v-if="isSuccessUpdateBudget">
-                            預算更新為: <span class="text-red-500">$ {{budget.activity_budget}}</span>
+                    <button @click="toggleModal('messageModal')"
+                        class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                        確定
+                    </button>
+                </div>
+            </template>
+        </modal>
+    </Teleport>
+
+    <!-- test block start -->
+    <Teleport to="body">
+        <!-- use the modal component, pass in the prop -->
+        <modal :show="modalController.uploadFileModal.value">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">上傳收據</div>
+                </div>
+
+            </template>
+
+            <template #body>
+                <div class="overflow-y-auto max-h-96 pr-4">
+                    <div class="flex-col justify-between space-y-3">
+
+                        <div class="text-base font-bold">支出金額</div>
+                        <div class="flex items-center justify-start space-x-3">
+                            <span class="italic font-bold">$</span>
+                            <input id="expense-el" type="number"
+                                class="px-1 py-1 w-full text-base border border-2 border-slate-400" placeholder="10000">
                         </div>
-                        <div v-if="!isSuccessUpdateBudget">
-                            失敗原因: <span class="text-red-500">不可為負數或空值</span>
-                        </div>
-                    </div>
-                </template>
+                        <span class="text-red-500">{{ errorMessage.expenseErrorMessage.value }}</span>
 
-                <template #footer>
-                    <div class="border-t-2 pt-2">
-
-                        <button @click="toggleModal('updateBudgetModal')"
-                            class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
-                            確定
-                        </button>
-                    </div>
-                </template>
-            </modal>
-        </Teleport>
-
-        <!-- test block start -->
-        <Teleport to="body">
-            <!-- use the modal component, pass in the prop -->
-            <modal :show="modalController.uploadFileModal.value">
-                <template #header>
-                    <div class="border-b-4 w-full px-4 py-4">
-                        <div class="font-bold text-2xl">上傳收據</div>
-                    </div>
-
-                </template>
-
-                <template #body>
-                    <div class="overflow-y-auto max-h-96 pr-4">
-                        <div class="flex-col justify-between space-y-3">
-
-                            <div class="text-base font-bold">支出金額</div>
-                            <div class="flex items-center justify-start space-x-3">
-                                <span class="italic font-bold">$</span>
-                                <input id="expense-el" type="number"
-                                    class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                                    placeholder="10000">
-                            </div>
-                            <span class="text-red-500">{{errorMessage.expenseErrorMessage.value}}</span>
-
-                            <div class="text-base font-bold">收據圖片證明</div>
-                            <input ref="fileEl" type="file">
-                            <div class="text-red-500">{{errorMessage.fileErrorMessage.value}}</div>
-
-                            <div class="text-base font-bold ">所屬工作</div>
-                            <select id="job-el" class="px-1 py-1 w-full font-bold border border-2 border-slate-500">
-                                <option value="null" class="italic font-bold">--請選擇一個工作--</option>
-                                <option v-for="item in budget.user_jobs" :value="item.id">{{item.title}}</option>
-                            </select>
-                            <span class="text-red-500">{{errorMessage.jobErrorMessage.value}}</span>
-                        </div>
-                    </div>
-                </template>
-
-                <template #footer>
-                    <div class="border-t-2 pt-2">
-                        <button @click="[uploadExpenditure()]"
+                        <div class="text-base font-bold">收據圖片證明</div>
+                        <button @click="fileEl.click()"
                             class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
-                            新增
+                            新增檔案
                         </button>
-                        <button @click="toggleModal('uploadFileModal')"
-                            class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
-                            取消
-                        </button>
+                        <span class="text-base">
+                            <span class="p-2 border-2">
+                                {{ fileName }}
+                            </span>
+                        </span>
+
+                        <input @change="changeFile()" ref="fileEl" class="hidden" type="file" accept="image/*">
+                        <div class="text-red-500">{{ errorMessage.fileErrorMessage.value }}</div>
+
+                        <div class="text-base font-bold ">所屬工作</div>
+                        <select id="job-el" class="px-1 py-1 w-full font-bold border border-2 border-slate-500">
+                            <option value="null" class="italic font-bold">--請選擇一個工作--</option>
+                            <option v-for="item in budget.user_jobs" :value="item.id">{{ item.title }}</option>
+                        </select>
+                        <span class="text-red-500">{{ errorMessage.jobErrorMessage.value }}</span>
                     </div>
-                </template>
-            </modal>
-        </Teleport>
-        <!-- test block end -->
+                </div>
+            </template>
+
+            <template #footer>
+                <div class="border-t-2 pt-2">
+                    <button @click="[uploadExpenditure()]"
+                        class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                        新增
+                    </button>
+                    <button @click="toggleModal('uploadFileModal')"
+                        class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                        取消
+                    </button>
+                </div>
+            </template>
+        </modal>
+    </Teleport>
+
+    <!-- test block start -->
+    <Teleport to="body">
+        <!-- use the modal component, pass in the prop -->
+        <modal :show="modalController.updateBudgetModal.value">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">更新預算</div>
+                </div>
+
+            </template>
+
+            <template #body>
+                <div class="overflow-y-auto max-h-96 pr-4">
+                    <input id="budget-el" type="number"
+                        class="px-1 py-1 w-full text-base border border-2 border-slate-400" placeholder="10000">
+                </div>
+            </template>
+
+            <template #footer>
+                <div class="border-t-2 pt-2">
+                    <button @click="updateActivityBudget()"
+                        class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                        更新
+                    </button>
+                    <button @click="toggleModal('updateBudgetModal')"
+                        class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                        取消
+                    </button>
+                </div>
+            </template>
+        </modal>
+    </Teleport>
+
+    <!-- ? from EventBudgetUpper -->
+    <div class="bg-white mx-24 my-8 border-2">
+        <div class=" mx-12 border-black">
+            <!-- budget box start -->
+            <div class="flex justify-around items-center  my-4 rounded-xl">
+                <div class="w-56 h-96 flex flex-col justify-around    mt-8 mb-16">
+
+                    <div class="w-full flex flex-col items-center">
+                        <div class="bg-green-400 h-fit w-full rounded-t-xl shadow-md">
+                            <p class="m-2 text-center text-white">預算</p>
+                        </div>
+                        <div
+                            class="w-full h-full relative flex justify-start item-center  p-4 shadow-md rounded-b-xl bg-white border-t border-grey-400">
+                            <p class=" text-2xl w-56 text-center text-green-400 font-bold">
+                                $ {{ budget.activity_budget }}
+                            </p>
+                            <svg v-if="budget.is_owner" @click="toggleModal('updateBudgetModal')"
+                                class="w-7 absolute cursor-pointer" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 48 48">
+                                <path
+                                    d="M6 34.5V42h7.5l22.13-22.13-7.5-7.5L6 34.5zm35.41-20.41c.78-.78.78-2.05 0-2.83l-4.67-4.67c-.78-.78-2.05-.78-2.83 0l-3.66 3.66 7.5 7.5 3.66-3.66z"
+                                    fill="#3056d3" class="fill-000000" />
+                                <path d="M0 0h48v48H0z" fill="none" />
+                            </svg>
+
+                        </div>
+                    </div>
 
 
-        <!-- analysis start -->
-        <!-- analysis end -->
+                    <div class="w-56 flex flex-col items-center">
+                        <div class="w-full bg-red-400  w-full rounded-t-xl shadow-md">
+                            <p class="m-2 text-center text-white">支出</p>
+                        </div>
+                        <div
+                            class="w-full flex justify-start item-center h-fit p-4 shadow-md rounded-b-xl bg-white border-t border-grey-400">
+                            <p class="text-2xl w-56 text-center text-red-400 font-bold">$ {{ budget.activity_expense }}
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <circle-progress :percent="budget.expense_percentage" :size="300" :border-width="25"
+                    :border-bg-width="25" :show-percent="true" :viewport="true" :transition="3000" :is-gradient="true"
+                    :gradient="{
+                        angle: 180,
+                        startColor: '#cee5f2',
+                        stopColor: '#3056D3'
+                    }" />
+            </div>
+
+        </div>
+
     </div>
-    <div class="p-1 my-8 mx-12 flex items-center">
-        <canvas id="BudgetCanva" class="w-1/2">
-            圖表放置處
-        </canvas>
-        <div class="w-full pt-4 pb-4 bg-white h-96 rounded-lg shadow-md flex flex-col ">
+    <div class="bg-white mx-24 p-4 flex justify-between items-center">
+        <div class="flex jusify-center item-center h-96 w-1/2 border-2 rounded p-2 mr-8 bg-slate-200">
+            <img v-if="!(selectedFile == null)" class="w-full" :src="selectedFile.download_path">
+        </div>
+
+        <div class="w-1/2 pt-4 pb-4 bg-white h-96 rounded-lg border-2 flex flex-col ">
             <button @click="toggleModal('uploadFileModal')"
-                class="w-auto border-sky-700 border mx-8 mb-4 rounded text-sky-700">
-                上傳</button>
+                class="w-fit px-4 py-2 border-sky-700 border mx-8 mb-4 rounded text-sky-700">
+                上傳
+            </button>
             <div class="overflow-y-auto flex flex-col flex-col-reverse">
                 <div v-for="item in budget.expenditures"
                     class="flex justify-between w-auto mt-4 mx-8 border-2 rounded-md py-2 pl-4 pr-2 border-gray-300 file-shadow">
-
-                    <div class="w-full whitespace-nowrap">
-                        <p class="font-bold">{{item.expenditure_receipt_path}}</p>
-                        <div class="w-full text-sm text-gray-500">
-                            <div class="text-red-500">
-                                <span>支出金額: </span>
-                                <span>$ </span>
-                                <span>{{item.expense}}</span>
-                            </div>
-                            <div>
-                                <span>所屬工作: </span>
-                                <span>{{item.job_title}}</span>
-                            </div>
-                            <div>
-                                <span>上傳者: </span>
-                                <span>{{item.user_name}}</span>
-                            </div>
-
-                            <div>
-                                <span>上傳日期: </span>
-                                <span>{{item.expenditure_uploaded_time}}</span>
-                            </div>
-
+                    <div class="flex">
+                        <div @click="setSelectedFile(item)"
+                            class="flex jusify-center item-center h-full w-48 border border-black mr-4 bg-[#cadcff] cursor-pointer">
+                            <img :src="item.download_path">
                         </div>
+
+                        <div class="w-full whitespace-nowrap">
+                            <a :href="item.download_path">
+                                <p class="font-bold">{{ item.expenditure_receipt_path }}</p>
+                            </a>
+
+                            <div class="w-full text-sm text-gray-500">
+                                <div class="text-red-500">
+                                    <span>支出金額: </span>
+                                    <span>$ </span>
+                                    <span>{{ item.expense }}</span>
+                                </div>
+                                <div>
+                                    <span>所屬工作: </span>
+                                    <span>{{ item.job_title }}</span>
+                                </div>
+                                <div>
+                                    <span>上傳者: </span>
+                                    <span>{{ item.user_name }}</span>
+                                </div>
+
+                                <div>
+                                    <span>上傳日期: </span>
+                                    <span>{{ item.expenditure_uploaded_time }}</span>
+                                </div>
+
+                            </div>
+                        </div>
+
                     </div>
                     <button @click="deleteExpenditure(item.expenditure_receipt_path, item.job)"
                         class="text-red-500 p-2">X</button>
@@ -385,7 +525,6 @@ const deleteExpenditure = async (fileName, jobId) => {
 
         </div>
     </div>
-
 
 </template>
 
