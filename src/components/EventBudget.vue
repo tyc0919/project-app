@@ -458,8 +458,9 @@ const deleteExpenditure = async (fileName, jobId) => {
 
                 </div>
 
-                <circle-progress :percent="budget.expense_percentage" :size="300" :show-percent="true" :viewport="true"
-                    :transition="3000" :is-gradient="true" :gradient="{
+                <circle-progress :percent="budget.expense_percentage" :size="300" :border-width="25"
+                    :border-bg-width="25" :show-percent="true" :viewport="true" :transition="3000" :is-gradient="true"
+                    :gradient="{
                         angle: 180,
                         startColor: '#cee5f2',
                         stopColor: '#3056D3'
