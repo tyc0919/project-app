@@ -4,8 +4,8 @@ import { ref, onBeforeMount } from 'vue';
 import { getCookie } from '../assets/modules'
 import axios from "axios";
 import { useRoute } from 'vue-router';
-import GraphPercentageCircle from './GraphPercentageCircle.vue';
-
+import "vue3-circle-progress/dist/circle-progress.css";
+import CircleProgress from "vue3-circle-progress";
 // components
 import Modal from './Modal.vue';
 
@@ -458,10 +458,12 @@ const deleteExpenditure = async (fileName, jobId) => {
 
                 </div>
 
-                <GraphPercentageCircle :percentage="budget.expense_percentage" :left="graphParam.left"
-                    :right="graphParam.right">
-                </GraphPercentageCircle>
-
+                <circle-progress :percent="budget.expense_percentage" :size="300" :show-percent="true" :viewport="true"
+                    :transition="3000" :is-gradient="true" :gradient="{
+                        angle: 180,
+                        startColor: '#cee5f2',
+                        stopColor: '#3056D3'
+                    }" />
             </div>
 
         </div>
