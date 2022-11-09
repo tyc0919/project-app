@@ -225,7 +225,8 @@ const uploadExpenditure = async () => {
         formData.append('file', fileList.value[fileList.value.length - 1]);
         formData.append('job_id', jobEl.value) //工作序號
         formData.append('expense', expenseEl.value); //花費
-
+        fileList.value = [];
+        fileName.value = ""
         // do POST api
         await axios.post('/api/upload/expenditure/', formData, config)
             .then(function (response) {
@@ -417,7 +418,7 @@ const deleteExpenditure = async (fileName, jobId) => {
     </Teleport>
 
     <!-- ? from EventBudgetUpper -->
-    <div class="bg-white mx-24 my-8 border-2">
+    <div class="bg-white mb-8 border-2">
         <div class=" mx-12 border-black">
             <!-- budget box start -->
             <div class="flex justify-around items-center  my-4 rounded-xl">
@@ -470,19 +471,19 @@ const deleteExpenditure = async (fileName, jobId) => {
         </div>
 
     </div>
-    <div class="bg-white mx-24 p-4 flex justify-between items-center">
+    <div class="bg-white p-4 flex justify-between items-center">
         <div class="flex jusify-center item-center h-96 w-1/2 border-2 rounded p-2 mr-8 bg-slate-200">
             <img v-if="!(selectedFile == null)" class="w-full" :src="selectedFile.download_path">
         </div>
 
-        <div class="w-1/2 pt-4 pb-4 bg-white h-96 rounded-lg border-2 flex flex-col ">
+        <div class="w-1/2 px-8 py-4 bg-white h-96 rounded-lg border-2 flex flex-col ">
             <button @click="toggleModal('uploadFileModal')"
-                class="w-fit px-4 py-2 border-sky-700 border mx-8 mb-4 rounded text-sky-700">
+                class="w-fit text-white bg-[#3056d3] border-[#3056d3] border hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded">
                 上傳
             </button>
-            <div class="overflow-y-auto flex flex-col flex-col-reverse">
+            <div class="mt-2 overflow-y-auto flex flex-col flex-col-reverse">
                 <div v-for="item in budget.expenditures"
-                    class="flex justify-between w-auto mt-4 mx-8 border-2 rounded-md py-2 pl-4 pr-2 border-gray-300 file-shadow">
+                    class="flex justify-between w-auto mt-4  border-2 rounded-md py-2 pl-4 pr-2 border-gray-300 file-shadow">
                     <div class="flex">
                         <div @click="setSelectedFile(item)"
                             class="flex jusify-center item-center h-full w-48 border border-black mr-4 bg-[#cadcff] cursor-pointer">
@@ -524,8 +525,9 @@ const deleteExpenditure = async (fileName, jobId) => {
             </div>
 
         </div>
+        
     </div>
-
+    
 </template>
 
 <style scoped>

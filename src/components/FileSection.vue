@@ -34,6 +34,7 @@ const invite = () => {
 
 /* 上傳檔案 */
 function fileUpload() {
+    formData = null
     formData.append('file', file.value.files[0])
     formData.append('job_id', route.params.WorkId)
 }
@@ -112,12 +113,11 @@ const toggleModal = () => {
             </div>
         </form>
 
-        <div v-if="mode === 1" class="w-full">
-            <button class="w-full bg-sky-700 text-white p-2 rounded-md file-shadow" @click="toggleModal()">邀請+</button>
+        <div v-if="mode === 1">
         </div>
 
         <div v-else class="w-full">
-            <button class="w-full bg-sky-700 text-white p-2 rounded-md file-shadow" @click="toggleModal()">上傳</button>
+            <button class="py-2 rounded w-full text-white bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold" @click="toggleModal()">上傳</button>
         </div>
 
         <div class="file w-full overflow-auto">
@@ -172,8 +172,7 @@ const toggleModal = () => {
 <style scoped>
 .file-sec-wrapper {
     background: #FFFFFF;
-    border: 1px solid rgba(0, 0, 0, 0.16);
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border: 1px solid #d1d5db;
     border-radius: 2px;
 }
 

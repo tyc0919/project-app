@@ -165,7 +165,7 @@ getData()
     </div>
     <div
         v-for="file in logFile"
-        class="flex justify-between w-auto my-4 py-4 pl-4 pr-2 border-2 border-[#3399FF] rounded-md bg-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+        class="flex justify-between w-auto my-4 py-4 pl-4 pr-2 border-2 border-[#3399FF] rounded-md bg-white "
     >
         <div class="w-full whitespace-nowrap">
             <p class="font-bold">{{ file.file_path }}</p>

@@ -13,7 +13,7 @@ function refresh() {
 }
 
 function refresh2(x) {
-    emit('refresh2',x)
+    emit('refresh2', x)
 }
 
 let csrftoken = getCookie()
@@ -99,7 +99,6 @@ async function deleteJobDetail() {
 /* 刪除工作細項 */
 
 /* 工作細項狀態 */
-let xdxd
 async function statusJobDetail() {
     let jdstatus = props.jobDetail.status
     let isOkStatus = false
@@ -107,6 +106,7 @@ async function statusJobDetail() {
     if (jdstatus == "1") {
         jdstatus = "0"
     }
+
     else {
         jdstatus = "1"
     }
@@ -121,6 +121,7 @@ async function statusJobDetail() {
             isOkStatus = true
         })
         .catch(function (error) {
+            isOkStatus = false
         })
 
     refresh2(isOkStatus)
@@ -148,14 +149,14 @@ async function statusJobDetail() {
                 <div class="w-2/4 inline-flex font-bold align-middle pl-1">
                     {{ props.jobDetail.title }}
                 </div>
-                <div v-if="props.jright" class="w-2/4 inline-flex justify-end align-middle my-1">
+                <div v-if="props.jright" class="w-2/4 inline-flex justify-end  items-center my-2">
                     <button
-                        class="rounded-lg border border-[#3491d9] font-bold text-base text-[#3491d9] py-0 px-3 shadow-btn btn_click1"
+                        class="text-white bg-[#3056d3] border-[#3056d3] border hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-0 px-3 rounded"
                         @click="toggleModal_update_job_detail()">
                         編輯
                     </button>
                     <button
-                        class="mx-4 rounded-lg border border-[#ff0000] font-bold text-base text-[#ff0000] py-0 px-3 shadow-btn btn_click2"
+                        class="mx-2 text-white bg-[#ff0000] border-[#ff0000] border hover:text-[#ff0000] hover:border hover:border-[#ff0000] hover:bg-transparent font-semibold py-0 px-3 rounded"
                         @click="toggleModal_delete_job_detail()">
                         刪除
                     </button>
@@ -163,11 +164,11 @@ async function statusJobDetail() {
 
                 <div v-else class="w-2/4 inline-flex justify-end align-middle my-1">
                     <button
-                        class="rounded-lg border border-[#3491d9] font-bold text-base py-0 px-3 shadow-btn cursor-default hide-text-color">
+                        class="text-white bg-[#3056d380] border-[#3056d380] border font-semibold py-0 px-3 rounded">
                         編輯
                     </button>
                     <button
-                        class="rounded-lg border border-[#ff0000] font-bold text-base py-0 px-3 mx-4 shadow-btn cursor-default hide-text-color2">
+                        class="mx-2 text-white bg-[#ff000080] border-[#ff000080] border font-semibold py-0 px-3 rounded">
                         刪除
                     </button>
                 </div>
@@ -194,14 +195,14 @@ async function statusJobDetail() {
                 <div class="w-2/4 inline-flex font-bold align-middle pl-1">
                     {{ props.jobDetail.title }}
                 </div>
-                <div v-if="props.jright" class="w-2/4 inline-flex justify-end align-middle my-1">
+                <div v-if="props.jright" class="w-2/4 inline-flex justify-end  items-center my-2">
                     <button
-                        class="rounded-lg border border-[#3491d9] font-bold text-base text-[#3491d9] py-0 px-3 shadow-btn btn_click1"
+                        class="text-white bg-[#3056d3] border-[#3056d3] border hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-0 px-3 rounded"
                         @click="toggleModal_update_job_detail()">
                         編輯
                     </button>
                     <button
-                        class="mx-4 rounded-lg border border-[#ff0000] font-bold text-base text-[#ff0000] py-0 px-3 shadow-btn btn_click2"
+                        class="mx-2 text-white bg-[#ff0000] border-[#ff0000] border hover:text-[#ff0000] hover:border hover:border-[#ff0000] hover:bg-transparent font-semibold py-0 px-3 rounded"
                         @click="toggleModal_delete_job_detail()">
                         刪除
                     </button>
@@ -209,11 +210,11 @@ async function statusJobDetail() {
 
                 <div v-else class="w-2/4 inline-flex justify-end align-middle my-1">
                     <button
-                        class="rounded-lg border border-[#3491d9] font-bold text-base py-0 px-3 shadow-btn cursor-default hide-text-color">
+                        class="text-white bg-[#3056d380] border-[#3056d380] border font-semibold py-0 px-3 rounded">
                         編輯
                     </button>
                     <button
-                        class="rounded-lg border border-[#ff0000] font-bold text-base py-0 px-3 mx-4 shadow-btn cursor-default hide-text-color2">
+                        class="mx-2 text-white bg-[#ff000080] border-[#ff000080] border font-semibold py-0 px-3 rounded">
                         刪除
                     </button>
                 </div>

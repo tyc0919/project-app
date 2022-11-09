@@ -91,8 +91,6 @@ async function take_work() {
         .then(response => {
             let activity_data = response.data
         })
-    
-    console.log(job.value.dead_line)
 
     if (user_data.user_email == job.value.person_in_charge_email || user_data.user_email == activity_data.owner) {
         right.value = true
@@ -169,7 +167,6 @@ async function deleteWork() {
 
 /* 刪除分頁 */
 const delete_tab = (msg) => {
-    console.log(msg)
     axios.get("/api/activity/" + route.params.EventId + "/job/" + msg + "/")
         .then(response => {
             let temp = {
@@ -206,12 +203,12 @@ async function take_job_detail() {
 }
 take_job_detail()
 
-async function take_job_detail_test(x) {
+let Okstatus = ref("")
+function take_job_detail_test(x) {
     take_job_detail()
     if (x == true) {
         messageS.value = "成功更新活動狀態"
         toggleModal_success()
-
     }
     else {
         messageF.value = "更新活動狀態失敗"
@@ -345,19 +342,19 @@ const closePage = () => {
             </div>
             <!--編輯、刪除工作，關閉分頁-->
             <div v-if="right" class="w-[50%] py-[px] inline-flex flex-wrap justify-end">
-                <div class="ml-">
+                <div>
                     <button
-                        class="py-2 px-4 rounded text-base font-bold border border-[#3491d9] bg-white text-[#3491d9] shadow-btn btn_click1"
+                        class="mx-2 text-white bg-[#3056d3] border border-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded"
                         @click="toggleModal1()">
                         編輯工作
                     </button>
                     <button
-                        class="mx-2 py-2 px-4 rounded text-base font-bold bg-white border border-[#ff0000] text-[#ff0000] shadow-btn btn_click2"
+                        class="mx-2 text-white bg-[#ff0000] border border-[#ff0000] hover:text-[#ff0000] hover:border hover:border-[#ff0000] hover:bg-transparent font-semibold py-2 px-4 rounded"
                         @click="toggleModal_delete()">
                         刪除工作
                     </button>
                     <button
-                        class="py-2 px-4 rounded text-base font-bold bg-white border border-[#ff0000] text-[#ff0000] shadow-btn btn_click2"
+                        class="mx-2 text-white bg-[#ff0000] border border-[#ff0000] hover:text-[#ff0000] hover:border hover:border-[#ff0000] hover:bg-transparent font-semibold py-2 px-4 rounded"
                         @click="closePage()">
                         關閉分頁
                     </button>
@@ -366,21 +363,17 @@ const closePage = () => {
 
             <div v-else class="w-[50%] py-[px] inline-flex flex-wrap justify-end">
                 <div class="ml-">
-                    <button
-                        class="py-2 px-4 rounded text-base font-bold border border-[#3491d9] bg-white cursor-default shadow-btn hide-text-color">
+                    <button class="mx-2 text-white border border-[#3056d380] bg-[#3056d380] font-semibold py-2 px-4 rounded">
                         編輯工作
                     </button>
-                    <button
-                        class="mx-2 py-2 px-4 rounded text-base font-bold bg-white border border-[#ff0000] cursor-default shadow-btn hide-text-color2">
+                    <button class="mx-2 text-white border border-[#ff000080] bg-[#ff000080] font-semibold py-2 px-4 rounded">
                         刪除工作
                     </button>
-                    <button
-                        class="py-2 px-4 rounded text-base font-bold bg-white border border-[#ff0000] cursor-default shadow-btn hide-text-color2">
+                    <button class="mx-2 text-white border border-[#ff000080] bg-[#ff000080] font-semibold py-2 px-4 rounded">
                         關閉分頁
                     </button>
                 </div>
             </div>
-
             <!--編輯、刪除工作，關閉分頁-->
             <!--功能列-->
 
@@ -398,8 +391,8 @@ const closePage = () => {
 
                             <div class="ml-4 text-[#696969] font-bold">到期日期</div>
 
-                            <div class="ml-4 font-bold">{{job.dead_line}}</div>
-                            
+                            <div class="ml-4 font-bold">{{ job.dead_line }}</div>
+
 
                         </div>
                         <!--預算-->
@@ -425,48 +418,51 @@ const closePage = () => {
                     <!--新增細項、完成、取消完成-->
                     <div v-if="right">
                         <button
-                            class="w-full items-center bg-white rounded-lg border-w-3 border-[#3491d9] py-[10px] text-[#3491d9] shadow-btn mb-[20px] btn_click1"
+                            class="mb-2 w-full text-white bg-[#3056d3] border-[#3056d3] border hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded"
                             @click="toggleModal_new_job_detail()">
                             新增細項 +
                         </button>
                         <button
-                            class="w-full items-center bg-[#1d5e9f] rounded-lg border-w-3 border-[#006eaf] py-[10px] text-white shadow-btn mb-[20px]">
+                            class="mb-2 w-full text-white bg-[#22c55e] border-[#22c55e] border hover:text-[#22c55e] hover:border hover:border-[#22c55e] hover:bg-transparent font-semibold py-2 px-4 rounded">
                             完成
                         </button>
                         <button
-                            class="w-full items-center bg-[#ffcccc] rounded-lg border-w-3 border-[#ff0000] py-[10px] text-[#ff0000] shadow-btn">
+                            class="mb-2 w-full text-white bg-[#ff0000] border-[#ff0000] border hover:text-[#ff0000] hover:border hover:border-[#ff0000] hover:bg-transparent font-semibold py-2 px-4 rounded">
                             取消完成
                         </button>
                     </div>
 
                     <div v-else>
                         <button
-                            class="w-full items-center bg-white rounded-lg border-w-3 border-[#3491d9] py-[10px] mb-[20px] cursor-default shadow-btn hide-text-color">
+                            class="mb-2 w-full text-white bg-[#3056d380] border-[#3056d380] border font-semibold py-2 px-4 rounded">
                             新增細項 +
                         </button>
                         <button
-                            class="w-full items-center bg-[#1d5e9f] rounded-lg border-w-3 border-[#006eaf] py-[10px] mb-[20px] cursor-default shadow-btn hide-text-color3">
+                            class="mb-2 w-full text-white bg-[#22c55e80] border-[#22c55e80] border font-semibold py-2 px-4 rounded">
                             完成
                         </button>
                         <button
-                            class="w-full items-center bg-[#ffcccc] rounded-lg border-w-3 border-[#ff0000] py-[10px] cursor-default shadow-btn hide-text-color2">
+                            class="mb-2 w-full text-white bg-[#ff000080] border-[#ff000080] border font-semibold py-2 px-4 rounded">
                             取消完成
                         </button>
                     </div>
-
 
                     <!--新增細項、完成、取消完成-->
 
                     <!-- 工作細項 -->
                     <template v-for="item in job_detail_Y" :key="item.job_detail_id">
-                        <JobDetail :jobDetail=item :jright=right @refresh="take_job_detail"
-                            @refresh2="take_job_detail_test()">
+                        <JobDetail :jobDetail=item :jright=right @refresh="take_job_detail" @refresh2="(msg) => {
+                            Okstatus = msg
+                            take_job_detail_test(Okstatus)
+                        }">
                         </JobDetail>
                     </template>
 
                     <template v-for="item in job_detail_N" :key="item.job_detail_id">
-                        <JobDetail :jobDetail=item :jright=right @refresh="take_job_detail"
-                            @refresh2="take_job_detail_test()">
+                        <JobDetail :jobDetail=item :jright=right @refresh="take_job_detail" @refresh2= "(msg) => {
+                            Okstatus = msg
+                            take_job_detail_test(Okstatus)
+                        }">>
                         </JobDetail>
                     </template>
                     <!-- 工作細項 -->

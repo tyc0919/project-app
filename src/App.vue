@@ -28,7 +28,7 @@ takeUserPic()
             <!-- Header start -->
             <div class="header flex justify-between px-4 bg-primary text-white text-center h-20">
                 <router-link :to="{ name: 'main-default' }" class="img-size">
-                    <img src="../src/assets/images/Logo.svg" />
+                    <img src="/src/assets/images/Logo.svg" />
                 </router-link>
 
                 <div class="avatar">
@@ -37,6 +37,7 @@ takeUserPic()
                         class="avatar w-12 h-12 rounded-full object-cover cursor-pointer"
                         v-bind:src="userPic"
                         id = "avatorId"
+                        onerror="this.src='/src/assets/images/default_avatar.svg'"
                     />
 
                     <div
@@ -84,5 +85,18 @@ a i {
 .header > div {
     display: flex;
     align-items: center;
+}
+
+
+::-webkit-scrollbar-track {
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.06);
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08);
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.12);
+    -webkit-box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
 }
 </style>

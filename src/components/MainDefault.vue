@@ -338,7 +338,7 @@ getData()
                 <div class="mr-4">
                     <button
                         @click="toggleModal('joinActivityModal')"
-                        class="btnCreateEvent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                        class="text-white bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded"
                     >
                         加入活動
                     </button>
@@ -346,7 +346,7 @@ getData()
                 <div class="ml-4">
                     <button
                         @click="toggleModal('addActivityModal')"
-                        class="btnCreateEvent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                        class="text-white bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded"
                     >
                         新增活動
                     </button>
@@ -510,16 +510,7 @@ getData()
     background: #52708f;
 }
 
-.btnCreateEvent {
-    color: #ffffff;
-    background-color: #2b6cb0;
-}
 
-.btnCreateEvent:hover {
-    background-color: transparent;
-    color: #2b6cb0;
-    border-color: #2b6cb0;
-}
 
 .ellipsis {
     overflow: hidden;

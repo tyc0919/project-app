@@ -20,8 +20,8 @@ getData()
 <template>
     <div class="content">
         <!-- Log紀錄 -->
-        <div class="border-b-2 border-[#c0c0c0]">
-            <div class="w-full h-80 bg-white overflow-auto text-xl font-bold">
+        <div class="p-2 bg-white border  border-[#d1d5db]">
+            <div class="w-full h-80  overflow-auto text-xl font-bold">
                 <EventOverviewLog v-for="log in logData" :time="log.time" :user="log.user_name" :action="log.action">
                 </EventOverviewLog>
             </div>

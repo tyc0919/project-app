@@ -240,7 +240,7 @@ const toggleModal_fail = () => {
                     <label for="image">
                         <input @change="fileUpload()" ref="file" type="file" id="image" class="file_img"
                             accept="image/*" />
-                        <img v-bind:src="activity_data.picPath" class="event_main_img">
+                        <img v-bind:src="activity_data.picPath" class="event_main_img" onerror="this.src='/src/assets/images/default_event.jpg'">
                     </label>
                 </picture>
 
@@ -248,19 +248,19 @@ const toggleModal_fail = () => {
                 <form action="">
                     <div v-if="activity_data.is_owner" class="flex justify-around w-full">
 
-                        <input v-if="finishStatus" class="button2" type="button" value="完成活動"
+                        <input v-if="finishStatus" class="button2 hover2" type="button" value="完成活動"
                             @click="toggleModal_finish()">
-                        <input v-else class="button1" type="button" value="完成活動" @click="toggleModal_finish()"
+                        <input v-else class="button1 hover" type="button" value="完成活動" @click="toggleModal_finish()"
                             id="Finish_btn">
 
-                        <input v-if="publicStatus" class="button2" type="button" value="發布活動"
+                        <input v-if="publicStatus" class="button2 hover2" type="button" value="發布活動"
                             @click="toggleModal_publish()">
-                        <input v-else class="button1" @click="toggleModal_publish()" id="Public_btn" type="button"
+                        <input v-else class="button1 hover" @click="toggleModal_publish()" id="Public_btn" type="button"
                             value="發布活動">
 
-                        <input type="button" value="編輯活動" class="button1" @click="toggleModal_update()">
+                        <input type="button" value="編輯活動" class="button1 hover" @click="toggleModal_update()">
 
-                        <input type="button" value="刪除活動" class="button6" @click="toggleModal_delete()">
+                        <input type="button" value="刪除活動" class="button6 hover3" @click="toggleModal_delete()">
                     </div>
 
                     <div v-else class="flex justify-around w-full">
@@ -284,7 +284,7 @@ const toggleModal_fail = () => {
 
             </div>
 
-            <div class="w-1/3 border-solid border border-black m-1.5 mr-10 bg-white relative">
+            <div class="w-1/3 border border-[#d1d5db] m-1.5 mr-10 bg-white relative">
                 <p class="text-base2x m-1.5 text-[696969]"> {{ activity_data.activity_name }} </p>
                 <p class="text-base m-1.5 text-[696969]">提案人 {{ activity_data.user_name }} </p>
                 <p class="text-base m-1.5 text-[696969] overflow-y intro2">
@@ -593,7 +593,7 @@ const toggleModal_fail = () => {
     width: 250px;
     height: 45px;
     line-height: 45px;
-    background-color: #1D5E9F;
+    background-color: #3056d3;
     margin: 1.5rem;
     color: white;
     text-align: center;
@@ -605,7 +605,7 @@ const toggleModal_fail = () => {
     width: 250px;
     height: 45px;
     line-height: 45px;
-    background-color: green;
+    background-color: rgb(34 197 94);
     margin: 1.5rem;
     color: white;
     text-align: center;
@@ -617,7 +617,7 @@ const toggleModal_fail = () => {
     width: 250px;
     height: 45px;
     line-height: 45px;
-    background-color: rgba(173, 252, 173, 0.996);
+    background-color: rgb(34 197 94);
     margin: 1.5rem;
     color: white;
     text-align: center;
@@ -671,12 +671,10 @@ const toggleModal_fail = () => {
     color: green;
 }
 
-.hover:nth-of-type(4):hover {
-    background-color: #FF0000;
-    color: white;
+.hover3:hover {
+    background-color: white;
+    color: #FF0000;
 }
-
-
 
 .bottom-down {
     bottom: 0;

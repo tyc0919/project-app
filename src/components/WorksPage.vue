@@ -290,16 +290,16 @@ const toggleModal_fail = () => {
 
                     <div id="optionsRight" class="flex justify-end align-center">
                         <button id="addNewWorkButton" @click="toggleModal()"
-                            class="bg-transparent hover: font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                        class="text-white bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded">
                             新增工作
                         </button>
                     </div>
 
                 </div>
 
-                <div id="workContainer" class="grid grid-col3 grid-gap-1rem py-8 px-8 rounded-2xl bg-white shadow">
+                <div id="workContainer" class="grid grid-col3 grid-gap-1rem py-8 px-8 rounded-2xl bg-white border border-[#d1d5db]">
                     <router-link :to="{ name: 'event-work-detail', params: { WorkId: item.id } }"
-                        class="work card h-22rem border-[#2b6cb0] px-2 py-2 flex flex-column justify-between rounded-2xl shadow relative"
+                        class="work card h-22rem border-[#2b6cb0] px-2 py-2 flex flex-column justify-between rounded-2xl relative"
                         v-for="(item) in A_job_data" :key="item.id" @click="trans_tab(item.id)">
                         <div class="workTop flex flex-column justify-between">
                             <div class="flex align-center mb-2 items-center">
@@ -613,18 +613,6 @@ body {
 /* containers */
 #options {
     flex-flow: row nowrap;
-}
-
-/* buttons */
-#addNewWorkButton {
-    background-color: transparent;
-    border-color: #2b6cb0;
-    color: #2b6cb0;
-}
-
-#addNewWorkButton:hover {
-    background-color: #2b6cb0;
-    color: #ffffff;
 }
 
 /* radios */
