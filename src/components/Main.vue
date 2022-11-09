@@ -1,37 +1,39 @@
 <script setup></script>
 
 <template>
-    <div class="wrapper">
-        <div class="bookmark h-12 flex">
+    <div class="wrapper px-12">
+        <div class="bookmark h-12 flex px-8 mt-8">
             <div class="w-full flex text-center items-center">
-                <router-link :to="{ name: 'main-default' }" class="flex-1 mask main-switch">
-                    <div class="w-half px-4 h-full flex items-center mask_p">所有活動</div>
-                </router-link>
-
-                <router-link :to="{ name: 'main-works' }" class="flex-1 mask main-switch">
-                    <div class="w-half px-4 h-full flex items-center mask_p">我的工作</div>
-                </router-link>
-
-                <router-link :to="{ name: 'main-social' }" class="flex-1 mask main-switch">
-                    <div class="w-half px-4 h-full flex items-center mask_p">社群中心</div>
-                </router-link>
+                <router-link
+                    class="w-fit rounded-full bg-white text-base text-black mr-2 main-switch btn-title revised-button"
+                    :to="{ name: 'main-default' }"
+                    >所有活動</router-link
+                >
+                <router-link
+                    class="w-fit rounded-full bg-white text-base text-black mr-2 main-switch btn-title revised-button"
+                    :to="{ name: 'main-works' }"
+                    >我的工作</router-link
+                >
+                <router-link
+                    class="w-fit rounded-full bg-white text-base text-black mr-2 main-switch btn-title revised-button"
+                    :to="{ name: 'main-social' }"
+                    >社群中心</router-link
+                >
             </div>
-            <router-link :to="{ name: 'main-default' }" class="flex items-center pr-4 mx-3">
+            <div class="flex items-center">
                 <img src="/src/assets/images/home.svg" class="h-8" />
-            </router-link>
+            </div>
         </div>
-        <div class="content bg-[CEE5F2] overflow-y-auto">
-            <!-- 把你寫的Component放在這裡測試，要上github前這個檔案更動要discard掉-->
-
+        <div class="content">
             <router-view />
         </div>
     </div>
-    <router-link to="/events/2" class="text-sky-500">點擊前往Event.vue</router-link>
 </template>
 
 <style scoped>
 .main-switch.router-link-exact-active {
-    border-color: transparent transparent #cee5f2;
+    background-color: #3056d3;
+    color: white;
 }
 
 .wrapper {
@@ -46,17 +48,15 @@
     background-color: #cee5f2;
 }
 
-.mask {
-    border-width: 0 20px 50px 20px;
-    border-style: none solid solid;
-    border-color: transparent transparent rgb(212 212 216);
-    position: relative;
+.revised-button {
+    border-radius: 50px;
+    background-color: white;
+    color: black;
 }
 
-.mask_p {
-    position: absolute;
-    margin-top: 1.5rem;
-    left: 50%;
-    transform: translateX(-50%);
+.btn-title{
+    width: 100px;
+    height: 45px;
+    line-height: 45px;
 }
 </style>

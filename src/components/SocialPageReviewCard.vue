@@ -17,7 +17,9 @@ const props = defineProps({
 </script>
 
 <template>
-    <div class="shadow bg-white flex flex-col px-4 py-4 my-2 justify-start items-center hover:card-float-up">
+    <div
+        class="flex flex-col px-4 py-4 my-2 justify-start items-center hover:card-float-up rounded-2xl border border-[#2b6cb0]"
+    >
         <div class="review-card w-full h-fit">
             <div class="reviewer flex justify-start items-center mb-2">
                 <div class="reviewer-img mr-2"></div>
@@ -95,9 +97,9 @@ const props = defineProps({
 }
 
 .hover\:card-float-up:hover {
-    border-color: #eee;
+    border-color: #2b6cb0;
     transition: all 0.2s ease-in-out;
-    box-shadow: 0 16px 32px 0 rgba(48, 55, 66, 0.15);
+    box-shadow: 3px 6px 13px 0 rgba(8, 9, 13, 0.15);
     transform: translate(0, -5px);
     transition-delay: 0s;
 }

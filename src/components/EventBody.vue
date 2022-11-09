@@ -28,8 +28,6 @@ let formData = new FormData()
 let finishStatus = ref(false)
 let publicStatus = ref(false)
 
-let isOwner = ref(false)
-
 /* 活動資訊 */
 async function take_activity() {
     await axios.get("/api/userprofile/")
@@ -48,8 +46,10 @@ async function take_activity() {
             console.log(error)
         })
 
-    console.log(activity_data.value)
     activity_data.value["is_owner"] = activity_data.value.owner == user_e ? true : false
+
+    activity_data.value["picPath"] = "/api/serve-file/activity-pic/" + activity_data.value.activity_picture
+
     if (activity_data.value.is_finished == 1) {
         finishStatus.value = true
     }
@@ -113,9 +113,6 @@ async function publish_Activity() {
 /* 發布活動 */
 
 /* 編輯活動 */
-
-
-
 async function update_Activity() {
     let csrftoken = getCookie()
     let config = {
@@ -129,10 +126,6 @@ async function update_Activity() {
     const activity_t = document.getElementById("test2")
 
     let testS1 = false
-    let testF1 = false
-
-    let testS2 = false
-    let testF2 = false
 
     await axios.post('/api/activity/update/', {
         "activity_id": route.params.EventId,
@@ -144,24 +137,17 @@ async function update_Activity() {
             testS1 = true
         })
         .catch(function (error) {
-            testF1 = true
         })
 
 
-    if (testS1 & testS2) {
+    if (testS1) {
         messageS.value = "更新成功"
         toggleModal_success()
-    }
-    else if (testS1 & testF2) {
-        console.log("圖片無法更新")
-        messageF.value = "活動名稱及活動簡介已更新，但圖片無法更新"
-        toggleModal_fail()
     }
     else {
         messageF.value = "更新失敗"
         toggleModal_fail()
     }
-
     take_activity()
 }
 /* 編輯活動 */
@@ -202,25 +188,17 @@ async function delete_Activity() {
         "activity_id": route.params.EventId
     }, config)
         .then(function (response) {
-            console.log(response);
+            router.push({
+                path: '',
+                name: 'main-default',
+            })
         })
         .catch(function (error) {
-            console.log(error);
+            messageF.value = "刪除活動失敗"
+            toggleModal_fail()
         })
-
-    router.push({
-        path: '',
-        name: 'main-default',
-    })
 }
 /* 刪除活動 */
-
-/* 信箱姓名處理 */
-const email_name = () => {
-    axios.get("/api/activity/" + route.params.EventId + "/collaborator/")
-        .then
-}
-/* 信箱姓名處理 */
 
 /* 彈出視窗 */
 const showModal_publish = ref(false)
@@ -255,14 +233,14 @@ const toggleModal_fail = () => {
 
 <template>
     <!-- activityHead Start-->
-    <div class="content bg-[CEE5F2]">
+    <div class="content bg">
         <div class="w-full flex">
             <div class="w-2/3 m-1.5 ">
                 <picture>
                     <label for="image">
                         <input @change="fileUpload()" ref="file" type="file" id="image" class="file_img"
                             accept="image/*" />
-                        <img src="../assets/images/FirstPart.png" class="event_main_img">
+                        <img v-bind:src="activity_data.picPath" class="event_main_img">
                     </label>
                 </picture>
 
@@ -270,50 +248,37 @@ const toggleModal_fail = () => {
                 <form action="">
                     <div v-if="activity_data.is_owner" class="flex justify-around w-full">
 
-                        <div v-if="finishStatus" class="button2 hover2 " @click="toggleModal_finish()">
-                            <input type="button" value="完成活動">
-                        </div>
-                        <div v-else class="button hover" @click="toggleModal_finish()" id="Finish_btn">
-                            <input type="button" value="完成活動">
-                        </div>
+                        <input v-if="finishStatus" class="button2" type="button" value="完成活動"
+                            @click="toggleModal_finish()">
+                        <input v-else class="button1" type="button" value="完成活動" @click="toggleModal_finish()"
+                            id="Finish_btn">
 
-                        <div v-if="publicStatus" class="button2 hover2" @click="toggleModal_publish()">
-                            <input type="button" value="發布活動">
-                        </div>
-                        <div v-else class="button hover" @click="toggleModal_publish()" id="Public_btn">
-                            <input type="button" value="發布活動">
-                        </div>
+                        <input v-if="publicStatus" class="button2" type="button" value="發布活動"
+                            @click="toggleModal_publish()">
+                        <input v-else class="button1" @click="toggleModal_publish()" id="Public_btn" type="button"
+                            value="發布活動">
 
-                        <div class="button hover" @click="toggleModal_update()">
-                            <input type="button" value="編輯活動">
-                        </div>
-                        <div class="button hover" @click="toggleModal_delete()">
-                            <input type="button" value="刪除活動">
-                        </div>
+                        <input type="button" value="編輯活動" class="button1" @click="toggleModal_update()">
+
+                        <input type="button" value="刪除活動" class="button6" @click="toggleModal_delete()">
                     </div>
 
                     <div v-else class="flex justify-around w-full">
 
-                        <div v-if="finishStatus" class="button3  " @click="toggleModal_finish()">
-                            <input type="button" value="完成活動" disabled>
-                        </div>
-                        <div v-else class="button4" @click="toggleModal_finish()" id="Finish_btn">
-                            <input type="button" value="完成活動" disabled>
-                        </div>
+                        <input v-if="finishStatus" class="button3" type="button" value="完成活動"
+                             disabled>
+                        <input v-else class="button4" type="button" value="完成活動" disabled
+                            id="Finish_btn">
 
-                        <div v-if="publicStatus" class="button3 " @click="toggleModal_publish()">
-                            <input type="button" value="發布活動" disabled>
-                        </div>
-                        <div v-else class="button4 " @click="toggleModal_publish()" id="Public_btn">
-                            <input type="button" value="發布活動" disabled>
-                        </div>
+                        <input v-if="publicStatus" class="button3" type="button" value="發布活動"
+                             disabled>
+                        <input v-else class="button4"  id="Public_btn" type="button"
+                            value="發布活動" disabled>
 
-                        <div class="button4 " @click="toggleModal_update()">
-                            <input type="button" value="編輯活動" disabled>
-                        </div>
-                        <div class="button5" @click="toggleModal_delete()">
-                            <input type="button" value="刪除活動" disabled>
-                        </div>
+                        <input type="button" value="編輯活動" class="button4" disabled>
+
+                        <input type="button" value="刪除活動" class="button5" disabled>
+
                     </div>
                 </form>
 
@@ -333,6 +298,34 @@ const toggleModal_fail = () => {
         </div>
     </div>
     <!-- activityHead end-->
+
+    <!-- 書籤 start-->
+
+    <div class="bookmark2 relative">
+
+        <router-link class="bookmark2-box text-xl bg-white" :to="{ name: 'event-works' }">
+            所有工作
+        </router-link>
+
+        <router-link class="bookmark2-box text-xl bg-white" v-for="work in store.tabs"
+            :to="{ name: 'event-work-detail', params: { WorkId: work.id } }">
+            {{ work.title }}
+        </router-link>
+
+        <!-- <a class="bookmark2-menu">
+            <svg width="9" height="31" viewBox="0 0 9 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M8.25 4.25C8.25 5.24456 7.85491 6.19839 7.15165 6.90165C6.44839 7.60491 5.49456 8 4.5 8C3.50544 8 2.55161 7.60491 1.84835 6.90165C1.14509 6.19839 0.75 5.24456 0.75 4.25C0.75 3.25544 1.14509 2.30161 1.84835 1.59835C2.55161 0.895088 3.50544 0.5 4.5 0.5C5.49456 0.5 6.44839 0.895088 7.15165 1.59835C7.85491 2.30161 8.25 3.25544 8.25 4.25ZM8.25 15.5C8.25 16.4946 7.85491 17.4484 7.15165 18.1516C6.44839 18.8549 5.49456 19.25 4.5 19.25C3.50544 19.25 2.55161 18.8549 1.84835 18.1516C1.14509 17.4484 0.75 16.4946 0.75 15.5C0.75 14.5054 1.14509 13.5516 1.84835 12.8484C2.55161 12.1451 3.50544 11.75 4.5 11.75C5.49456 11.75 6.44839 12.1451 7.15165 12.8484C7.85491 13.5516 8.25 14.5054 8.25 15.5ZM8.25 26.75C8.25 27.7446 7.85491 28.6984 7.15165 29.4016C6.44839 30.1049 5.49456 30.5 4.5 30.5C3.50544 30.5 2.55161 30.1049 1.84835 29.4016C1.14509 28.6984 0.75 27.7446 0.75 26.75C0.75 25.7554 1.14509 24.8016 1.84835 24.0984C2.55161 23.3951 3.50544 23 4.5 23C5.49456 23 6.44839 23.3951 7.15165 24.0984C7.85491 24.8016 8.25 25.7554 8.25 26.75Z"
+                    fill="#A2A0A0" />
+            </svg>
+        </a> -->
+
+    </div>
+
+    <router-view :key="$route.path">
+
+    </router-view>
+    <!-- 書籤 end-->
 
 
     <!-- 完成視窗 -->
@@ -426,9 +419,6 @@ const toggleModal_fail = () => {
                         <div class="text-base font-bold">活動名稱</div>
                         <input type="text" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
                             placeholder="原本的活動名稱" id="test1">
-                        <div class="text-base font-bold">活動圖片</div>
-                        <input @change="fileUpload()" ref="file" type="file"
-                            class="w-auto border-sky-700 border mx-8 mb-4 rounded text-sky-700" />
                         <div class="text-base font-bold ">活動簡介</div>
                         <textarea class="text-base font-bold border border-2 border-slate-400 w-full"
                             placeholder="原本的活動簡介" id="test2"></textarea>
@@ -520,33 +510,7 @@ const toggleModal_fail = () => {
     <!-- 錯誤訊息視窗 -->
 
 
-    <!-- eventBody start-->
 
-    <div class="bookmark2  mx-8 relative">
-
-        <router-link class="bookmark2-box text-xl bg-white" :to="{ name: 'event-works' }">
-            所有工作
-        </router-link>
-
-        <router-link class="bookmark2-box text-xl bg-white" v-for="work in store.tabs"
-            :to="{ name: 'event-work-detail', params: { WorkId: work.id } }">
-            {{ work.title }}
-        </router-link>
-
-        <a class="bookmark2-menu">
-            <svg width="9" height="31" viewBox="0 0 9 31" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M8.25 4.25C8.25 5.24456 7.85491 6.19839 7.15165 6.90165C6.44839 7.60491 5.49456 8 4.5 8C3.50544 8 2.55161 7.60491 1.84835 6.90165C1.14509 6.19839 0.75 5.24456 0.75 4.25C0.75 3.25544 1.14509 2.30161 1.84835 1.59835C2.55161 0.895088 3.50544 0.5 4.5 0.5C5.49456 0.5 6.44839 0.895088 7.15165 1.59835C7.85491 2.30161 8.25 3.25544 8.25 4.25ZM8.25 15.5C8.25 16.4946 7.85491 17.4484 7.15165 18.1516C6.44839 18.8549 5.49456 19.25 4.5 19.25C3.50544 19.25 2.55161 18.8549 1.84835 18.1516C1.14509 17.4484 0.75 16.4946 0.75 15.5C0.75 14.5054 1.14509 13.5516 1.84835 12.8484C2.55161 12.1451 3.50544 11.75 4.5 11.75C5.49456 11.75 6.44839 12.1451 7.15165 12.8484C7.85491 13.5516 8.25 14.5054 8.25 15.5ZM8.25 26.75C8.25 27.7446 7.85491 28.6984 7.15165 29.4016C6.44839 30.1049 5.49456 30.5 4.5 30.5C3.50544 30.5 2.55161 30.1049 1.84835 29.4016C1.14509 28.6984 0.75 27.7446 0.75 26.75C0.75 25.7554 1.14509 24.8016 1.84835 24.0984C2.55161 23.3951 3.50544 23 4.5 23C5.49456 23 6.44839 23.3951 7.15165 24.0984C7.85491 24.8016 8.25 25.7554 8.25 26.75Z"
-                    fill="#A2A0A0" />
-            </svg>
-        </a>
-
-    </div>
-
-    <router-view :key="$route.path">
-
-    </router-view>
-    <!-- eventBody end-->
 
 </template>
 
@@ -625,7 +589,7 @@ const toggleModal_fail = () => {
     margin: 0 auto;
 }
 
-.button {
+.button1 {
     width: 250px;
     height: 45px;
     line-height: 45px;
@@ -685,6 +649,18 @@ const toggleModal_fail = () => {
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
+.button6 {
+    width: 250px;
+    height: 45px;
+    line-height: 45px;
+    background-color: #FF0000;
+    margin: 1.5rem;
+    color: white;
+    text-align: center;
+    font-size: 1.5rem;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
 .hover:hover {
     background-color: white;
     color: #1D5E9F;
@@ -700,11 +676,7 @@ const toggleModal_fail = () => {
     color: white;
 }
 
-.button:nth-of-type(4) {
-    background-color: #FEEBD7;
-    color: #FF0000;
-    border: 1px solid #FF0000;
-}
+
 
 .bottom-down {
     bottom: 0;
@@ -728,19 +700,24 @@ const toggleModal_fail = () => {
 /* eventBody start */
 .bookmark2 {
     height: 50px;
-    border-top: #C0C0C0 3px solid;
-    border-bottom: #C0C0C0 3px solid;
+    border-bottom: 5px solid #ccdff6;
 }
 
 .bookmark2-box {
     width: 150px;
     text-align: center;
     line-height: 45px;
-    border-right: #C0C0C0 3px solid;
     display: inline-block;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    margin-right: 1rem;
+    background-color: rgb(226 232 240);
+    border-radius: 10px 10px 0 0;
+    border-top: 1px rgb(209, 213, 219) solid;
+    border-left: 1px rgb(209, 213, 219) solid;
+    border-right: 1px rgb(209, 213, 219) solid;
+    color: rgb(123 127 133);
 }
 
 .bookmark2-menu {
@@ -752,11 +729,19 @@ const toggleModal_fail = () => {
 }
 
 .router-link-active.router-link-exact-active {
-    background-color: #C0C0C080;
+    background-color: #ccdff6;
+    color: #1a73e8;
+    border-color: #ccdff6;
 }
 
 .file_img {
     display: none;
+}
+
+.bg {
+    background-color: white;
+    margin-bottom: 1.5rem;
+    border: 1px rgb(209, 213, 219) solid;
 }
 
 /* eventBody end */

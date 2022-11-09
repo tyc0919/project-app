@@ -6,7 +6,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <div class="work-card p-4 bg-white hover:card-float-up my-2">
+    <div class="work-card p-4 bg-white hover:card-float-up my-4 border border-[#2b6cb0] rounded-2xl">
         <div class="work-title w-fit eclipse text-2xl font-bold mb-1 cursor-text">{{ title }}</div>
         <div class="work-content ellipsis-4 cursor-text">
             {{ content }}
@@ -16,9 +16,9 @@ const props = defineProps({
 
 <style scoped>
 .hover\:card-float-up:hover {
-    border-color: #eee;
+    border-color: #2b6cb0;
     transition: all 0.2s ease-in-out;
-    box-shadow: 0 16px 32px 0 rgba(48, 55, 66, 0.15);
+    box-shadow: 3px 6px 13px 0 rgba(8, 9, 13, 0.15);
     transform: translate(0, -5px);
     transition-delay: 0s;
 }

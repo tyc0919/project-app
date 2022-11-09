@@ -6,14 +6,14 @@ import { getCookie } from '../assets/modules'
 import { useRoute } from "vue-router";
 import { useRouter } from "vue-router";
 
-const emit = defineEmits(["refresh","refresh2"])
+const emit = defineEmits(["refresh", "refresh2"])
 
 function refresh() {
     emit('refresh')
 }
 
-function refresh2(){
-    emit('refresh2')
+function refresh2(x) {
+    emit('refresh2',x)
 }
 
 let csrftoken = getCookie()
@@ -24,7 +24,8 @@ let config = {
     mode: 'same-origin'
 }
 const props = defineProps([
-    "jobDetail"
+    "jobDetail",
+    "jright"
 ]
 )
 const route = useRoute()
@@ -73,7 +74,7 @@ async function updateJobDetail() {
             messageF.value = "編輯工作細項失敗"
             toggleModal_fail()
         })
-    
+
     refresh()
 }
 /* 編輯工作細項 */
@@ -86,13 +87,14 @@ async function deleteJobDetail() {
 
     await axios.post("/api/job-detail/delete/", data, config)
         .then(function (response) {
-            console.log(response);
+            refresh()
         })
         .catch(function (error) {
-            console.log(error);
+            messageF.value = "刪除工作細項失敗"
+            toggleModal_fail()
         })
 
-    refresh()
+
 }
 /* 刪除工作細項 */
 
@@ -100,6 +102,7 @@ async function deleteJobDetail() {
 let xdxd
 async function statusJobDetail() {
     let jdstatus = props.jobDetail.status
+    let isOkStatus = false
 
     if (jdstatus == "1") {
         jdstatus = "0"
@@ -115,11 +118,12 @@ async function statusJobDetail() {
 
     await axios.post("/api/job-detail/status/", data, config)
         .then(function (response) {
+            isOkStatus = true
         })
         .catch(function (error) {
         })
 
-    refresh2()
+    refresh2(isOkStatus)
 }
 /* 工作細項狀態 */
 
@@ -129,17 +133,22 @@ async function statusJobDetail() {
 
 <template>
     <!--工作細項未完成-->
-    <div class="w-fullcjo4 flex border border-[#00db00] my-[20px] round_border" v-if=" props.jobDetail.status == 0 ">
-        <div class="flex w-[9%] py-14 bg-[#ff0000] items-center justify-center text-white round_border cursor-pointer"
+    <div class="w-fullcjo4 flex border border-[#00db00] my-[20px] round_border" v-if="props.jobDetail.status == 0">
+        <div v-if="props.jright" class="flex w-[9%] py-14 bg-[#ff0000] items-center justify-center text-white round_border cursor-pointer"
             @click="statusJobDetail()">
             未完成
         </div>
+
+        <div v-else class="flex w-[9%] py-14 items-center justify-center text-white round_border hide-status-nfinish"            >
+            未完成
+        </div>
+
         <div class="w-[calc(100%-9%)]">
             <div class="border-b border-black">
                 <div class="w-2/4 inline-flex font-bold align-middle pl-1">
                     {{ props.jobDetail.title }}
                 </div>
-                <div class="w-2/4 inline-flex justify-end align-middle my-1">
+                <div v-if="props.jright" class="w-2/4 inline-flex justify-end align-middle my-1">
                     <button
                         class="rounded-lg border border-[#3491d9] font-bold text-base text-[#3491d9] py-0 px-3 shadow-btn btn_click1"
                         @click="toggleModal_update_job_detail()">
@@ -148,6 +157,17 @@ async function statusJobDetail() {
                     <button
                         class="mx-4 rounded-lg border border-[#ff0000] font-bold text-base text-[#ff0000] py-0 px-3 shadow-btn btn_click2"
                         @click="toggleModal_delete_job_detail()">
+                        刪除
+                    </button>
+                </div>
+
+                <div v-else class="w-2/4 inline-flex justify-end align-middle my-1">
+                    <button
+                        class="rounded-lg border border-[#3491d9] font-bold text-base py-0 px-3 shadow-btn cursor-default hide-text-color">
+                        編輯
+                    </button>
+                    <button
+                        class="rounded-lg border border-[#ff0000] font-bold text-base py-0 px-3 mx-4 shadow-btn cursor-default hide-text-color2">
                         刪除
                     </button>
                 </div>
@@ -161,16 +181,20 @@ async function statusJobDetail() {
 
     <!--工作細項完成-->
     <div class="w-full flex border border-[#3491d9] my-[20px] round_border" v-else>
-        <div class="flex w-[9%] py-14 bg-[#00db00] items-center justify-center text-white round_border cursor-pointer"
+        <div v-if="props.jright" class="flex w-[9%] py-14 bg-[#00db00] items-center justify-center text-white round_border cursor-pointer"
             @click="statusJobDetail()">
             完成
         </div>
+        <div v-else class="flex w-[9%] py-14 bg-[#00db00] items-center justify-center text-white round_border">
+            完成
+        </div>
+
         <div class="w-[calc(100%-9%)]">
             <div class="border-b border-black">
                 <div class="w-2/4 inline-flex font-bold align-middle pl-1">
                     {{ props.jobDetail.title }}
                 </div>
-                <div class="w-2/4 inline-flex justify-end align-middle my-1">
+                <div v-if="props.jright" class="w-2/4 inline-flex justify-end align-middle my-1">
                     <button
                         class="rounded-lg border border-[#3491d9] font-bold text-base text-[#3491d9] py-0 px-3 shadow-btn btn_click1"
                         @click="toggleModal_update_job_detail()">
@@ -182,7 +206,19 @@ async function statusJobDetail() {
                         刪除
                     </button>
                 </div>
+
+                <div v-else class="w-2/4 inline-flex justify-end align-middle my-1">
+                    <button
+                        class="rounded-lg border border-[#3491d9] font-bold text-base py-0 px-3 shadow-btn cursor-default hide-text-color">
+                        編輯
+                    </button>
+                    <button
+                        class="rounded-lg border border-[#ff0000] font-bold text-base py-0 px-3 mx-4 shadow-btn cursor-default hide-text-color2">
+                        刪除
+                    </button>
+                </div>
             </div>
+
             <div class="text-[#696969] pl-1">
                 {{ props.jobDetail.content }}
             </div>
@@ -216,7 +252,7 @@ async function statusJobDetail() {
 
             <template #footer>
                 <div class="border-t-2 pt-2">
-                    <button @click="toggleModal_update_job_detail(),updateJobDetail()"
+                    <button @click="toggleModal_update_job_detail(), updateJobDetail()"
                         class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
                         更改
                     </button>
@@ -338,12 +374,31 @@ async function statusJobDetail() {
     border-radius: 1rem;
 }
 
-.btn_click1:hover{
+.btn_click1:hover {
     background-color: #b9cfe4;
 }
 
-.btn_click2:hover{
+.btn_click2:hover {
     background-color: #ffcccc;
 }
 
+.hide-text-color {
+    color: #3491d957;
+}
+
+.hide-text-color2 {
+    color: #ff000057;
+}
+
+.hide-text-color3 {
+    color: #ffffff70;
+}
+
+.hide-status-nfinish{
+    background-color: #ff000057;
+}
+
+.hide-status-finish{
+    background-color: #00db0057;
+}
 </style>

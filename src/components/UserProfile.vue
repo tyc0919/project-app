@@ -52,11 +52,13 @@ let config = {
 
 /* 取得使用者資料 */
 let data = ref("")
-function take_userfile() {
-    axios.get("/api/userprofile/")
+let userPic = ref("")
+async function take_userfile() {
+    await axios.get("/api/userprofile/")
         .then(response => {
             data.value = response.data
         })
+    userPic.value = "/api/serve-file/avatar/" + data.value.picture_path
 }
 
 take_userfile()
@@ -129,79 +131,69 @@ const post_passwd = () => {
 </script>
 
 <template>
-    <div class="wrapper">
-        <div class="bookmark h-12 flex">
-            <div class="w-full flex text-center items-center">
-                <div class="main-switch w-half px-4 bg-zinc-300 h-full flex items-center">
-                    會員中心
-                </div>
+    <div class="bg-[CEE5F2]">
+        <div class="grid_wrapper">
+            <div class="pic">
+                <picture>
+                    <label for="image">
+                        <input @change="fileUpload()" ref="file" type="file" id="image" class="file_img"
+                            accept="image/*" />
+                        <img v-bind:src="userPic" class="cursor-pointer">
+                    </label>
+                </picture>
             </div>
-            <div class="flex items-center pr-4">
-                <img src="/src/assets/images/home.svg" class="h-8">
-            </div>
+            <div class="name">暱稱: {{ data.user_name }}</div>
+            <div class="acc">帳號: {{ data.user_email }}</div>
+            <div class="tele">手機: {{ data.telephone }}</div>
         </div>
-        <div class="content bg-[CEE5F2] overflow-y-auto">
-            <div class="grid_wrapper">
-                <div class="pic">
-                    <picture>
-                        <label for="image">
-                            <input @change="fileUpload()" ref="file" type="file" id="image" class="file_img" accept="image/*"/>
-                            <img src="../assets/images/FirstPart.png" alt="" class="cursor-pointer">
-                        </label>
-                    </picture>
-                </div>
-                <div class="name">暱稱: {{ data.user_name }}</div>
-                <div class="acc">帳號: {{ data.user_email }}</div>
-                <div class="tele">手機: {{ data.telephone }}</div>
+
+        <div class="s_title">
+            修改個人資料
+        </div>
+
+        <hr>
+
+        <div class="alter_general">
+
+            <div class="normal">
+                <span class="fix">暱稱</span>
+                <input id="1" type="text">
             </div>
 
-            <div class="s_title">
-                修改個人資料
+            <div class="normal">
+                <span class="fix">手機</span>
+                <input id="2" type="text">
             </div>
 
-            <hr>
-
-            <div class="alter_general">
-
-                <div class="normal">
-                    <span class="fix">暱稱</span>
-                    <input id="1" type="text">
-                </div>
-
-                <div class="normal">
-                    <span class="fix">手機</span>
-                    <input id="2" type="text">
-                </div>
-
-                <button class="sub_btn" @click="post_userfile()">確定</button>
-
-            </div>
-
-            <div class="s_title">
-                修改密碼
-            </div>
-
-            <hr>
-
-            <div class="alter_password">
-                <div class="normal">
-                    <span class="fix">舊密碼</span>
-                    <input id="3" type="text">
-                </div>
-                <div class="normal">
-                    <span class="fix">新密碼</span>
-                    <input id="4" type="text">
-                </div>
-                <div class="normal">
-                    <span class="fix">確認新密碼</span>
-                    <input type="text">
-                </div>
-
-                <button class="sub_btn" @click="post_passwd">確定</button>
-            </div>
+            <button class="sub_btn" @click="post_userfile()">確定</button>
 
         </div>
+
+        <div class="s_title">
+            修改密碼
+        </div>
+
+        <hr>
+
+        <div class="alter_password">
+            <div class="normal">
+                <span class="fix">舊密碼</span>
+                <input id="3" type="text">
+            </div>
+            <div class="normal">
+                <span class="fix">新密碼</span>
+                <input id="4" type="text">
+            </div>
+            <div class="normal">
+                <span class="fix">確認新密碼</span>
+                <input type="text">
+            </div>
+
+            <button class="sub_btn" @click="post_passwd">確定</button>
+        </div>
+
     </div>
+
 
     <!-- 彈出視窗 -->
     <!-- 正確訊息視窗 -->
@@ -333,16 +325,8 @@ const post_passwd = () => {
     background-color: #cee5f2;
 }
 
-.wrapper {
-    height: calc(100% - 7rem);
-}
-
-.content {
-    height: calc(100% - 3rem);
-}
-
 .bg-\[CEE5F2\] {
-    background-color: #cee5f2;
+    background-color: #ecf4fa;
 }
 
 /* 10846017 */
@@ -358,7 +342,8 @@ hr {
     grid-template-columns: 1fr 2fr;
     grid-template-rows: 100px 100px 100px;
     align-items: center;
-    margin: 2rem 0;
+    padding-top: 2rem;
+    margin-bottom: 2rem;
     font-size: 1.5rem;
 }
 

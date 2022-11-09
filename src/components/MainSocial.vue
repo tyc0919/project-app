@@ -1,12 +1,12 @@
 <script setup>
-import SocialPost from './SocialPost.vue'
+import MainSocialPost from './MainSocialPost.vue'
 import { ref } from 'vue'
 import axios from 'axios'
 
 // get data
 let socialData = ref([])
 let pages = ref([])
-const quantum = 2
+const quantum = 6
 let pageNumber = ref(1)
 const changePage = (targetPage) => {
     pageNumber.value = targetPage
@@ -20,7 +20,6 @@ const getData = async () => {
             await axios.get('/api/activity/' + social.id + '/').then(function (response) {
                 let temp = []
                 temp = response.data
-                console.log(temp)
 
                 social['user_name'] = temp.user_name
             })
@@ -76,7 +75,7 @@ getData()
     <!--Component here-->
     <div class="h-full">
         <!--貼文、按鈕-->
-        <div class="px-8 py-8">
+        <div class="p-8">
             <!--按鈕列-->
             <div id="options" class="inline-flex justify-between items-center my-4 w-full">
                 <div class="inline-flex justify-around">
@@ -97,12 +96,12 @@ getData()
                 v-for="(item, index) of pages[pageNumber - 1]"
                 :to="{ name: 'post', params: { PostId: item.id } }"
             >
-                <SocialPost
+                <MainSocialPost
                     :title="item.activity_name"
                     :owner="item.user_name"
                     :rating="item.star_percent"
                     :content="item.content"
-                ></SocialPost>
+                ></MainSocialPost>
             </router-link>
             <!--主要內容-->
         </div>
