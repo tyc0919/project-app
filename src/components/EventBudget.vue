@@ -1,10 +1,11 @@
 <script setup>
 // moduals
-import { ref, watch, KeepAlive } from 'vue';
+import { ref, onBeforeMount } from 'vue';
 import { getCookie } from '../assets/modules'
 import axios from "axios";
 import { useRoute } from 'vue-router';
 import GraphPercentageCircle from './GraphPercentageCircle.vue';
+
 // components
 import Modal from './Modal.vue';
 
@@ -24,7 +25,6 @@ let graphParam = ref({
     left: "rotate(180deg)",
     right: "rotate(180deg)"
 })
-
 const calcGraph = () => {
     let percentage = budget.value.expense_percentage
 
@@ -40,6 +40,8 @@ const calcGraph = () => {
     }
     console.log(graphParam.value)
 }
+
+
 
 //select file
 let selectedFile = ref(null)
@@ -86,6 +88,12 @@ const getData = async () => {
                 userJobs.value.push(job);
 
             }
+        }
+
+        if (user.user_email == budget.owner) {
+            budget.value['is_owner'] = true;
+        } else {
+            budget.value['is_owner'] = false;
         }
         budget.value["user_jobs"] = userJobs
 
@@ -347,7 +355,7 @@ const deleteExpenditure = async (fileName, jobId) => {
                             </span>
                         </span>
 
-                        <input @change="changeFile()" ref="fileEl" class="hidden" type="file">
+                        <input @change="changeFile()" ref="fileEl" class="hidden" type="file" accept="image/*">
                         <div class="text-red-500">{{ errorMessage.fileErrorMessage.value }}</div>
 
                         <div class="text-base font-bold ">所屬工作</div>
@@ -409,63 +417,66 @@ const deleteExpenditure = async (fileName, jobId) => {
     </Teleport>
 
     <!-- ? from EventBudgetUpper -->
-    <div class="p-1 border-b mx-12 border-black">
-        <!-- budget box start -->
-        <div class="flex justify-around items-center  my-4 rounded-xl">
-            <div class="w-56 h-96 flex flex-col justify-around    mt-8 mb-16">
+    <div class="bg-white mx-24 my-8 border-2">
+        <div class=" mx-12 border-black">
+            <!-- budget box start -->
+            <div class="flex justify-around items-center  my-4 rounded-xl">
+                <div class="w-56 h-96 flex flex-col justify-around    mt-8 mb-16">
 
-                <div class="w-full flex flex-col items-center">
-                    <div class="bg-green-400 h-fit w-full rounded-t-xl shadow-md">
-                        <p class="m-2 text-center text-white">預算</p>
-                    </div>
-                    <div
-                        class="w-full h-full relative flex justify-start item-center  p-4 shadow-md rounded-b-xl bg-white border-t border-grey-400">
-                        <p class=" text-2xl w-56 text-center text-green-400 font-bold">
-                            $ {{ budget.activity_budget }}
-                        </p>
-                        <svg @click="toggleModal('updateBudgetModal')" class="w-7 absolute cursor-pointer"
-                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-                            <path
-                                d="M6 34.5V42h7.5l22.13-22.13-7.5-7.5L6 34.5zm35.41-20.41c.78-.78.78-2.05 0-2.83l-4.67-4.67c-.78-.78-2.05-.78-2.83 0l-3.66 3.66 7.5 7.5 3.66-3.66z"
-                                fill="#3056d3" class="fill-000000" />
-                            <path d="M0 0h48v48H0z" fill="none" />
-                        </svg>
+                    <div class="w-full flex flex-col items-center">
+                        <div class="bg-green-400 h-fit w-full rounded-t-xl shadow-md">
+                            <p class="m-2 text-center text-white">預算</p>
+                        </div>
+                        <div
+                            class="w-full h-full relative flex justify-start item-center  p-4 shadow-md rounded-b-xl bg-white border-t border-grey-400">
+                            <p class=" text-2xl w-56 text-center text-green-400 font-bold">
+                                $ {{ budget.activity_budget }}
+                            </p>
+                            <svg v-if="budget.is_owner" @click="toggleModal('updateBudgetModal')"
+                                class="w-7 absolute cursor-pointer" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 48 48">
+                                <path
+                                    d="M6 34.5V42h7.5l22.13-22.13-7.5-7.5L6 34.5zm35.41-20.41c.78-.78.78-2.05 0-2.83l-4.67-4.67c-.78-.78-2.05-.78-2.83 0l-3.66 3.66 7.5 7.5 3.66-3.66z"
+                                    fill="#3056d3" class="fill-000000" />
+                                <path d="M0 0h48v48H0z" fill="none" />
+                            </svg>
 
+                        </div>
                     </div>
+
+
+                    <div class="w-56 flex flex-col items-center">
+                        <div class="w-full bg-red-400  w-full rounded-t-xl shadow-md">
+                            <p class="m-2 text-center text-white">支出</p>
+                        </div>
+                        <div
+                            class="w-full flex justify-start item-center h-fit p-4 shadow-md rounded-b-xl bg-white border-t border-grey-400">
+                            <p class="text-2xl w-56 text-center text-red-400 font-bold">$ {{ budget.activity_expense }}
+                            </p>
+                        </div>
+                    </div>
+
                 </div>
 
-
-                <div class="w-56 flex flex-col items-center">
-                    <div class="w-full bg-red-400  w-full rounded-t-xl shadow-md">
-                        <p class="m-2 text-center text-white">支出</p>
-                    </div>
-                    <div
-                        class="w-full flex justify-start item-center h-fit p-4 shadow-md rounded-b-xl bg-white border-t border-grey-400">
-                        <p class="text-2xl w-56 text-center text-red-400 font-bold">$ {{ budget.activity_expense }}
-                        </p>
-                    </div>
-                </div>
+                <GraphPercentageCircle :percentage="budget.expense_percentage" :left="graphParam.left"
+                    :right="graphParam.right">
+                </GraphPercentageCircle>
 
             </div>
 
-            <GraphPercentageCircle :percentage="budget.expense_percentage" :left="graphParam.left"
-                :right="graphParam.right">
-            </GraphPercentageCircle>
-
         </div>
 
-
-
     </div>
-    <div class="p-1 my-8 mx-12 flex justify-between items-center">
-        <div class="flex jusify-center item-center h-96 w-1/2 border border-black">
+    <div class="bg-white mx-24 p-4 flex justify-between items-center">
+        <div class="flex jusify-center item-center h-96 w-1/2 border-2 rounded p-2 mr-8 bg-slate-200">
             <img v-if="!(selectedFile == null)" class="w-full" :src="selectedFile.download_path">
         </div>
 
-        <div class="w-1/2 pt-4 pb-4 bg-white h-96 rounded-lg shadow-md flex flex-col ">
+        <div class="w-1/2 pt-4 pb-4 bg-white h-96 rounded-lg border-2 flex flex-col ">
             <button @click="toggleModal('uploadFileModal')"
-                class="w-auto border-sky-700 border mx-8 mb-4 rounded text-sky-700">
-                上傳</button>
+                class="w-fit px-4 py-2 border-sky-700 border mx-8 mb-4 rounded text-sky-700">
+                上傳
+            </button>
             <div class="overflow-y-auto flex flex-col flex-col-reverse">
                 <div v-for="item in budget.expenditures"
                     class="flex justify-between w-auto mt-4 mx-8 border-2 rounded-md py-2 pl-4 pr-2 border-gray-300 file-shadow">
@@ -511,7 +522,6 @@ const deleteExpenditure = async (fileName, jobId) => {
 
         </div>
     </div>
-
 
 </template>
 
