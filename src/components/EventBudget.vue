@@ -1,6 +1,6 @@
 <script setup>
 // moduals
-import { ref, onBeforeMount } from 'vue';
+import { ref, onBeforeMount, onBeforeUpdate,onUpdated } from 'vue';
 import { getCookie } from '../assets/modules'
 import axios from "axios";
 import { useRoute } from 'vue-router';
@@ -20,29 +20,6 @@ let config = {
 const route = useRoute();
 const activityId = route.params.EventId
 
-//計算比率圖
-let graphParam = ref({
-    left: "rotate(180deg)",
-    right: "rotate(180deg)"
-})
-const calcGraph = () => {
-    let percentage = budget.value.expense_percentage
-
-    let degree = 360 * percentage / 100
-
-    degree = 360 * percentage / 100
-    if (degree < 180) {
-        graphParam.value.right = "rotate(" + degree + "deg)"
-        graphParam.value.left = "rotate(" + 0 + "deg)"
-    } else {
-        graphParam.value.right = "rotate(" + 180 + "deg)"
-        graphParam.value.left = "rotate(" + (degree - 180) + "deg)"
-    }
-    console.log(graphParam.value)
-}
-
-
-
 //select file
 let selectedFile = ref(null)
 const setSelectedFile = (file) => {
@@ -61,7 +38,7 @@ const toggleModal = (modalName) => {
 
 // get data
 let budget = ref([]);
-
+let graphPercent =ref(0)
 const getData = async () => {
     try {
         await axios.get('/api/activity/' + activityId + '/budget/', config)
@@ -102,10 +79,17 @@ const getData = async () => {
         for (let i = 0; i < budget.value.jobs.length; i++) {
             activityExpense.value += budget.value.jobs[i].job_expenditure;
         }
+        
         budget.value["activity_expense"] = activityExpense.value;
-        budget.value["expense_percentage"] = Math.round((activityExpense.value / budget.value.activity_budget) * 100)
+        let percent = Math.round((activityExpense.value / budget.value.activity_budget) * 100)
+        
+        if(percent > 100){
+            graphPercent.value = 100;
+        }else{
+            graphPercent.value = Math.round((activityExpense.value / budget.value.activity_budget) * 100)
+        }
         console.log(budget.value)
-        calcGraph() //計算比率圖
+
 
         // append jobs data
         for (let expenditure of budget.value.expenditures) {
@@ -459,8 +443,8 @@ const deleteExpenditure = async (fileName, jobId) => {
 
                 </div>
 
-                <circle-progress :percent="budget.expense_percentage" :size="300" :border-width="25"
-                    :border-bg-width="25" :show-percent="true" :viewport="true" :transition="3000" :is-gradient="true"
+                <circle-progress :percent="graphPercent" :size="300" :border-width="25"
+                    :border-bg-width="25" :show-percent="true" :viewport="true" :transition="1000" :is-gradient="true"
                     :gradient="{
                         angle: 180,
                         startColor: '#cee5f2',

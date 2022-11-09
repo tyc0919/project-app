@@ -34,9 +34,9 @@ const invite = () => {
 
 /* 上傳檔案 */
 function fileUpload() {
-    formData = null
     formData.append('file', file.value.files[0])
     formData.append('job_id', route.params.WorkId)
+    file.value.files.length = 0
 }
 
 const upload = async () => {
