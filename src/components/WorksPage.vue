@@ -225,10 +225,18 @@ async function newWork() {
         .then(function (response) {
             messageS.value = "新增工作成功"
             toggleModal_success()
+            nworkName.value = ""
+            nworkDate.value = ""
+            nworkBudget.value = ""
+            nworkContent.value = ""
         })
         .catch(function (error) {
             messageF.value = "新增工作失敗"
             toggleModal_fail()
+            nworkName.value = ""
+            nworkDate.value = ""
+            nworkBudget.value = ""
+            nworkContent.value = ""
         })
 
     job_take()

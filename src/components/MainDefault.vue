@@ -151,6 +151,22 @@ const getData = async () => {
     await axios.get('/api/activity/').then(function (response) {
         activityData.value = response.data
     })
+    console.log(activityData.value)
+    for (let activity of activityData.value){
+        let count = 0
+        await axios.get('/api/activity/'+ activity.id +'/job/').then((response)=>{
+            console.log(response.data)
+            for(let job of response.data){
+                if(job.status == 1){
+                    count++;
+                }
+            }
+            activity['finish_percentage'] = Math.round(count / response.data.length * 100)
+        })
+    
+
+    }
+
     //add user_name into data
     for (let activity of activityData.value) {
         await axios.get('/api/activity/' + activity.id + '/').then((response) => {
@@ -360,7 +376,7 @@ getData()
                 <MainDeFaultCard
                     :name="item.activity_name"
                     :owner="item.user_name"
-                    :tracePercentage="100"
+                    :tracePercentage="item.finish_percentage"
                     :costMoney="item.activity_expenditure"
                     :budgetMoney="item.activity_budget"
                 ></MainDeFaultCard>

@@ -257,23 +257,24 @@ function take_job_detailNF() {
 /* 新增工作細項 */
 function newJobDetail() {
     let data = {
-
         "job_id": Number(route.params.WorkId),
         "title": njob_detailName.value,
         "content": njob_detailContent.value
-
     }
-    axios
-        .post('/api/job-detail/create/', data, config)
-        .then(function (response) {
 
+    axios.post('/api/job-detail/create/', data, config)
+        .then(function (response) {
             messageS.value = "新增工作細項成功"
             toggleModal_success()
+            njob_detailName.value = ""
+            njob_detailContent.value = ""
             take_job_detail()
         })
         .catch(function (error) {
             messageF.value = "新增工作細項失敗"
-            toggleModal_success()
+            toggleModal_fail()
+            njob_detailName.value = ""
+            njob_detailContent.value = ""   
             take_job_detail()
 
         })
