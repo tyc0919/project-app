@@ -1,6 +1,6 @@
 <script setup>
 // moduals
-import { ref, onBeforeMount, onBeforeUpdate,onUpdated } from 'vue';
+import { ref, onBeforeMount, onBeforeUpdate, onUpdated } from 'vue';
 import { getCookie } from '../assets/modules'
 import axios from "axios";
 import { useRoute } from 'vue-router';
@@ -38,7 +38,7 @@ const toggleModal = (modalName) => {
 
 // get data
 let budget = ref([]);
-let graphPercent =ref(0)
+let graphPercent = ref(0)
 const getData = async () => {
     try {
         await axios.get('/api/activity/' + activityId + '/budget/', config)
@@ -79,13 +79,13 @@ const getData = async () => {
         for (let i = 0; i < budget.value.jobs.length; i++) {
             activityExpense.value += budget.value.jobs[i].job_expenditure;
         }
-        
+
         budget.value["activity_expense"] = activityExpense.value;
         let percent = Math.round((activityExpense.value / budget.value.activity_budget) * 100)
-        
-        if(percent > 100){
+
+        if (percent > 100) {
             graphPercent.value = 100;
-        }else{
+        } else {
             graphPercent.value = Math.round((activityExpense.value / budget.value.activity_budget) * 100)
         }
         console.log(budget.value)
@@ -209,8 +209,7 @@ const uploadExpenditure = async () => {
         formData.append('file', fileList.value[fileList.value.length - 1]);
         formData.append('job_id', jobEl.value) //工作序號
         formData.append('expense', expenseEl.value); //花費
-        fileList.value = [];
-        fileName.value = ""
+
         // do POST api
         await axios.post('/api/upload/expenditure/', formData, config)
             .then(function (response) {
@@ -218,6 +217,8 @@ const uploadExpenditure = async () => {
             })
         getData();
         toggleModal('uploadFileModal')
+        fileList.value = [];
+        fileName.value = ""
     } catch (error) {
         let expense = expenseEl.value
 
@@ -443,13 +444,12 @@ const deleteExpenditure = async (fileName, jobId) => {
 
                 </div>
 
-                <circle-progress :percent="graphPercent" :size="300" :border-width="25"
-                    :border-bg-width="25" :show-percent="true" :viewport="true" :transition="1000" :is-gradient="true"
-                    :gradient="{
+                <circle-progress :percent="graphPercent" :size="300" :border-width="25" :border-bg-width="25"
+                    :show-percent="true" :viewport="true" :transition="1000" :is-gradient="true" :gradient="{
                         angle: 180,
-                        startColor: '#cee5f2',
-                        stopColor: '#3056D3'
-                    }" />
+                        startColor: '#F87171',
+                        stopColor: '#F87171'
+                    }" empty-color="#4ADE80" linecap="butt" />
             </div>
 
         </div>
@@ -458,6 +458,7 @@ const deleteExpenditure = async (fileName, jobId) => {
     <div class="bg-white p-4 flex justify-between items-center">
         <div class="flex jusify-center item-center h-96 w-1/2 border-2 rounded p-2 mr-8 bg-slate-200">
             <img v-if="!(selectedFile == null)" class="w-full" :src="selectedFile.download_path">
+            <div v-else class="text-[#F87171] font-bold text-2xl my-4">想查看大圖，請點擊收據圖片</div>
         </div>
 
         <div class="w-1/2 px-8 py-4 bg-white h-96 rounded-lg border-2 flex flex-col ">
@@ -466,6 +467,11 @@ const deleteExpenditure = async (fileName, jobId) => {
                 上傳
             </button>
             <div class="mt-2 overflow-y-auto flex flex-col flex-col-reverse">
+
+                <div v-if="budget.expenditures.length == 0" class="text-[#F87171] font-bold text-2xl my-4">
+                    目前沒有上傳任何支出收據喔!!!
+                </div>
+
                 <div v-for="item in budget.expenditures"
                     class="flex justify-between w-auto mt-4  border-2 rounded-md py-2 pl-4 pr-2 border-gray-300 file-shadow">
                     <div class="flex">
@@ -509,9 +515,9 @@ const deleteExpenditure = async (fileName, jobId) => {
             </div>
 
         </div>
-        
+
     </div>
-    
+
 </template>
 
 <style scoped>
