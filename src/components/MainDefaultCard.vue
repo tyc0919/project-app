@@ -10,6 +10,7 @@ let costPercentage = 0
 if (props.budgetMoney != 0) {
     costPercentage = Math.round(props.costMoney / props.budgetMoney * 100)
 }
+console.log(costPercentage)
 </script>
 
 
@@ -52,7 +53,7 @@ if (props.budgetMoney != 0) {
                         </div>
                     </div>
                     <div :class="costPercentage == 0 ? 'bg-tranparent' : 'bg-[#F87171]'"
-                        :style="{ width: costPercentage + '%' }" class="cost-container  rounded-full h-8 w-0  px-4">
+                        :style="{ width: costPercentage + '%' }" class="cost-container rounded-full h-8 w-0  px-4">
                     </div>
                 </div>
             </div>
