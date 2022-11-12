@@ -24,7 +24,7 @@ let activity_data = ref("")
 let messageS = ref("")
 let messageF = ref("")
 let user_e
-let formData = new FormData()
+
 let finishStatus = ref(false)
 let publicStatus = ref(false)
 
@@ -154,7 +154,8 @@ async function update_Activity() {
 
 
 /* 編輯圖片 */
-function fileUpload() {
+async function fileUpload() {
+    let formData = new FormData()
     formData.append('file', file.value.files[0])
     formData.append('activity_id', route.params.EventId)
     let configf = {
@@ -165,13 +166,19 @@ function fileUpload() {
         mode: 'same-origin'
     }
 
-    axios.post("/api/upload/activity_pic/", formData, configf)
+    await axios.post("/api/upload/activity_pic/", formData, configf)
         .then(function (response) {
-            alert("good")
+            messageS.value = "圖片上傳成功"
+            toggleModal_success()
+
         })
         .catch(function (error) {
-            alert("bad")
+            messageF.value = "圖片上傳失敗"
+            toggleModal_fail()
         })
+        
+    file.value.lenght = 0
+    take_activity()
 }
 /* 編輯圖片 */
 
@@ -236,14 +243,12 @@ const toggleModal_fail = () => {
     <div class="content bg">
         <div class="w-full flex">
             <div class="w-2/3 m-1.5 ">
-                <picture>
-                    <label for="image">
-                        <input @change="fileUpload()" ref="file" type="file" id="image" class="file_img"
-                            accept="image/*" />
-                        <img v-bind:src="activity_data.picPath" class="event_main_img" onerror="this.src='/src/assets/images/default_event.jpg'">
-                    </label>
-                </picture>
 
+                <label for="image" class="event_main_img">
+                    <input @change="fileUpload()" ref="file" type="file" id="image" class="file_img" accept="image/*" />
+                    <img v-bind:src="activity_data.picPath" class="event-object"
+                        onerror="this.src='/src/assets/images/default_event.svg'">
+                </label>
 
                 <form action="">
                     <div v-if="activity_data.is_owner" class="flex justify-around w-full">
@@ -265,15 +270,11 @@ const toggleModal_fail = () => {
 
                     <div v-else class="flex justify-around w-full">
 
-                        <input v-if="finishStatus" class="button3" type="button" value="完成活動"
-                             disabled>
-                        <input v-else class="button4" type="button" value="完成活動" disabled
-                            id="Finish_btn">
+                        <input v-if="finishStatus" class="button3" type="button" value="完成活動" disabled>
+                        <input v-else class="button4" type="button" value="完成活動" disabled id="Finish_btn">
 
-                        <input v-if="publicStatus" class="button3" type="button" value="發布活動"
-                             disabled>
-                        <input v-else class="button4"  id="Public_btn" type="button"
-                            value="發布活動" disabled>
+                        <input v-if="publicStatus" class="button3" type="button" value="發布活動" disabled>
+                        <input v-else class="button4" id="Public_btn" type="button" value="發布活動" disabled>
 
                         <input type="button" value="編輯活動" class="button4" disabled>
 
@@ -583,10 +584,18 @@ const toggleModal_fail = () => {
 }
 
 .event_main_img {
+    display: block;
     height: 500px;
     width: 85%;
     max-width: 85%;
     margin: 0 auto;
+}
+
+.event-object{
+    object-fit: contain;
+    margin: auto;
+    width:100%; 
+    height:100%;
 }
 
 .button1 {

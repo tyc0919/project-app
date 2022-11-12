@@ -9,7 +9,8 @@ const emit = defineEmits(['deleteFile'])
 const route = useRoute()
 const props = defineProps({
     fname: String,
-    upload_time: String
+    upload_time: String,
+    right: Boolean
 })
 
 
@@ -54,26 +55,27 @@ const delete_file = async () => {
 }
 
 const downloadFile = () => {
-    window.open("/api/serve-file/"+ route.params.EventId +"/"+ props.fname)
+    window.open("/api/serve-file/" + route.params.EventId + "/" + props.fname)
 }
 
 </script>
 
 <template>
 
-    <div class="relative w-full p-2 mt-4 border-2 rounded-md border-sky-400 cursor-pointer" @click="downloadFile()">
+    <div class="relative w-full p-2 mt-4 border-2 rounded-md border-sky-400 cursor-pointer" >
+        <div @click="downloadFile()">
+            <div>
+                {{ props.fname }}
+            </div>
 
-        <div>
-            {{ props.fname }}
+            <div>
+                上傳日期: {{ uploadTimeFormat }}
+            </div>
         </div>
 
-        <div>
-            上傳日期: {{ uploadTimeFormat }}
-        </div>
-
-        <button class="text-red-500 btn-postion" @click="toggleModal">X</button>
-
+        <button v-if="props.right" class="text-red-500 btn-postion z-10" @click="toggleModal">X</button>
     </div>
+
 
 
     <Teleport to="body">
@@ -103,6 +105,8 @@ const downloadFile = () => {
 
 <style scoped>
 .btn-postion {
+    width: 25px;
+    height: 25px;
     position: absolute;
     right: 10px;
     top: 50%;

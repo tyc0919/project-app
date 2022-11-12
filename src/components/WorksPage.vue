@@ -278,27 +278,11 @@ const toggleModal_fail = () => {
                             <label class="radioLable text-base" for="radio3" @click="job_take()">全部</label>
                         </div>
 
-                        <form id="search" class="flex items-center shadow:focus mr-10">
-                            <label for="simple-search" class=""></label>
-                            <div class="relative w-full">
-                                <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                                    <svg aria-hidden="true" class="w-5 h-5 text-gray-500" fill="currentColor"
-                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd"
-                                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                </div>
-                                <input type="text" id="simple-search"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
-                                    placeholder="Search" required />
-                            </div>
-                        </form>
                     </div>
 
                     <div id="optionsRight" class="flex justify-end align-center">
                         <button id="addNewWorkButton" @click="toggleModal()"
-                        class="text-white bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded">
+                        class="text-white border border-[#3056d3] bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded">
                             新增工作
                         </button>
                     </div>
@@ -311,7 +295,12 @@ const toggleModal_fail = () => {
                         v-for="(item) in A_job_data" :key="item.id" @click="trans_tab(item.id)">
                         <div class="workTop flex flex-column justify-between">
                             <div class="flex align-center mb-2 items-center">
-                                <div class="avatar"></div>
+                                <div v-if="item.status==1" class="avatar">
+                                </div>
+                                <div v-else class="avatar2">
+
+                                </div>
+
                                 <div class="text-sm text-[#1D5E9F] ellipsis italic ml-2">
                                     {{ item.user_name }}
                                 </div>
@@ -507,6 +496,15 @@ const toggleModal_fail = () => {
 }
 
 .avatar {
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 1px solid #000000;
+    vertical-align: middle;
+    border-radius: 50%;
+    background-color: rgb(34 197 94);
+}
+
+.avatar2 {
     width: 1.75rem;
     height: 1.75rem;
     border: 1px solid #000000;

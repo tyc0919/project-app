@@ -57,8 +57,8 @@ async function take_userfile() {
     await axios.get("/api/userprofile/")
         .then(response => {
             data.value = response.data
+            userPic.value = "/api/serve-file/avatar/" + data.value.user_email
         })
-    userPic.value = "/api/serve-file/avatar/" + data.value.picture_path
 }
 
 take_userfile()
@@ -66,7 +66,7 @@ take_userfile()
 /* 取得使用者資料 */
 
 let file = ref(null)
-let formData = new FormData()
+
 
 /* 更改使用者頭像 */
 async function fileUpload() {
@@ -77,6 +77,7 @@ async function fileUpload() {
         },
         mode: 'same-origin'
     }
+    let formData = new FormData()
     formData.append('file', file.value.files[0])
     await axios.post('/api/upload/avatar/',
         formData,
@@ -102,9 +103,13 @@ async function post_userfile() {
     }, config).then(response => {
         messageS.value = "修改個人資料成功"
         toggleModal_success()
+        document.getElementById("1").value = ""
+        document.getElementById("2").value = ""
     }).catch(error => {
         messageF.value = "修改個人資料失敗"
         toggleModal_fail()
+        document.getElementById("1").value = ""
+        document.getElementById("2").value = ""
     })
     take_userfile()
 }
@@ -120,9 +125,15 @@ const post_passwd = () => {
     }, config).then(response => {
         messageS.value = "修改密碼成功"
         toggleModal_success()
+        document.getElementById("3").value = ""
+        document.getElementById("4").value = ""
+        document.getElementById("5").value = ""
     }).catch(error => {
         messageF.value = "修改密碼失敗"
         toggleModal_fail()
+        document.getElementById("3").value = ""
+        document.getElementById("4").value = ""
+        document.getElementById("5").value = ""
     })
     take_userfile()
 }

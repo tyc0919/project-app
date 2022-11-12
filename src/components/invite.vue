@@ -5,7 +5,7 @@ const props = defineProps({
     picture_path: String
 })
 let userPicPath = ref('')
-userPicPath.value = '/api/serve-file/avatar/' + props.picture_path
+userPicPath.value = '/api/serve-file/avatar/' + props.email
 </script>
 
 <template>

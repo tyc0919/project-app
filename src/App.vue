@@ -12,11 +12,10 @@ const userPic = ref('')
 const takeUserPic = async () => {
     let path = ''
     await axios.get('/api/userprofile/').then((response) => {
-        path = response.data.picture_path
+        userPic.value = '/api/serve-file/avatar/' + response.data.user_email
     })
-    userPic.value = '/api/serve-file/avatar/' + path
+    
 }
-
 
 takeUserPic()
 
