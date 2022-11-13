@@ -1,5 +1,5 @@
 <script setup>
-import {onBeforeMount, ref,onUpdated} from 'vue'
+import { onBeforeMount, ref, onUpdated } from 'vue'
 const props = defineProps({
     name: String,
     owner: String,
@@ -7,7 +7,6 @@ const props = defineProps({
     costMoney: Number,
     budgetMoney: Number,
 })
-
 </script>
 
 <template>
@@ -35,7 +34,10 @@ const props = defineProps({
                         <span class="ellipsis">完成進度</span>
                         <span class="trace-percentage">{{ tracePercentage }}%</span>
                     </div>
-                    <div :style="{width: props.tracePercentage + '%'}" class="trace-container bg-[#3056d3] rounded-full h-8 w-0  px-4"></div>
+                    <div
+                        :style="{ width: props.tracePercentage + '%' }"
+                        class="trace-container bg-[#3056d3] rounded-full h-8 w-0 px-4"
+                    ></div>
                 </div>
 
                 <div class="relative h-fit w-full rounded-full bg-slate-300 shadow-inset py-1 px-1">
@@ -106,7 +108,4 @@ const props = defineProps({
     border-radius: 20px;
     border-width: 1px;
 }
-
-
-
 </style>

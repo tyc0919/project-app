@@ -6,7 +6,7 @@ import axios from 'axios'
 // get data
 let socialData = ref([])
 let pages = ref([])
-const quantum = 6
+const quantum = 3
 let pageNumber = ref(1)
 const changePage = (targetPage) => {
     pageNumber.value = targetPage
@@ -16,14 +16,7 @@ const getData = async () => {
     // add social data
     await axios.get('/api/social/').then(async function (response) {
         socialData.value = response.data
-        for (let social of socialData.value) {
-            await axios.get('/api/activity/' + social.id + '/').then(function (response) {
-                let temp = []
-                temp = response.data
-
-                social['user_name'] = temp.user_name
-            })
-        }
+        console.log(socialData.value)
     })
 
     // add total starCount into each activity
@@ -92,17 +85,20 @@ getData()
             <!--按鈕列-->
 
             <!--主要內容-->
-            <router-link
-                v-for="(item, index) of pages[pageNumber - 1]"
-                :to="{ name: 'post', params: { PostId: item.id } }"
-            >
-                <MainSocialPost
-                    :title="item.activity_name"
-                    :owner="item.user_name"
-                    :rating="item.star_percent"
-                    :content="item.content"
-                ></MainSocialPost>
-            </router-link>
+            <div class="bg-white border border-[#d1d5db] rounded-2xl p-8 my-4">
+                <router-link
+                    v-for="(item, index) of pages[pageNumber - 1]"
+                    :to="{ name: 'post', params: { PostId: item.id } }"
+                >
+                    <MainSocialPost
+                        :title="item.activity_name"
+                        :owner="item.user_name"
+                        :rating="item.star_percent"
+                        :content="item.content"
+                    ></MainSocialPost>
+                </router-link>
+            </div>
+
             <!--主要內容-->
         </div>
         <!--貼文、按鈕-->

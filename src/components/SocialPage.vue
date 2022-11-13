@@ -1,26 +1,15 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import Invite from './invite.vue'
 import SocialPageReviewCard from './SocialPageReviewCard.vue'
 import SocialPageWorkCard from './SocialPageWorkCard.vue'
-import BarChart from './BarChart.vue'
 import axios from 'axios'
 import Modal from './Modal.vue'
 import { useRoute } from 'vue-router'
 import { getCookie } from '../assets/modules'
 
-let socialData = ref([])
-let collabData = ref([])
-let workData = ref([])
-let reviewData = ref([])
-let reviewId = ''
-let userData = []
-let userName = ref()
-let userEmail = ''
-let userComment = ref('')
-let reviewPercentage = ref([])
-
 const route = useRoute()
+
 const showModal_edit = ref(false)
 const showModal_add = ref(false)
 
@@ -29,16 +18,30 @@ let errorMessage = {
     starErrorMessage: ref(),
 }
 
+let socialData = ref([])
+let collabData = ref([])
+let workData = ref([])
+
+let reviewData = ref([])
+let reviewId = ''
+
+let userPic = ref('')
+let userName = ref()
+let userEmail = ''
+let userComment = ref('')
+
+let reviewPercentage = ref([])
+
 const getData = async () => {
-    axios.get('/api/social/' + route.params.PostId).then(function (response) {
+    await axios.get('/api/social/' + route.params.PostId).then(function (response) {
         socialData.value = response.data
         document.getElementById('description').innerHTML = socialData.value.activity_description
     })
     await axios.get('/api/userprofile/').then(function (response) {
-        userData = response.data
+        let userData = response.data
         userName.value = userData.user_name
         userEmail = userData.user_email
-        console.log(userEmail)
+        userPic.value = '/api/serve-file/avatar/' + userEmail
     })
     await axios.get('/api/social/' + route.params.PostId + '/review/').then(function (response) {
         reviewData.value = response.data
@@ -46,10 +49,10 @@ const getData = async () => {
         getCurrentReview()
     })
 
-    axios.get('/api/activity/' + route.params.PostId + '/job/').then(function (response) {
+    await axios.get('/api/activity/' + route.params.PostId + '/job/').then(function (response) {
         workData.value = response.data
     })
-    axios.get('/api/activity/' + route.params.PostId + '/collaborator/').then(function (response) {
+    await axios.get('/api/activity/' + route.params.PostId + '/collaborator/').then(function (response) {
         collabData.value = response.data
     })
 }
@@ -67,6 +70,7 @@ const getCurrentReview = () => {
         if (i.reviewer == userEmail) {
             userComment.value = i.content
             reviewId = i.id
+            console.log(i.review_star)
             document.getElementById('' + i.review_star + '').checked = true
         }
     }
@@ -135,7 +139,7 @@ const addReview = async () => {
                 '/api/social/post-review/',
                 {
                     activity_id: route.params.PostId,
-                    user_email: userData.user_email,
+                    user_email: userEmail,
                     content: comment,
                     review_star: star.value,
                 },
@@ -162,6 +166,7 @@ const reload = () => {
     window.location.reload()
 }
 getData()
+
 cleanErrorMessage()
 </script>
 
@@ -171,12 +176,10 @@ cleanErrorMessage()
         <modal :show="showModal_add">
             <template #header>
                 <div class="border-b-4 w-full px-4 py-4">
-                    <div class="font-bold text-2xl">送出成功！</div>
+                    <div class="font-bold text-2xl">提醒</div>
                 </div>
             </template>
-            <template #body>
-                {{ messageS }}
-            </template>
+            <template #body> 送出成功！ </template>
             <template #footer>
                 <button
                     @click="toggleModal_add(), reload()"
@@ -217,34 +220,16 @@ cleanErrorMessage()
     <!-- 編輯評論  -->
 
     <div class="p-8">
-        <div class="top-container flex justify-between bg-white pr-24 border border-[#D1D5DB]">
+        <div class="top-container flex justify-center bg-white border border-[#D1D5DB]">
             <!--? banner -->
             <div class="inline-flex justify-center w-3/4 my-8">
                 <img src="../assets/images/FirstPart.png" class="event_main_img w-3/4" />
-            </div>
-
-            <!-- ? people management -->
-            <div class="flex flex-col w-1/4 px-2 my-8">
-                <div
-                    class="title w-fit h-fit px-4 py-2 rounded-full bg-[#ccdff6] text-[#1a73e8] text-2xl font-bold mb-4"
-                >
-                    所有人員
-                </div>
-                <div class="invite h-full flex flex-col items-center p-4 overflow-y-scroll border border-black">
-                    <Invite
-                        v-for="item of collabData"
-                        :email="item.user_name"
-                        :picture_path="item.picture_path"
-                    ></Invite>
-                </div>
             </div>
         </div>
 
         <!-- 活動簡介 -->
         <div class="description my-4 flex flex-col">
-            <div class="title w-fit px-4 py-2 rounded-full bg-[#ccdff6] text-[#1a73e8] text-2xl font-bold my-4">
-                活動簡介
-            </div>
+            <div class="bookmark2 relative"><div class="bookmark2-box text-2xl bg-white">活動簡介</div></div>
             <div id="description" class="px-2 py-4 text-xl font-bold bg-white border border-[#D1D5DB]"></div>
         </div>
         <!-- 活動簡介 -->
@@ -252,19 +237,10 @@ cleanErrorMessage()
         <!-- 預算支出、所有工作 -->
         <div class="flex justify-between my-8 py-4">
             <!-- ? Expense -->
-            <div class="flex flex-col">
-                <div class="title w-fit px-4 py-2 rounded-full bg-[#ccdff6] text-[#1a73e8] text-2xl font-bold my-4">
-                    預算支出
-                </div>
-                <div class="expense p-8 h-full bg-white border border-[#D1D5DB]">
-                    <BarChart></BarChart>
-                </div>
-            </div>
+
             <!-- ? all works-->
-            <div class="flex flex-col w-1/2">
-                <div class="title w-fit px-4 py-2 rounded-full bg-[#ccdff6] text-[#1a73e8] text-2xl font-bold my-4">
-                    所有工作
-                </div>
+            <div class="flex flex-col w-1/2 mr-10">
+                <div class="bookmark2 relative"><div class="bookmark2-box text-2xl bg-white">所有工作</div></div>
                 <div class="works-container px-8 py-2 overflow-y-auto bg-white border border-[#D1D5DB]">
                     <SocialPageWorkCard
                         v-for="item of workData"
@@ -273,17 +249,26 @@ cleanErrorMessage()
                     ></SocialPageWorkCard>
                 </div>
             </div>
+
+            <!-- ? people management -->
+            <div class="flex flex-col w-1/2 ml-10">
+                <div class="bookmark2 relative"><div class="bookmark2-box text-2xl bg-white">所有人員</div></div>
+                <div
+                    class="invite h-full flex flex-col items-center p-4 overflow-y-auto border border-[#D1D5DB] bg-white"
+                >
+                    <Invite v-for="item of collabData" :email="item.user_email" :name="item.user_name"></Invite>
+                </div>
+            </div>
         </div>
         <!-- 預算支出、所有工作 -->
 
-        <div class="title w-fit px-4 py-2 my-4 rounded-full bg-[#ccdff6] text-[#1a73e8] text-2xl font-bold">評論</div>
         <!-- 撰寫評論 -->
         <div class="w-full bg-white mb-8 py-4 border border-[#D1D5DB]">
             <div class="flex flex-col justify-between">
                 <div class="flex flex-col">
                     <div class="overflow-y-auto max-h-[30rem] px-20 py-4 rounded-2xl">
                         <div class="reviewer flex justify-start items-center mb-8">
-                            <div class="reviewer-img mr-2"></div>
+                            <div><img id="userImage" class="reviewer-img mr-2" v-bind:src="userPic" /></div>
                             <div class="reviewer-name text-xl cursor-text">{{ userName }}</div>
                         </div>
 
@@ -327,7 +312,7 @@ cleanErrorMessage()
                             </button>
                             <button
                                 v-else
-                                @click="editReview()"
+                                @click="toggleModal_edit()"
                                 class="my-4 py-2 px-4 rounded hover:text-[#2b6cb0] border border-[#2b6cb0] hover:bg-transparent text-white bg-sky-700 font-semibold"
                                 id="commentBtn"
                             >
@@ -340,9 +325,11 @@ cleanErrorMessage()
             <!-- 撰寫評論 -->
         </div>
         <!-- 評論區 -->
+        <div class="bookmark2 relative"><div class="bookmark2-box text-2xl bg-white">評論</div></div>
         <div class="flex flex-col-reverse px-10 py-8 bg-white border border-[#D1D5DB]">
             <SocialPageReviewCard
                 v-for="(item, index) of reviewData"
+                :email="item.reviewer"
                 :reviewer="item.user_name"
                 :rating="reviewPercentage[index]"
                 :content="item.content"
@@ -396,8 +383,8 @@ cleanErrorMessage()
 }
 
 .reviewer-img {
-    width: 1.75rem;
-    height: 1.75rem;
+    width: 3rem;
+    height: 3rem;
     border: 1px solid #000000;
     vertical-align: middle;
     border-radius: 50%;
@@ -424,22 +411,27 @@ cleanErrorMessage()
     -webkit-box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.ellipsis {
-    overflow: hidden;
-    display: -webkit-box;
-    text-overflow: ellipsis;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    white-space: normal;
+.bookmark2 {
+    height: 50px;
+    border-bottom: 5px solid #ccdff6;
 }
 
-.ellipsis-4 {
-    overflow: hidden;
-    display: -webkit-box;
+.bookmark2-box {
+    width: 150px;
+    text-align: center;
+    line-height: 45px;
+    display: inline-block;
     text-overflow: ellipsis;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    white-space: normal;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-right: 1rem;
+    background-color: #ccdff6;
+    border-radius: 10px 10px 0 0;
+    border-top: 1px rgb(209, 213, 219) solid;
+    border-left: 1px rgb(209, 213, 219) solid;
+    border-right: 1px rgb(209, 213, 219) solid;
+    color: #1a73e8;
+    font-weight: bold;
 }
 
 .invite * {
