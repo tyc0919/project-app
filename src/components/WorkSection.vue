@@ -7,7 +7,7 @@ import { ref } from 'vue'
 import { getCookie } from '../assets/modules'
 import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
-import { usePageStoretest } from "../stores/page"
+import { usePageStoretest } from '../stores/page'
 import { objectToString } from '@vue/shared'
 
 const showModal1 = ref(false)
@@ -59,12 +59,10 @@ let job_detail_N = ref([])
 let njob_detailName = ref('')
 let njob_detailContent = ref('')
 let right = ref(Boolean)
-let jobPath = ref("")
+let jobPath = ref('')
 
-
-
-let messageS = ref("")
-let messageF = ref("")
+let messageS = ref('')
+let messageF = ref('')
 
 /* 取得活動協作者 */
 axios.get('/api/activity/' + route.params.EventId + '/collaborator/').then((response) => {
@@ -74,38 +72,33 @@ axios.get('/api/activity/' + route.params.EventId + '/collaborator/').then((resp
 
 /* 獲得工作內容和權限判斷 */
 async function take_work() {
-    let user_data = ""
+    let user_data = ''
     let activity_data
 
-    await axios.get("/api/userprofile/")
-        .then(response => {
-            user_data = response.data;
-        })
+    await axios.get('/api/userprofile/').then((response) => {
+        user_data = response.data
+    })
 
-    await axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/")
-        .then(response => {
-            job.value = response.data
-            let temp = new Date(job.value.dead_line)
-            job.value.dead_line = temp.toLocaleDateString()
-            jobPath.value = "/api/serve-file/avatar/" + job.value.person_in_charge_email
-        })
+    await axios.get('/api/activity/' + route.params.EventId + '/job/' + route.params.WorkId + '/').then((response) => {
+        job.value = response.data
+        let temp = new Date(job.value.dead_line)
+        job.value.dead_line = temp.toLocaleDateString()
+        jobPath.value = '/api/serve-file/avatar/' + job.value.person_in_charge_email
+    })
 
-    await axios.get("/api/activity/" + route.params.EventId + "/")
-        .then(response => {
-            activity_data = response.data
-        })
+    await axios.get('/api/activity/' + route.params.EventId + '/').then((response) => {
+        activity_data = response.data
+    })
 
     if (user_data.user_email == job.value.person_in_charge_email || user_data.user_email == activity_data.owner) {
         right.value = true
-    }
-    else {
+    } else {
         right.value = false
     }
 }
 
 take_work()
 /* 獲得工作內容和權限判斷 */
-
 
 /* 更新工作 */
 function get_responGmail() {
@@ -124,16 +117,15 @@ async function updateWork() {
         job_budget: uworkBudget.value,
     }
 
-
-    await axios.post("/api/job/update/", data, config)
+    await axios
+        .post('/api/job/update/', data, config)
         .then(function (response) {
-            messageS.value = "編輯工作成功"
+            messageS.value = '編輯工作成功'
             toggleModal_success()
         })
         .catch(function (error) {
-            messageF.value = "編輯工作失敗"
+            messageF.value = '編輯工作失敗'
             toggleModal_fail()
-
         })
 
     take_work()
@@ -152,64 +144,56 @@ async function deleteWork() {
             closePage()
             router.push({
                 path: '/events/' + route.params.EventId,
-                name: 'event-works'
+                name: 'event-works',
             })
         })
         .catch(function (error) {
-            messageF.value = "刪除工作失敗"
+            messageF.value = '刪除工作失敗'
             toggleModal_fail()
         })
-
-
 }
 /* 刪除工作 */
-
-
 
 /* 獲得工作細項 */
 
 async function take_job_detail() {
-    await axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/job_detail/")
-        .then(response => {
+    await axios
+        .get('/api/activity/' + route.params.EventId + '/job/' + route.params.WorkId + '/job_detail/')
+        .then((response) => {
             job_detail.value = response.data
-        }
-        )
+        })
         .then(() => {
             job_detail_N.value = []
             job_detail_Y.value = []
             job_detail.value.forEach((item) => {
                 if (item.status == 0) {
                     job_detail_N.value.push(item)
-                }
-                else {
+                } else {
                     job_detail_Y.value.push(item)
                 }
-            }
-            )
+            })
         })
 }
 take_job_detail()
 
-let Okstatus = ref("")
+let Okstatus = ref('')
 function take_job_detail_test(x) {
     take_job_detail()
     if (x == true) {
-        messageS.value = "成功更新活動狀態"
+        messageS.value = '成功更新活動狀態'
         toggleModal_success()
-    }
-    else {
-        messageF.value = "更新活動狀態失敗"
+    } else {
+        messageF.value = '更新活動狀態失敗'
         toggleModal_fail()
     }
 }
 
-
 function take_job_detailF() {
-    axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/job_detail/")
-        .then(response => {
+    axios
+        .get('/api/activity/' + route.params.EventId + '/job/' + route.params.WorkId + '/job_detail/')
+        .then((response) => {
             job_detail.value = response.data
-        }
-        )
+        })
         .then(() => {
             job_detail_N.value = []
             job_detail_Y.value = []
@@ -217,16 +201,15 @@ function take_job_detailF() {
                 if (item.status == 1) {
                     job_detail_Y.value.push(item)
                 }
-            }
-            )
+            })
         })
 }
 function take_job_detailNF() {
-    axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/job_detail/")
-        .then(response => {
+    axios
+        .get('/api/activity/' + route.params.EventId + '/job/' + route.params.WorkId + '/job_detail/')
+        .then((response) => {
             job_detail.value = response.data
-        }
-        )
+        })
         .then(() => {
             job_detail_N.value = []
             job_detail_Y.value = []
@@ -234,8 +217,7 @@ function take_job_detailNF() {
                 if (item.status == 0) {
                     job_detail_N.value.push(item)
                 }
-            }
-            )
+            })
         })
 }
 /* 獲得工作細項 */
@@ -243,26 +225,26 @@ function take_job_detailNF() {
 /* 新增工作細項 */
 function newJobDetail() {
     let data = {
-        "job_id": Number(route.params.WorkId),
-        "title": njob_detailName.value,
-        "content": njob_detailContent.value
+        job_id: Number(route.params.WorkId),
+        title: njob_detailName.value,
+        content: njob_detailContent.value,
     }
 
-    axios.post('/api/job-detail/create/', data, config)
+    axios
+        .post('/api/job-detail/create/', data, config)
         .then(function (response) {
-            messageS.value = "新增工作細項成功"
+            messageS.value = '新增工作細項成功'
             toggleModal_success()
-            njob_detailName.value = ""
-            njob_detailContent.value = ""
+            njob_detailName.value = ''
+            njob_detailContent.value = ''
             take_job_detail()
         })
         .catch(function (error) {
-            messageF.value = "新增工作細項失敗"
+            messageF.value = '新增工作細項失敗'
             toggleModal_fail()
-            njob_detailName.value = ""
-            njob_detailContent.value = ""
+            njob_detailName.value = ''
+            njob_detailContent.value = ''
             take_job_detail()
-
         })
 }
 /* 新增工作細項 */
@@ -273,85 +255,80 @@ const closePage = () => {
     let deleteWorkID = route.params.WorkId
     for (const [index, item] of store.tabs.entries()) {
         if (item.id == deleteWorkID) {
-            store.tabs.splice(index, 1);
+            store.tabs.splice(index, 1)
         }
     }
     router.push({
         path: '',
-        name: 'event-works'
+        name: 'event-works',
     })
 }
-
 
 /* 關閉分頁 */
 
 /* 完成工作 */
 const finishWork = () => {
     let data = {
-        "job_id": route.params.WorkId,
-        "status": 1
+        job_id: route.params.WorkId,
+        status: 1,
     }
-    axios.post("/api/job/status/", data, config)
-    .then(response =>{
-        messageS.value = "已將工作設置為完成"
+    axios.post('/api/job/status/', data, config).then((response) => {
+        messageS.value = '已將工作設置為完成'
         toggleModal_success()
     })
 }
 
 const notFinishWork = () => {
     let data = {
-        "job_id": route.params.WorkId,
-        "status": 0
+        job_id: route.params.WorkId,
+        status: 0,
     }
-    axios.post("/api/job/status/", data, config)
-    .then(response =>{
-        messageS.value = "已將工作設置為未完成"
+    axios.post('/api/job/status/', data, config).then((response) => {
+        messageS.value = '已將工作設置為未完成'
         toggleModal_success()
     })
 }
 /* 完成工作 */
-
 </script>
 
 <template>
-
     <!-- 主要內容 -->
     <div class="flex px-8 py-4 bg-white">
         <div class="w-3/4 mr-2">
             <!--功能列-->
-            <div class="w-[50%]  inline-flex flex-wrap items-center my-4">
+            <div class="w-[50%] inline-flex flex-wrap items-center my-4">
                 <!--全部、未完成、完成狀態-->
                 <div>
                     <div id="radios">
                         <input id="radio1" class="radioInput hidden" type="radio" name="radio" value="radio1" />
                         <label class="radioLable text-base" for="radio1" @click="take_job_detailF()">完成</label>
-                        <input id="radio2" class="radioInput hidden " type="radio" name="radio" value="radio2" />
+                        <input id="radio2" class="radioInput hidden" type="radio" name="radio" value="radio2" />
                         <label class="radioLable text-base" for="radio2" @click="take_job_detailNF()">未完成</label>
-                        <input id="radio3" class="radioInput hidden " type="radio" name="radio" value="radio3"
-                            checked />
+                        <input id="radio3" class="radioInput hidden" type="radio" name="radio" value="radio3" checked />
                         <label class="radioLable text-base" for="radio3" @click="take_job_detail()">全部</label>
                     </div>
                 </div>
                 <!--全部、未完成、完成狀態-->
-
-
             </div>
             <!--編輯、刪除工作，關閉分頁-->
             <div v-if="right" class="w-[50%] py-[px] inline-flex flex-wrap justify-end">
                 <div>
                     <button
                         class="mx-2 text-white bg-[#3056d3] border border-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded"
-                        @click="toggleModal1()">
+                        @click="toggleModal1()"
+                    >
                         編輯工作
                     </button>
                     <button
                         class="mx-2 text-white bg-[#ff0000] border border-[#ff0000] hover:text-[#ff0000] hover:border hover:border-[#ff0000] hover:bg-transparent font-semibold py-2 px-4 rounded"
-                        @click="toggleModal_delete()">
+                        @click="toggleModal_delete()"
+                    >
                         刪除工作
                     </button>
                     <button
                         class="mx-2 text-white bg-[#ff0000] border border-[#ff0000] hover:text-[#ff0000] hover:border hover:border-[#ff0000] hover:bg-transparent font-semibold py-2 px-4 rounded"
-                        @click="closePage()">
+                        @click="closePage()"
+                    >
                         關閉分頁
                     </button>
                 </div>
@@ -360,15 +337,18 @@ const notFinishWork = () => {
             <div v-else class="w-[50%] py-[px] inline-flex flex-wrap justify-end">
                 <div class="ml-">
                     <button
-                        class="mx-2 text-white border border-[#3056d380] bg-[#3056d380] font-semibold py-2 px-4 rounded">
+                        class="mx-2 text-white border border-[#3056d380] bg-[#3056d380] font-semibold py-2 px-4 rounded"
+                    >
                         編輯工作
                     </button>
                     <button
-                        class="mx-2 text-white border border-[#ff000080] bg-[#ff000080] font-semibold py-2 px-4 rounded">
+                        class="mx-2 text-white border border-[#ff000080] bg-[#ff000080] font-semibold py-2 px-4 rounded"
+                    >
                         刪除工作
                     </button>
                     <button
-                        class="mx-2 text-white border border-[#ff000080] bg-[#ff000080] font-semibold py-2 px-4 rounded">
+                        class="mx-2 text-white border border-[#ff000080] bg-[#ff000080] font-semibold py-2 px-4 rounded"
+                    >
                         關閉分頁
                     </button>
                 </div>
@@ -391,15 +371,13 @@ const notFinishWork = () => {
                             <div class="ml-4 text-[#696969] font-bold">到期日期</div>
 
                             <div class="ml-4 font-bold">{{ job.dead_line }}</div>
-
-
                         </div>
                         <!--預算-->
 
                         <!--負責人-->
                         <div class="w-2/4 inline-flex justify-end pr-[20px] items-center">
-                            <div class="circle mr-2 border">
-                                <img v-bind:src="jobPath">
+                            <div>
+                                <img class="circle mr-2 border" v-bind:src="jobPath" />
                             </div>
                             <div class="mr-4">負責人</div>
                             <div class="text-[#3491d9]">{{ job.person_in_charge_email }}</div>
@@ -408,7 +386,7 @@ const notFinishWork = () => {
                     </div>
 
                     <!--工作標題、工作簡介說明-->
-                    <div class="w-full py-[10px] mb-2 text-center text-base font-bold  border round_border">
+                    <div class="w-full py-[10px] mb-2 text-center text-base font-bold border round_border">
                         {{ job.title }}
                     </div>
                     <div class="w-full p-[10px] pb-[150px] mb-2 text-base text-[#696969] border round_border">
@@ -420,32 +398,38 @@ const notFinishWork = () => {
                     <div v-if="right">
                         <button
                             class="mb-2 w-full text-white bg-[#3056d3] border-[#3056d3] border hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded"
-                            @click="toggleModal_new_job_detail()">
+                            @click="toggleModal_new_job_detail()"
+                        >
                             新增細項 +
                         </button>
                         <button
                             class="mb-2 w-full text-white bg-[#22c55e] border-[#22c55e] border hover:text-[#22c55e] hover:border hover:border-[#22c55e] hover:bg-transparent font-semibold py-2 px-4 rounded"
-                            @click="finishWork">
+                            @click="finishWork"
+                        >
                             完成
                         </button>
                         <button
                             class="mb-2 w-full text-white bg-[#ff0000] border-[#ff0000] border hover:text-[#ff0000] hover:border hover:border-[#ff0000] hover:bg-transparent font-semibold py-2 px-4 rounded"
-                            @click="notFinishWork">
+                            @click="notFinishWork"
+                        >
                             取消完成
                         </button>
                     </div>
 
                     <div v-else>
                         <button
-                            class="mb-2 w-full text-white bg-[#3056d380] border-[#3056d380] border font-semibold py-2 px-4 rounded">
+                            class="mb-2 w-full text-white bg-[#3056d380] border-[#3056d380] border font-semibold py-2 px-4 rounded"
+                        >
                             新增細項 +
                         </button>
                         <button
-                            class="mb-2 w-full text-white bg-[#22c55e80] border-[#22c55e80] border font-semibold py-2 px-4 rounded">
+                            class="mb-2 w-full text-white bg-[#22c55e80] border-[#22c55e80] border font-semibold py-2 px-4 rounded"
+                        >
                             完成
                         </button>
                         <button
-                            class="mb-2 w-full text-white bg-[#ff000080] border-[#ff000080] border font-semibold py-2 px-4 rounded">
+                            class="mb-2 w-full text-white bg-[#ff000080] border-[#ff000080] border font-semibold py-2 px-4 rounded"
+                        >
                             取消完成
                         </button>
                     </div>
@@ -454,28 +438,40 @@ const notFinishWork = () => {
 
                     <!-- 工作細項 -->
                     <template v-for="item in job_detail_Y" :key="item.job_detail_id">
-                        <JobDetail :jobDetail=item :jright=right @refresh="take_job_detail" @refresh2="(msg) => {
-                            Okstatus = msg
-                            take_job_detail_test(Okstatus)
-                        }">
+                        <JobDetail
+                            :jobDetail="item"
+                            :jright="right"
+                            @refresh="take_job_detail"
+                            @refresh2="
+                                (msg) => {
+                                    Okstatus = msg
+                                    take_job_detail_test(Okstatus)
+                                }
+                            "
+                        >
                         </JobDetail>
                     </template>
 
                     <template v-for="item in job_detail_N" :key="item.job_detail_id">
-                        <JobDetail :jobDetail=item :jright=right @refresh="take_job_detail" @refresh2="(msg) => {
-                            Okstatus = msg
-                            take_job_detail_test(Okstatus)
-                        }">>
+                        <JobDetail
+                            :jobDetail="item"
+                            :jright="right"
+                            @refresh="take_job_detail"
+                            @refresh2="
+                                (msg) => {
+                                    Okstatus = msg
+                                    take_job_detail_test(Okstatus)
+                                }
+                            "
+                            >>
                         </JobDetail>
                     </template>
                     <!-- 工作細項 -->
                 </div>
             </div>
             <!--主要內容-->
-
-
         </div>
-        <FileSection :mode=2></FileSection>
+        <FileSection :mode="2"></FileSection>
     </div>
     <!-- 主要內容 -->
 
@@ -493,24 +489,42 @@ const notFinishWork = () => {
                 <div class="overflow-y-auto max-h-96 pr-4">
                     <div class="flex-row justify-between space-y-3">
                         <div class="text-base font-bold">工作名稱</div>
-                        <input type="text" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                            placeholder="超棒的活動" v-model="uworkName">
+                        <input
+                            type="text"
+                            class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                            placeholder="超棒的活動"
+                            v-model="uworkName"
+                        />
                         <div class="text-base font-bold">工作日期</div>
-                        <input type="date" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                            placeholder="超棒的活動" v-model="uworkDate">
+                        <input
+                            type="date"
+                            class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                            placeholder="超棒的活動"
+                            v-model="uworkDate"
+                        />
                         <div class="text-base font-bold">分配工作預算</div>
                         <div class="flex items-center justify-start space-x-3">
                             <span class="italic font-bold">$</span>
-                            <input type="number" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                                placeholder="10000" v-model="uworkBudget">
+                            <input
+                                type="number"
+                                class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                                placeholder="10000"
+                                v-model="uworkBudget"
+                            />
                         </div>
                         <div class="text-base font-bold">工作說明</div>
-                        <textarea class=" px-1 py-1 text-base border border-2 border-slate-400 w-full"
-                            placeholder="這次的活動，我們將要帶領大家..." v-model="uworkContent"></textarea>
+                        <textarea
+                            class="px-1 py-1 text-base border border-2 border-slate-400 w-full"
+                            placeholder="這次的活動，我們將要帶領大家..."
+                            v-model="uworkContent"
+                        ></textarea>
 
-                        <div class="text-base font-bold ">負責人</div>
-                        <select class="px-1 py-1 w-full font-bold border border-2 border-slate-500"
-                            name="responsibility" @change="get_responGmail()">
+                        <div class="text-base font-bold">負責人</div>
+                        <select
+                            class="px-1 py-1 w-full font-bold border border-2 border-slate-500"
+                            name="responsibility"
+                            @change="get_responGmail()"
+                        >
                             <option v-for="c_email in colla">{{ c_email.user_email }}</option>
                         </select>
                     </div>
@@ -519,16 +533,19 @@ const notFinishWork = () => {
 
             <template #footer>
                 <div class="border-t-2 pt-2">
-                    <button @click="toggleModal1(), updateWork()"
-                        class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    <button
+                        @click="toggleModal1(), updateWork()"
+                        class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
+                    >
                         新增
                     </button>
-                    <button @click="toggleModal1()"
-                        class=" btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                    <button
+                        @click="toggleModal1()"
+                        class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold"
+                    >
                         取消
                     </button>
                 </div>
-
             </template>
         </Modal>
     </Teleport>
@@ -542,16 +559,18 @@ const notFinishWork = () => {
                     <div class="font-bold text-2xl">警告視窗</div>
                 </div>
             </template>
-            <template #body>
-                你確定要刪除此工作嗎，按下確定後就不能返回了
-            </template>
+            <template #body> 你確定要刪除此工作嗎，按下確定後就不能返回了 </template>
             <template #footer>
-                <button @click="toggleModal_delete(), deleteWork()"
-                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                <button
+                    @click="toggleModal_delete(), deleteWork()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
+                >
                     確定
                 </button>
-                <button @click="toggleModal_delete()"
-                    class="py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                <button
+                    @click="toggleModal_delete()"
+                    class="py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold"
+                >
                     取消
                 </button>
             </template>
@@ -572,29 +591,37 @@ const notFinishWork = () => {
                 <div class="overflow-y-auto max-h-96 pr-4">
                     <div class="flex-row justify-between space-y-3">
                         <div class="text-base font-bold">工作細項名稱</div>
-                        <input type="text" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                            v-model="njob_detailName">
+                        <input
+                            type="text"
+                            class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                            v-model="njob_detailName"
+                        />
 
                         <div class="text-base font-bold">工作細項內容</div>
-                        <textarea class=" px-1 py-1 text-base border border-2 border-slate-400 w-full"
-                            v-model="njob_detailContent">
-                                    </textarea>
+                        <textarea
+                            class="px-1 py-1 text-base border border-2 border-slate-400 w-full"
+                            v-model="njob_detailContent"
+                        >
+                        </textarea>
                     </div>
                 </div>
             </template>
 
             <template #footer>
                 <div class="border-t-2 pt-2">
-                    <button @click="toggleModal_new_job_detail(), newJobDetail()"
-                        class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    <button
+                        @click="toggleModal_new_job_detail(), newJobDetail()"
+                        class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
+                    >
                         新增
                     </button>
-                    <button @click="toggleModal_new_job_detail()"
-                        class=" btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                    <button
+                        @click="toggleModal_new_job_detail()"
+                        class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold"
+                    >
                         取消
                     </button>
                 </div>
-
             </template>
         </modal>
     </Teleport>
@@ -612,11 +639,12 @@ const notFinishWork = () => {
                 {{ messageS }}
             </template>
             <template #footer>
-                <button @click="toggleModal_success()"
-                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                <button
+                    @click="toggleModal_success()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
+                >
                     確定
                 </button>
-
             </template>
         </modal>
     </Teleport>
@@ -634,8 +662,10 @@ const notFinishWork = () => {
                 {{ messageF }}
             </template>
             <template #footer>
-                <button @click="toggleModal_fail()"
-                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                <button
+                    @click="toggleModal_fail()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
+                >
                     確定
                 </button>
             </template>
@@ -655,8 +685,8 @@ const notFinishWork = () => {
 }
 
 .circle {
-    height: 1.875rem;
-    width: 1.875rem;
+    width: 2.8rem;
+    height: 2.8rem;
     border-radius: 50%;
     background-color: rgb(255, 255, 255);
     border-color: rgb(0, 0, 0);
@@ -690,7 +720,6 @@ const notFinishWork = () => {
     color: #ffffff70;
 }
 
-
 /* radios */
 #radios {
     display: inline-flex;
@@ -704,7 +733,7 @@ const notFinishWork = () => {
     font-size: 14px;
     font-family: sans-serif;
     color: #ffffff;
-    background: #5B83AC;
+    background: #5b83ac;
     cursor: pointer;
     transition: background 0.1s;
 }
@@ -713,7 +742,7 @@ const notFinishWork = () => {
     border-right: 1px solid #52708f;
 }
 
-.radioInput:checked+.radioLable {
+.radioInput:checked + .radioLable {
     background: #52708f;
 }
 
@@ -723,6 +752,5 @@ const notFinishWork = () => {
 
 .btn_click2:hover {
     background-color: #ffcccc;
-
 }
 </style>
