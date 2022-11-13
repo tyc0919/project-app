@@ -18,7 +18,7 @@ let config = {
 
 // 分頁準備
 let pages = ref([])
-const quantum = 5
+const quantum = 6
 let pageNumber = ref(1)
 const changePage = (targetPage) => {
     pageNumber.value = targetPage
@@ -107,6 +107,11 @@ const sorter = () => {
         }
     }
 }
+
+const downloadFile = (fname) => {
+    window.open('/api/serve-file/' + route.params.EventId + '/' + fname)
+}
+
 getData()
 </script>
 
@@ -165,9 +170,9 @@ getData()
     </div>
     <div
         v-for="file in logFile"
-        class="flex justify-between w-auto my-4 py-4 pl-4 pr-2 border-2 border-[#3399FF] rounded-md bg-white "
+        class="flex justify-between w-auto my-4 py-4 pl-4 pr-2 border-2 border-[#D1D5DB] rounded-md bg-white"
     >
-        <div class="w-full whitespace-nowrap">
+        <div class="w-full whitespace-nowrap cursor-pointer" @click="downloadFile(file.file_path)">
             <p class="font-bold">{{ file.file_path }}</p>
             <div class="flex flex-row w-full mt-2 text-base text-gray-500 font-bold">
                 <div class="mr-2">

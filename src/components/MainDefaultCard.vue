@@ -6,6 +6,7 @@ const props = defineProps({
     costMoney: Number,
     budgetMoney: Number,
 })
+
 let costPercentage = 0
 if (props.budgetMoney != 0) {
     costPercentage = Math.round(props.costMoney / props.budgetMoney * 100)
@@ -15,6 +16,7 @@ if (props.budgetMoney != 0) {
 if (costPercentage > 100) {
     costPercentage = 100;
 }
+
 </script>
 
 
@@ -44,6 +46,7 @@ if (costPercentage > 100) {
                     <div :class="props.tracePercentage == 0 ? 'bg-tranparent' : 'bg-[#4ADE80]'"
                         :style="{ width: props.tracePercentage + '%' }"
                         class="trace-container  rounded-full h-8 w-0  px-4"></div>
+
                 </div>
 
                 <div class="relative h-fit w-full rounded-full bg-slate-300 shadow-inset py-1 px-1">

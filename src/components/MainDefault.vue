@@ -17,7 +17,7 @@ let config = {
 }
 
 let pages = ref([])
-const quantum = 6
+const quantum = 3
 let pageNumber = ref(1)
 const changePage = (targetPage) => {
     pageNumber.value = targetPage
@@ -151,7 +151,6 @@ const getData = async () => {
     await axios.get('/api/activity/').then(function (response) {
         activityData.value = response.data
     })
-    console.log(activityData.value)
 
     // calculate progressbars' percent 
     for (let activity of activityData.value) {
@@ -167,7 +166,6 @@ const getData = async () => {
                 let finishedJobs = allJobStatus.filter(item => item == 1)
                 activity['finish_percentage'] = Math.round(finishedJobs.length / allJobStatus.length * 100)
             }
-
         })
     }
 
@@ -344,17 +342,24 @@ getData()
                 </div>
             </div>
         </div>
+        <div class="bg-white border border-[#d1d5db] rounded-2xl p-8 my-4">
+            <div class="grid grid-cols-3 grid-gap-1rem items-center justify-center">
+                <!-- cards -->
+                <router-link v-for="item in pages[pageNumber - 1]" :to="{ path: '/events/' + item.id }">
+                    <MainDeFaultCard
+                        :name="item.activity_name"
+                        :owner="item.user_name"
+                        :tracePercentage="item.finish_percentage"
+                        :costMoney="item.activity_expenditure"
+                        :budgetMoney="item.activity_budget"
+                    ></MainDeFaultCard>
+                </router-link>
 
-        <div class="grid grid-cols-3 grid-gap-1rem items-center justify-center my-4">
-            <!-- cards -->
-            <router-link v-for="item in pages[pageNumber - 1]" :to="{ path: '/events/' + item.id }">
-                <MainDeFaultCard :name="item.activity_name" :owner="item.user_name"
-                    :tracePercentage="item.finish_percentage" :costMoney="item.activity_expenditure"
-                    :budgetMoney="item.activity_budget"></MainDeFaultCard>
-            </router-link>
+                <!-- cards end -->
+            </div>
 
-            <!-- cards end -->
         </div>
+
         <!--換頁-->
         <div class="flex justify-center pb-10">
             <nav aria-label="Page navigation example">
@@ -465,8 +470,6 @@ getData()
 .radioInput:checked+.radioLable {
     background: #52708f;
 }
-
-
 
 .ellipsis {
     overflow: hidden;

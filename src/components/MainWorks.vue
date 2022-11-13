@@ -6,7 +6,7 @@ import { ref } from 'vue'
 let workData = ref([])
 
 let pages = ref([])
-const quantum = 6
+const quantum = 3
 let pageNumber = ref(1)
 const changePage = (targetPage) => {
     pageNumber.value = targetPage
@@ -67,13 +67,24 @@ getData()
             </div>
         </div>
 
-        <div class="my-4 grid grid-cols-3 grid-gap-1rem items-center justify-center">
-            <router-link v-for="(item, index) of pages[pageNumber - 1]"
-                :to="{ name: 'event-work-detail', params: { EventId: item.activity, WorkId: item.id } }">
-                <MainWorksCard :work-title="item.title" :activity="item.activity_name" :content="item.content"
-                    :tracePercentage="100" :costMoney="item.job_expenditure" :budgetMoney="item.job_budget">
-                </MainWorksCard>
-            </router-link>
+        <div class="bg-white border border-[#d1d5db] rounded-2xl p-8 my-4">
+            <div class="grid grid-cols-3 grid-gap-1rem items-center justify-center">
+                <router-link
+                    v-for="(item, index) of pages[pageNumber - 1]"
+                    :to="{ name: 'event-work-detail', params: { EventId: item.activity, WorkId: item.id } }"
+                >
+                    <MainWorksCard
+                        :work-title="item.title"
+                        :activity="item.activity_name"
+                        :content="item.content"
+                        :tracePercentage="100"
+                        :costMoney="item.job_expenditure"
+                        :budgetMoney="item.job_budget"
+                    >
+                    </MainWorksCard>
+                </router-link>
+            </div>
+
         </div>
 
         <!--換頁-->

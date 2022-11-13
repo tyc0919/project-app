@@ -1,14 +1,19 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 let show = ref(false)
 let triggerMessage = ref('全文')
+
 const showCompleteContent = () => {
     show.value = !show.value
     triggerMessage.value = !show.value ? '全文' : '顯示部分'
 }
+onMounted(() => {
+    document.getElementById('reviewImage').src = '/api/serve-file/avatar/' + props.email
+})
 
 const props = defineProps({
+    email: String,
     reviewer: String,
     content: String,
     rating: String,
@@ -22,7 +27,7 @@ const props = defineProps({
     >
         <div class="review-card w-full h-fit">
             <div class="reviewer flex justify-start items-center mb-2">
-                <div class="reviewer-img mr-2"></div>
+                <div><img id="reviewImage" src="" class="reviewer-img mr-2" /></div>
                 <div class="reviewer-name text-xl cursor-text">{{ reviewer }}</div>
             </div>
             <div class="flex justify-start items-end mb-2">
@@ -67,8 +72,8 @@ const props = defineProps({
 }
 
 .reviewer-img {
-    width: 1.75rem;
-    height: 1.75rem;
+    width: 3rem;
+    height: 3rem;
     border: 1px solid #000000;
     vertical-align: middle;
     border-radius: 50%;
