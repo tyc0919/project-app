@@ -15,7 +15,6 @@ if (props.budgetMoney != 0) {
 if (costPercentage > 100) {
     costPercentage = 100;
 }
-console.log(costPercentage)
 </script>
 
 
@@ -26,7 +25,7 @@ console.log(costPercentage)
         <div>
             <div class="cardTop mb-8">
                 <div class="mb-2 text-center flex flex-col justify-start items-center">
-                    <img class="h-64 w-96" src="src\assets\images\FirstPart.png" />
+                    <img class="h-64 w-96" src="src/assets/images/FirstPart.png" />
                 </div>
                 <div class="text-2xl font-bold title ellipsis-2">{{ name }}</div>
                 <div class="inline-flex justify-start w-full text-sm italic person">
