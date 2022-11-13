@@ -59,6 +59,7 @@ let job_detail_N = ref([])
 let njob_detailName = ref('')
 let njob_detailContent = ref('')
 let right = ref(Boolean)
+let jobPath = ref("")
 
 
 
@@ -86,6 +87,7 @@ async function take_work() {
             job.value = response.data
             let temp = new Date(job.value.dead_line)
             job.value.dead_line = temp.toLocaleDateString()
+            jobPath.value = "/api/serve-file/avatar/" + job.value.person_in_charge_email
         })
 
     await axios.get("/api/activity/" + route.params.EventId + "/")
@@ -147,9 +149,10 @@ async function deleteWork() {
     await axios
         .post('/api/job/delete/', data, config)
         .then(function (response) {
+            closePage()
             router.push({
                 path: '/events/' + route.params.EventId,
-                name: 'event-default',
+                name: 'event-works'
             })
         })
         .catch(function (error) {
@@ -161,19 +164,7 @@ async function deleteWork() {
 }
 /* 刪除工作 */
 
-/* 刪除分頁 */
-const delete_tab = (msg) => {
-    axios.get("/api/activity/" + route.params.EventId + "/job/" + msg + "/")
-        .then(response => {
-            let temp = {
-                id: response.data.id,
-                title: response.data.title
-            }
-            store.pushin(temp)
-        }
-        )
-}
-/* 刪除分頁 */
+
 
 /* 獲得工作細項 */
 
@@ -277,7 +268,6 @@ function newJobDetail() {
 /* 新增工作細項 */
 
 /* 關閉分頁 */
-
 const closePage = () => {
     const store = usePageStoretest()
     let deleteWorkID = route.params.WorkId
@@ -291,10 +281,11 @@ const closePage = () => {
         name: 'event-works'
     })
 }
+
+
 /* 關閉分頁 */
 
 /* 完成工作 */
-
 const finishWork = () => {
     let data = {
         "job_id": route.params.WorkId,
@@ -318,9 +309,6 @@ const notFinishWork = () => {
         toggleModal_success()
     })
 }
-
-
-
 /* 完成工作 */
 
 </script>
@@ -410,7 +398,9 @@ const notFinishWork = () => {
 
                         <!--負責人-->
                         <div class="w-2/4 inline-flex justify-end pr-[20px] items-center">
-                            <div class="circle mr-2 border"></div>
+                            <div class="circle mr-2 border">
+                                <img v-bind:src="jobPath">
+                            </div>
                             <div class="mr-4">負責人</div>
                             <div class="text-[#3491d9]">{{ job.person_in_charge_email }}</div>
                         </div>

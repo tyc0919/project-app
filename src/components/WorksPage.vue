@@ -29,7 +29,6 @@ let messageF = ref("")
 /* 分頁 */
 
 const trans_tab = (msg) => {
-    console.log(msg)
     axios.get("/api/activity/" + route.params.EventId + "/job/" + msg + "/")
         .then(response => {
             let temp = {

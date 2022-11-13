@@ -36,7 +36,7 @@ takeUserPic()
                         class="avatar w-12 h-12 rounded-full object-cover cursor-pointer"
                         v-bind:src="userPic"
                         id = "avatorId"
-                        onerror="this.src='/src/assets/images/default_avatar.svg'"
+                        onerror="this.src='https://i.imgur.com/LOEKh9R.jpg'"
                     />
 
                     <div

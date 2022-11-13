@@ -149,7 +149,7 @@ const post_passwd = () => {
                     <label for="image">
                         <input @change="fileUpload()" ref="file" type="file" id="image" class="file_img"
                             accept="image/*" />
-                        <img v-bind:src="userPic" class="cursor-pointer" onerror="this.src='/src/assets/images/default_avatar.svg'">
+                        <img v-bind:src="userPic" class="cursor-pointer" onerror="this.src='https://i.imgur.com/LOEKh9R.jpg'">
                     </label>
                 </picture>
             </div>

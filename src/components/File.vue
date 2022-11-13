@@ -22,6 +22,8 @@ let config = {
     mode: 'same-origin'
 }
 let uploadTimeFormat = ref("")
+let messageS = ref("")
+let messageF = ref("")
 
 
 function timeFormat() {
@@ -37,6 +39,18 @@ const toggleModal = () => {
     showModal.value = !showModal.value
 }
 
+const showModal_success = ref(false)
+const showModal_fail = ref(false)
+
+const toggleModal_success = () => {
+    showModal_success.value = !showModal_success.value
+}
+const toggleModal_fail = () => {
+    showModal_fail.value = !showModal_fail.value
+}
+
+
+
 const delete_file = async () => {
     let data = {
         "model": "file",
@@ -46,7 +60,12 @@ const delete_file = async () => {
 
     await axios.post("/api/delete-file/", data, config)
         .then(response => {
-            console.log(response)
+            messageS.value = "檔案刪除成功"
+            toggleModal_success()
+        })
+        .catch(error =>{
+            messageF.value = "檔案刪除失敗"
+            toggleModal_fail()
         })
 
     toggleModal()
@@ -62,7 +81,7 @@ const downloadFile = () => {
 
 <template>
 
-    <div class="relative w-full p-2 mt-4 border-2 rounded-md border-sky-400 cursor-pointer" >
+    <div class="relative w-full p-2 mt-4 border-2 rounded-md border-sky-400 cursor-pointer">
         <div @click="downloadFile()">
             <div>
                 {{ props.fname }}
@@ -101,6 +120,49 @@ const downloadFile = () => {
             </template>
         </modal>
     </Teleport>
+
+    <!-- 正確訊息視窗 -->
+    <Teleport to="body">
+        <modal :show="showModal_success">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">成功視窗</div>
+                </div>
+            </template>
+            <template #body>
+                {{ messageS }}
+            </template>
+            <template #footer>
+                <button @click="toggleModal_success()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    確定
+                </button>
+
+            </template>
+        </modal>
+    </Teleport>
+    <!-- 正確訊息視窗 -->
+
+    <!-- 錯誤訊息視窗 -->
+    <Teleport to="body">
+        <modal :show="showModal_fail">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">警告視窗</div>
+                </div>
+            </template>
+            <template #body>
+                {{ messageF }}
+            </template>
+            <template #footer>
+                <button @click="toggleModal_fail()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    確定
+                </button>
+            </template>
+        </modal>
+    </Teleport>
+    <!-- 錯誤訊息視窗 -->
 </template>
 
 <style scoped>

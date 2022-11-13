@@ -94,7 +94,7 @@ async function authority() {
         right.value = false
     }
 }
-authority()
+
 /* 獲得工作內容和權限判斷 */
 
 
@@ -106,11 +106,12 @@ const take_colla = () => {
         })
 }
 
-const take_file = () => {
-    axios.get("/api/file/job/" + route.params.WorkId + "/")
+const take_file = async() => {
+    await axios.get("/api/file/job/" + route.params.WorkId + "/")
         .then(response => {
             data.value = response.data
         })
+    authority()
 }
 
 const take_activity = async () => {
@@ -156,7 +157,7 @@ let messageF = ref("")
 
         <div v-else class="w-full">
             <label v-if="right"
-                class="py-2 inline-block w-full text-center rounded text-white bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold"
+                class="py-2 inline-block w-full text-center rounded text-white border border-[#3056d3] bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold"
                 for="file_upload">上傳檔案
             </label>
             <input ref="file" @change="upload" type="file" id="file_upload" class="hidden" />

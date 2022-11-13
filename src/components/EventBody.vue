@@ -247,7 +247,7 @@ const toggleModal_fail = () => {
                 <label for="image" class="event_main_img">
                     <input @change="fileUpload()" ref="file" type="file" id="image" class="file_img" accept="image/*" />
                     <img v-bind:src="activity_data.picPath" class="event-object"
-                        onerror="this.src='/src/assets/images/default_event.svg'">
+                        onerror="this.src='https://i.imgur.com/fAgK9sl.jpg'">
                 </label>
 
                 <form action="">
@@ -421,7 +421,7 @@ const toggleModal_fail = () => {
                         <input type="text" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
                             placeholder="原本的活動名稱" id="test1">
                         <div class="text-base font-bold ">活動簡介</div>
-                        <textarea class="text-base font-bold border border-2 border-slate-400 w-full"
+                        <textarea class="px-1 py-1 w-full text-base border border-2 border-slate-400"
                             placeholder="原本的活動簡介" id="test2"></textarea>
                     </div>
                 </div>
