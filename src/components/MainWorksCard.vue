@@ -7,95 +7,19 @@ const props = defineProps({
     costMoney: Number,
     budgetMoney: Number,
 })
-document.addEventListener('DOMContentLoaded', function () {
-    // trace stages
-    let tracePercentageEls = document.querySelectorAll('.trace-percentage')
-    let traceContainerEls = document.querySelectorAll('.trace-container')
-
-    let traceEls = []
-    for (let i = 0; i < traceContainerEls.length; i++) {
-        let objTraceEl = {
-            container: traceContainerEls[i],
-            percentage: tracePercentageEls[i],
-        }
-        traceEls.push(objTraceEl)
-    }
-
-    traceEls.forEach(function (traceEl) {
-        let percentageEl = traceEl['percentage']
-        let containerEl = traceEl['container']
-        // each trace element -- 80%
-        let containerClass = containerEl.classList
-        let percentageText = percentageEl.innerText
-        // percentage -- 80 -> Number
-        let percentage = Number(percentageText.substring(0, percentageText.length - 1))
-        // width and transtion animation
-        if (percentage > 100) {
-            percentage = 100
-        }
-        containerEl.classList.add('shadow-out')
-        containerEl.style.width = percentage + '%'
-        containerEl.style.transition = '2s'
-        // background-color
-        if (percentage > 90) {
-            containerClass.add('bg-emerald-400')
-        } else if (percentage > 50) {
-            containerClass.add('bg-blue-400')
-        } else {
-            containerClass.add('bg-stone-600')
-        }
-    })
-
-    // cost stages
-    let costMoneyEl = document.querySelectorAll('.cost')
-    let budgetMoneyEl = document.querySelectorAll('.budget')
-    let costContainerEls = document.querySelectorAll('.cost-container')
-
-    let costEls = []
-    for (let i = 0; i < costContainerEls.length; i++) {
-        // calculate the cost percentage of the budget
-        let costMoney = costMoneyEl[i].innerText
-        let budgetMoney = budgetMoneyEl[i].innerText
-        let costMoneyAmount = costMoney.substring(1, costMoney.length - 1)
-        let budgetMoneyAmount = budgetMoney.substring(1, budgetMoney.length - 1)
-        let costPercentage = Math.round((costMoneyAmount / budgetMoneyAmount) * 100)
-        // put into the object
-        let objCostEl = {
-            percentage: costPercentage,
-            container: costContainerEls[i],
-        }
-        costEls.push(objCostEl)
-        // 顯示資料時，加上千分位符號
-        costMoneyEl[i].innerText = costMoneyEl[i].innerText.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
-        budgetMoneyEl[i].innerText = budgetMoneyEl[i].innerText.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
-    }
-
-    costEls.forEach(function (costEl) {
-        let percentage = costEl['percentage']
-        let containerEl = costEl['container']
-        // width and transition animation
-        if (percentage > 100) {
-            percentage = 100
-        }
-        containerEl.style.width = percentage + '%'
-        containerEl.style.transition = '2s'
-        containerEl.style.transitionDelay = '.5s'
-        containerEl.classList.add('shadow-out')
-        // color
-        if (percentage > 85) {
-            containerEl.classList.add('bg-red-400')
-        } else {
-            containerEl.classList.add('bg-yellow-400')
-        }
-    })
-})
+let costPercentage = 0
+if (props.budgetMoney != 0) {
+    costPercentage = Math.round(props.costMoney / props.budgetMoney * 100)
+}
+if (costPercentage > 100) {
+    costPercentage = 100;
+}
 </script>
 
 <template>
     <!-- card1 -->
     <div
-        class="h-96 shadow bg-white flex flex-col justify-between px-4 py-4 card align-start hover:border hover:border-gray-500"
-    >
+        class="h-96 shadow bg-white flex flex-col justify-between px-4 py-4 card align-start hover:border hover:border-gray-500">
         <div class="cardTop mb-8">
             <div class="text-2xl font-bold title ellipsis-2">
                 {{ workTitle }}
@@ -115,7 +39,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     <span class="ellipsis">完成進度</span>
                     <span class="trace-percentage">{{ tracePercentage }}%</span>
                 </div>
-                <div class="trace-container rounded-full h-8 w-0 px-4"></div>
+                <div :class="props.tracePercentage == 0 ? 'bg-tranparent' : 'bg-[#4ADE80]'"
+                    :style="{ width: props.tracePercentage + '%' }" class="trace-container  rounded-full h-8 w-0  px-4">
+                </div>
             </div>
 
             <div class="relative h-fit w-full rounded-full bg-slate-300 shadow-inset py-1 px-1">
@@ -127,7 +53,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="budget ml-1">${{ budgetMoney }}</span>
                     </div>
                 </div>
-                <div class="cost-container rounded-full h-8 w-0 flex items-center justify-between px-4 text-sm"></div>
+                <div :class="costPercentage == 0 ? 'bg-tranparent' : 'bg-[#F87171]'"
+                    :style="{ width: costPercentage + '%' }" class="cost-container  rounded-full h-8 w-0  px-4">
+                </div>
             </div>
         </div>
     </div>
@@ -142,6 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
     transition-delay: 0s;
     cursor: pointer;
 }
+
 .ellipsis {
     overflow: hidden;
     display: -webkit-box;
@@ -176,10 +105,12 @@ document.addEventListener('DOMContentLoaded', function () {
 .cardBottom {
     border-color: #000000;
 }
+
 .card {
     border-radius: 20px;
     border-width: 1px;
 }
+
 .pic {
     border: 1px solid #000000;
     height: 8rem;

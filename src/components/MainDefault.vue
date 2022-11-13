@@ -152,15 +152,20 @@ const getData = async () => {
         activityData.value = response.data
     })
 
+    // calculate progressbars' percent 
     for (let activity of activityData.value) {
-        let count = 0
         await axios.get('/api/activity/' + activity.id + '/job/').then((response) => {
+            console.log(response.data)
+            let allJobStatus = [];
             for (let job of response.data) {
-                if (job.status == 1) {
-                    count++
-                }
+                allJobStatus.push(job.status)
             }
-            activity['finish_percentage'] = Math.round((count / response.data.length) * 100)
+            if (allJobStatus.length == 0) {
+                activity['finish_percentage'] = 0;
+            } else {
+                let finishedJobs = allJobStatus.filter(item => item == 1)
+                activity['finish_percentage'] = Math.round(finishedJobs.length / allJobStatus.length * 100)
+            }
         })
     }
 
@@ -194,10 +199,8 @@ getData()
 
             <template #footer>
                 <div class="border-t-2 pt-2">
-                    <button
-                        @click="toggleModal('noticeModal')"
-                        class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold"
-                    >
+                    <button @click="toggleModal('noticeModal')"
+                        class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold">
                         確定
                     </button>
                 </div>
@@ -216,31 +219,21 @@ getData()
             <div class="overflow-y-auto max-h-96 pr-4">
                 <div class="flex-row justify-between space-y-3">
                     <div class="text-base font-bold">活動名稱</div>
-                    <input
-                        id="activityTitle"
-                        type="text"
+                    <input id="activityTitle" type="text"
                         class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                        placeholder="超棒的活動 (需至少三個字)"
-                    />
+                        placeholder="超棒的活動 (需至少三個字)" />
                     <span class="text-red-500">{{ errorMessage.titleErrorMessage.value }}</span>
                     <div class="text-base font-bold">活動預算</div>
                     <div class="flex items-center justify-start space-x-3">
                         <span class="italic font-bold">$</span>
-                        <input
-                            id="activityBudget"
-                            type="number"
-                            class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                            placeholder="10000"
-                        />
+                        <input id="activityBudget" type="number"
+                            class="px-1 py-1 w-full text-base border border-2 border-slate-400" placeholder="10000" />
                     </div>
                     <span class="text-red-500">{{ errorMessage.budgetErrorMessage.value }}</span>
 
                     <div class="text-base font-bold">活動簡介</div>
-                    <textarea
-                        id="activityContent"
-                        class="px-1 py-1 text-base border border-2 border-slate-400 w-full"
-                        placeholder="這次的活動，我們將要帶領大家..."
-                    ></textarea>
+                    <textarea id="activityContent" class="px-1 py-1 text-base border border-2 border-slate-400 w-full"
+                        placeholder="這次的活動，我們將要帶領大家..."></textarea>
                     <span class="text-red-500">{{ errorMessage.descriptionErrorMessage.value }}</span>
                 </div>
             </div>
@@ -248,16 +241,12 @@ getData()
 
         <template #footer>
             <div class="border-t-2 pt-2">
-                <button
-                    @click="addActivity()"
-                    class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
-                >
+                <button @click="addActivity()"
+                    class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold">
                     新增
                 </button>
-                <button
-                    @click="toggleModal('addActivityModal')"
-                    class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold"
-                >
+                <button @click="toggleModal('addActivityModal')"
+                    class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold">
                     取消
                 </button>
             </div>
@@ -277,11 +266,8 @@ getData()
             <div class="overflow-y-auto max-h-96 pr-4">
                 <div class="flex-row justify-between space-y-3">
                     <div class="text-base font-bold">活動邀請碼</div>
-                    <input
-                        id="invitationCode"
-                        type="text"
-                        class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                    />
+                    <input id="invitationCode" type="text"
+                        class="px-1 py-1 w-full text-base border border-2 border-slate-400" />
                     <span class="text-red-500">{{ errorMessage.invitationErrorMessage.value }}</span>
                 </div>
             </div>
@@ -289,16 +275,12 @@ getData()
 
         <template #footer>
             <div class="border-t-2 pt-2">
-                <button
-                    @click="joinActivity()"
-                    class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
-                >
+                <button @click="joinActivity()"
+                    class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold">
                     新增
                 </button>
-                <button
-                    @click="toggleModal('joinActivityModal')"
-                    class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold"
-                >
+                <button @click="toggleModal('joinActivityModal')"
+                    class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold">
                     取消
                 </button>
             </div>
@@ -321,10 +303,8 @@ getData()
 
         <template #footer>
             <div class="border-t-2 pt-2">
-                <button
-                    @click="toggleModal('joinNoticeModal')"
-                    class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold"
-                >
+                <button @click="toggleModal('joinNoticeModal')"
+                    class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold">
                     確定
                 </button>
             </div>
@@ -349,18 +329,14 @@ getData()
             </div>
             <div class="inline-flex">
                 <div class="mr-4">
-                    <button
-                        @click="toggleModal('joinActivityModal')"
-                        class="text-white bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded"
-                    >
+                    <button @click="toggleModal('joinActivityModal')"
+                        class="text-white bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded">
                         加入活動
                     </button>
                 </div>
                 <div class="ml-4">
-                    <button
-                        @click="toggleModal('addActivityModal')"
-                        class="text-white bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded"
-                    >
+                    <button @click="toggleModal('addActivityModal')"
+                        class="text-white bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded">
                         新增活動
                     </button>
                 </div>
@@ -381,103 +357,73 @@ getData()
 
                 <!-- cards end -->
             </div>
+
         </div>
 
         <!--換頁-->
         <div class="flex justify-center pb-10">
             <nav aria-label="Page navigation example">
+
                 <ul class="inline-flex -space-x-px text-xl shadow-primary">
-                    <li
-                        v-if="pageNumber - 1 > 0"
-                        @click="changePage(pageNumber - 1)"
-                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 ml-0 rounded-l-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    >
+                    <li v-if="pageNumber - 1 > 0" @click="changePage(pageNumber - 1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 ml-0 rounded-l-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <a href="#">上一頁</a>
+                    </li>
+                    <li v-else
+                        class="shadow-none text-opacity-30 bg-white border border-gray-300 text-gray-500 rounded-l-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">
                         上一頁
                     </li>
-                    <li
-                        v-else
-                        class="shadow-none text-opacity-30 bg-white border border-gray-300 text-gray-500 rounded-l-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
-                    >
-                        上一頁
+                    <li v-if="pageNumber - 2 > 1" @click="changePage(1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <a href="#">1</a>
                     </li>
-                    <li
-                        v-if="pageNumber - 2 > 1"
-                        @click="changePage(1)"
-                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    >
-                        1
-                    </li>
-                    <li
-                        v-if="pageNumber - 2 > 1"
-                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    >
+                    <li v-if="pageNumber - 2 > 1"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                         ...
                     </li>
 
-                    <li
-                        v-if="pageNumber - 2 >= 1"
-                        @click="changePage(pageNumber - 2)"
-                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    >
-                        {{ pageNumber - 2 }}
+                    <li v-if="pageNumber - 2 >= 1" @click="changePage(pageNumber - 2)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <a href="#">{{ pageNumber - 2 }}</a>
                     </li>
-                    <li
-                        v-if="pageNumber - 1 >= 1"
-                        @click="changePage(pageNumber - 1)"
-                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    >
-                        {{ pageNumber - 1 }}
+                    <li v-if="pageNumber - 1 >= 1" @click="changePage(pageNumber - 1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <a href="#">{{ pageNumber - 1 }}</a>
                     </li>
 
                     <li
-                        class="bg-blue-50 border border-gray-300 text-blue-600 hover:bg-blue-100 hover:text-blue-700 py-2 px-3 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
-                    >
-                        {{ pageNumber }}
+                        class="bg-blue-50 border border-gray-300 text-blue-600 hover:bg-blue-100 hover:text-blue-700 py-2 px-3 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
+                        <a href="#">{{ pageNumber }}</a>
                     </li>
 
-                    <li
-                        v-if="pageNumber + 1 <= pages.length"
-                        @click="changePage(pageNumber + 1)"
-                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    >
-                        {{ pageNumber + 1 }}
+                    <li v-if="pageNumber + 1 <= pages.length" @click="changePage(pageNumber + 1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <a href="#">{{ pageNumber + 1 }}</a>
                     </li>
-                    <li
-                        v-if="pageNumber + 2 <= pages.length"
-                        @click="changePage(pageNumber + 2)"
-                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    >
-                        {{ pageNumber + 2 }}
+                    <li v-if="pageNumber + 2 <= pages.length" @click="changePage(pageNumber + 2)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <a href="#">{{ pageNumber + 2 }}</a>
                     </li>
 
-                    <li
-                        v-if="pageNumber + 2 < pages.length"
-                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    >
+                    <li v-if="pageNumber + 2 < pages.length"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                         ...
                     </li>
-                    <li
-                        v-if="pageNumber + 2 < pages.length"
-                        @click="changePage(pages.length)"
-                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    >
-                        {{ pages.length }}
+                    <li v-if="pageNumber + 2 < pages.length" @click="changePage(pages.length)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <a href="#">{{ pages.length }}</a>
                     </li>
 
-                    <li
-                        v-if="pageNumber < pages.length"
-                        @click="changePage(pageNumber + 1)"
-                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-r-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    >
-                        下一頁
+                    <li v-if="pageNumber < pages.length" @click="changePage(pageNumber + 1)"
+                        class="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-r-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <a href="#">下一頁</a>
                     </li>
-                    <li
-                        v-else
-                        class="shadow-none text-opacity-30 bg-white border border-gray-300 text-gray-500 rounded-r-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
-                    >
+                    <li v-else
+                        class="shadow-none text-opacity-30 bg-white border border-gray-300 text-gray-500 rounded-r-lg leading-tight py-2 px-3 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">
                         下一頁
                     </li>
                 </ul>
+
             </nav>
         </div>
         <!--換頁-->
@@ -521,7 +467,7 @@ getData()
     border-right: 1px solid #52708f;
 }
 
-.radioInput:checked + .radioLable {
+.radioInput:checked+.radioLable {
     background: #52708f;
 }
 
