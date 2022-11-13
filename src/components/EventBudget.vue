@@ -80,15 +80,17 @@ const getData = async () => {
             activityExpense.value += budget.value.jobs[i].job_expenditure;
         }
 
+        // 計算progress bar
         budget.value["activity_expense"] = activityExpense.value;
         let percent = Math.round((activityExpense.value / budget.value.activity_budget) * 100)
 
-        if (percent > 100) {
+        if (budget.value.activity_budget == 0) {    // 排除除以0，且預算為0則顯示100
+            graphPercent.value = 100;
+        } else if (percent > 100) {     // 超過一律顯示100
             graphPercent.value = 100;
         } else {
             graphPercent.value = Math.round((activityExpense.value / budget.value.activity_budget) * 100)
         }
-        console.log(budget.value)
 
 
         // append jobs data
@@ -120,6 +122,7 @@ const getData = async () => {
         }
         budget.value.activity_expense = budget.value.activity_expense.toLocaleString();
 
+        console.log(budget.value)
     } catch (error) {
         throw new Error(error);
     }
