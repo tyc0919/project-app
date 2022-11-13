@@ -218,7 +218,7 @@ const uploadExpenditure = async () => {
         getData();
         toggleModal('uploadFileModal')
         fileList.value = [];
-        fileName.value = ""
+        fileName.value = "file_name"
     } catch (error) {
         let expense = expenseEl.value
 
@@ -443,13 +443,15 @@ const deleteExpenditure = async (fileName, jobId) => {
                     </div>
 
                 </div>
-
-                <circle-progress :percent="graphPercent" :size="300" :border-width="25" :border-bg-width="25"
-                    :show-percent="true" :viewport="true" :transition="1000" :is-gradient="true" :gradient="{
-                        angle: 180,
-                        startColor: '#F87171',
-                        stopColor: '#F87171'
-                    }" empty-color="#4ADE80" linecap="butt" />
+                <div class="flex flex-col items-center">
+                    <circle-progress :percent="graphPercent" :size="300" :border-width="25" :border-bg-width="25"
+                        :show-percent="true" :viewport="true" :transition="1000" :is-gradient="true" :gradient="{
+                            angle: 180,
+                            startColor: '#F87171',
+                            stopColor: '#F87171'
+                        }" empty-color="#4ADE80" linecap="butt" />
+                    <span class="mt-4 font-bold text-xl">剩餘預算: {{ 100 - graphPercent }}%</span>
+                </div>
             </div>
 
         </div>

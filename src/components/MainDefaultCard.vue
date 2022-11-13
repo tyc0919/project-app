@@ -9,6 +9,11 @@ const props = defineProps({
 let costPercentage = 0
 if (props.budgetMoney != 0) {
     costPercentage = Math.round(props.costMoney / props.budgetMoney * 100)
+} else if (props.costMoney > 0) {
+    costPercentage = 100
+}
+if (costPercentage > 100) {
+    costPercentage = 100;
 }
 console.log(costPercentage)
 </script>
