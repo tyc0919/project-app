@@ -59,6 +59,7 @@ let job_detail_N = ref([])
 let njob_detailName = ref('')
 let njob_detailContent = ref('')
 let right = ref(Boolean)
+let jobPath = ref("")
 
 
 
@@ -74,6 +75,7 @@ axios.get('/api/activity/' + route.params.EventId + '/collaborator/').then((resp
 /* 獲得工作內容和權限判斷 */
 async function take_work() {
     let user_data = ""
+    let activity_data
 
     await axios.get("/api/userprofile/")
         .then(response => {
@@ -85,11 +87,12 @@ async function take_work() {
             job.value = response.data
             let temp = new Date(job.value.dead_line)
             job.value.dead_line = temp.toLocaleDateString()
+            jobPath.value = "/api/serve-file/avatar/" + job.value.person_in_charge_email
         })
 
     await axios.get("/api/activity/" + route.params.EventId + "/")
         .then(response => {
-            let activity_data = response.data
+            activity_data = response.data
         })
 
     if (user_data.user_email == job.value.person_in_charge_email || user_data.user_email == activity_data.owner) {
@@ -98,16 +101,11 @@ async function take_work() {
     else {
         right.value = false
     }
-
-
 }
 
 take_work()
-/* 獲得工作內容 */
+/* 獲得工作內容和權限判斷 */
 
-
-
-/* 權限 */
 
 /* 更新工作 */
 function get_responGmail() {
@@ -151,9 +149,10 @@ async function deleteWork() {
     await axios
         .post('/api/job/delete/', data, config)
         .then(function (response) {
+            closePage()
             router.push({
                 path: '/events/' + route.params.EventId,
-                name: 'event-default',
+                name: 'event-works'
             })
         })
         .catch(function (error) {
@@ -165,19 +164,7 @@ async function deleteWork() {
 }
 /* 刪除工作 */
 
-/* 刪除分頁 */
-const delete_tab = (msg) => {
-    axios.get("/api/activity/" + route.params.EventId + "/job/" + msg + "/")
-        .then(response => {
-            let temp = {
-                id: response.data.id,
-                title: response.data.title
-            }
-            store.pushin(temp)
-        }
-        )
-}
-/* 刪除分頁 */
+
 
 /* 獲得工作細項 */
 
@@ -251,7 +238,6 @@ function take_job_detailNF() {
             )
         })
 }
-
 /* 獲得工作細項 */
 
 /* 新增工作細項 */
@@ -274,7 +260,7 @@ function newJobDetail() {
             messageF.value = "新增工作細項失敗"
             toggleModal_fail()
             njob_detailName.value = ""
-            njob_detailContent.value = ""   
+            njob_detailContent.value = ""
             take_job_detail()
 
         })
@@ -282,7 +268,6 @@ function newJobDetail() {
 /* 新增工作細項 */
 
 /* 關閉分頁 */
-
 const closePage = () => {
     const store = usePageStoretest()
     let deleteWorkID = route.params.WorkId
@@ -295,10 +280,37 @@ const closePage = () => {
         path: '',
         name: 'event-works'
     })
-
 }
 
+
 /* 關閉分頁 */
+
+/* 完成工作 */
+const finishWork = () => {
+    let data = {
+        "job_id": route.params.WorkId,
+        "status": 1
+    }
+    axios.post("/api/job/status/", data, config)
+    .then(response =>{
+        messageS.value = "已將工作設置為完成"
+        toggleModal_success()
+    })
+}
+
+const notFinishWork = () => {
+    let data = {
+        "job_id": route.params.WorkId,
+        "status": 0
+    }
+    axios.post("/api/job/status/", data, config)
+    .then(response =>{
+        messageS.value = "已將工作設置為未完成"
+        toggleModal_success()
+    })
+}
+/* 完成工作 */
+
 </script>
 
 <template>
@@ -322,24 +334,7 @@ const closePage = () => {
                 </div>
                 <!--全部、未完成、完成狀態-->
 
-                <!--搜尋欄-->
-                <form id="search" class="flex items-center shadow:focus mr-10 ml-5">
-                    <label for="simple-search" class=""></label>
-                    <div class="relative w-full">
-                        <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                            <svg aria-hidden="true" class="w-5 h-5 text-gray-500" fill="currentColor"
-                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <input type="text" id="simple-search"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
-                            placeholder="Search" required>
-                    </div>
-                </form>
-                <!--搜尋欄-->
+
             </div>
             <!--編輯、刪除工作，關閉分頁-->
             <div v-if="right" class="w-[50%] py-[px] inline-flex flex-wrap justify-end">
@@ -364,13 +359,16 @@ const closePage = () => {
 
             <div v-else class="w-[50%] py-[px] inline-flex flex-wrap justify-end">
                 <div class="ml-">
-                    <button class="mx-2 text-white border border-[#3056d380] bg-[#3056d380] font-semibold py-2 px-4 rounded">
+                    <button
+                        class="mx-2 text-white border border-[#3056d380] bg-[#3056d380] font-semibold py-2 px-4 rounded">
                         編輯工作
                     </button>
-                    <button class="mx-2 text-white border border-[#ff000080] bg-[#ff000080] font-semibold py-2 px-4 rounded">
+                    <button
+                        class="mx-2 text-white border border-[#ff000080] bg-[#ff000080] font-semibold py-2 px-4 rounded">
                         刪除工作
                     </button>
-                    <button class="mx-2 text-white border border-[#ff000080] bg-[#ff000080] font-semibold py-2 px-4 rounded">
+                    <button
+                        class="mx-2 text-white border border-[#ff000080] bg-[#ff000080] font-semibold py-2 px-4 rounded">
                         關閉分頁
                     </button>
                 </div>
@@ -400,7 +398,9 @@ const closePage = () => {
 
                         <!--負責人-->
                         <div class="w-2/4 inline-flex justify-end pr-[20px] items-center">
-                            <div class="circle mr-2 border"></div>
+                            <div class="circle mr-2 border">
+                                <img v-bind:src="jobPath">
+                            </div>
                             <div class="mr-4">負責人</div>
                             <div class="text-[#3491d9]">{{ job.person_in_charge_email }}</div>
                         </div>
@@ -424,11 +424,13 @@ const closePage = () => {
                             新增細項 +
                         </button>
                         <button
-                            class="mb-2 w-full text-white bg-[#22c55e] border-[#22c55e] border hover:text-[#22c55e] hover:border hover:border-[#22c55e] hover:bg-transparent font-semibold py-2 px-4 rounded">
+                            class="mb-2 w-full text-white bg-[#22c55e] border-[#22c55e] border hover:text-[#22c55e] hover:border hover:border-[#22c55e] hover:bg-transparent font-semibold py-2 px-4 rounded"
+                            @click="finishWork">
                             完成
                         </button>
                         <button
-                            class="mb-2 w-full text-white bg-[#ff0000] border-[#ff0000] border hover:text-[#ff0000] hover:border hover:border-[#ff0000] hover:bg-transparent font-semibold py-2 px-4 rounded">
+                            class="mb-2 w-full text-white bg-[#ff0000] border-[#ff0000] border hover:text-[#ff0000] hover:border hover:border-[#ff0000] hover:bg-transparent font-semibold py-2 px-4 rounded"
+                            @click="notFinishWork">
                             取消完成
                         </button>
                     </div>
@@ -460,7 +462,7 @@ const closePage = () => {
                     </template>
 
                     <template v-for="item in job_detail_N" :key="item.job_detail_id">
-                        <JobDetail :jobDetail=item :jright=right @refresh="take_job_detail" @refresh2= "(msg) => {
+                        <JobDetail :jobDetail=item :jright=right @refresh="take_job_detail" @refresh2="(msg) => {
                             Okstatus = msg
                             take_job_detail_test(Okstatus)
                         }">>

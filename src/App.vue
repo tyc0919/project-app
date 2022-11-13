@@ -12,9 +12,9 @@ const userPic = ref('')
 const takeUserPic = async () => {
     let path = ''
     await axios.get('/api/userprofile/').then((response) => {
-        path = response.data.picture_path
+        userPic.value = '/api/serve-file/avatar/' + response.data.user_email
     })
-    userPic.value = '/api/serve-file/avatar/' + path
+    
 }
 
 takeUserPic()
@@ -34,8 +34,10 @@ takeUserPic()
                         @click="toggleUserMenu"
                         class="avatar w-12 h-12 rounded-full object-cover cursor-pointer"
                         v-bind:src="userPic"
-                        id="avatorId"
-                        onerror="this.src='/src/assets/images/default_avatar.svg'"
+
+                        id = "avatorId"
+                        onerror="this.src='https://i.imgur.com/LOEKh9R.jpg'"
+
                     />
 
                     <div
