@@ -7,7 +7,7 @@ const props = defineProps({
 })
 </script>
 <template>
-    <div class="mr-20 shadow my-4 card w-full bg-zinc-50 hover:border hover:border-gray-500">
+    <div class="mr-20 shadow card w-full bg-zinc-50 hover:border hover:border-gray-500 my-4">
         <div class="flex px-[10px] py-4">
             <!--貼文圖片-->
             <div class="w-1/5 mr-4 my-1">

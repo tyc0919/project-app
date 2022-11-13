@@ -18,7 +18,6 @@ const takeUserPic = async () => {
 }
 
 takeUserPic()
-
 </script>
 
 <template>
@@ -35,8 +34,10 @@ takeUserPic()
                         @click="toggleUserMenu"
                         class="avatar w-12 h-12 rounded-full object-cover cursor-pointer"
                         v-bind:src="userPic"
+
                         id = "avatorId"
                         onerror="this.src='https://i.imgur.com/LOEKh9R.jpg'"
+
                     />
 
                     <div
@@ -64,8 +65,9 @@ takeUserPic()
 <style scoped>
 .img-size {
     position: relative;
-    width: 200px;
+    width: 150px;
     height: 100px;
+    top: 15px;
     bottom: 20px;
 }
 
@@ -85,7 +87,6 @@ a i {
     display: flex;
     align-items: center;
 }
-
 
 ::-webkit-scrollbar-track {
     border-radius: 3px;

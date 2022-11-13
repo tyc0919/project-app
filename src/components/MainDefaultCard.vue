@@ -1,5 +1,4 @@
 <script setup>
-import {onBeforeMount, ref,onUpdated} from 'vue'
 const props = defineProps({
     name: String,
     owner: String,
@@ -8,17 +7,27 @@ const props = defineProps({
     budgetMoney: Number,
 })
 
+let costPercentage = 0
+if (props.budgetMoney != 0) {
+    costPercentage = Math.round(props.costMoney / props.budgetMoney * 100)
+} else if (props.costMoney > 0) {
+    costPercentage = 100
+}
+if (costPercentage > 100) {
+    costPercentage = 100;
+}
+
 </script>
+
 
 <template>
     <!-- card1 -->
     <div
-        class="shadow bg-white flex flex-col justify-between px-4 py-8 card align-start hover:border hover:border-gray-500"
-    >
+        class="shadow bg-white flex flex-col justify-between px-4 py-8 card align-start hover:border hover:border-gray-500">
         <div>
             <div class="cardTop mb-8">
                 <div class="mb-2 text-center flex flex-col justify-start items-center">
-                    <img class="h-64 w-96" src="src\assets\images\FirstPart.png" />
+                    <img class="h-64 w-96" src="src/assets/images/FirstPart.png" />
                 </div>
                 <div class="text-2xl font-bold title ellipsis-2">{{ name }}</div>
                 <div class="inline-flex justify-start w-full text-sm italic person">
@@ -30,18 +39,19 @@ const props = defineProps({
             <div class="cardBottom border-t border-black pt-2 flex flex-col justify-between items-start">
                 <div class="relative h-fit w-full rounded-full mb-2 bg-slate-300 shadow-inset py-1 px-1">
                     <div
-                        class="absolute text-black font-bold text-sm h-8 w-full px-4 flex items-center justify-between"
-                    >
+                        class="absolute text-black font-bold text-sm h-8 w-full px-4 flex items-center justify-between">
                         <span class="ellipsis">完成進度</span>
                         <span class="trace-percentage">{{ tracePercentage }}%</span>
                     </div>
-                    <div :style="{width: props.tracePercentage + '%'}" class="trace-container bg-[#3056d3] rounded-full h-8 w-0  px-4"></div>
+                    <div :class="props.tracePercentage == 0 ? 'bg-tranparent' : 'bg-[#4ADE80]'"
+                        :style="{ width: props.tracePercentage + '%' }"
+                        class="trace-container  rounded-full h-8 w-0  px-4"></div>
+
                 </div>
 
                 <div class="relative h-fit w-full rounded-full bg-slate-300 shadow-inset py-1 px-1">
                     <div
-                        class="absolute text-black font-bold h-8 w-full flex items-center justify-between px-4 text-sm"
-                    >
+                        class="absolute text-black font-bold h-8 w-full flex items-center justify-between px-4 text-sm">
                         <span class="ellipsis">預算花費</span>
                         <div>
                             <span class="cost ml-1">${{ costMoney }}</span>
@@ -49,9 +59,9 @@ const props = defineProps({
                             <span class="budget ml-1">${{ budgetMoney }}</span>
                         </div>
                     </div>
-                    <div
-                        class="cost-container rounded-full h-8 w-0 flex items-center justify-between px-4 text-sm"
-                    ></div>
+                    <div :class="costPercentage == 0 ? 'bg-tranparent' : 'bg-[#F87171]'"
+                        :style="{ width: costPercentage + '%' }" class="cost-container rounded-full h-8 w-0  px-4">
+                    </div>
                 </div>
             </div>
         </div>
@@ -106,7 +116,4 @@ const props = defineProps({
     border-radius: 20px;
     border-width: 1px;
 }
-
-
-
 </style>
