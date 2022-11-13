@@ -1,18 +1,17 @@
 <script setup>
-import File from './File.vue';
-import Invite from './invite.vue';
-import Modal from './Modal.vue';
-import axios from "axios";
-import { ref } from 'vue';
-import { useRoute } from "vue-router";
-import { useRouter } from "vue-router";
+import File from './File.vue'
+import Invite from './invite.vue'
+import Modal from './Modal.vue'
+import axios from 'axios'
+import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { getCookie } from '../assets/modules'
 
 const props = defineProps({
     mode: {
         type: Number,
-        default: 1
-    }
+        default: 1,
+    },
 })
 
 const mode = props.mode
@@ -20,105 +19,91 @@ const route = useRoute()
 let csrftoken = getCookie()
 let id = 0
 
-
 const data = ref([])
 const c_email = ref([])
 const file = ref(null)
-let activity = ref("")
+let activity = ref('')
 let formData = new FormData()
 
 /* 上傳檔案 */
 
 const upload = async () => {
-
     formData.append('file', file.value.files[0])
     formData.append('job_id', route.params.WorkId)
-
 
     let configf = {
         headers: {
             'Content-Type': 'multipart/form-data',
-            'X-CSRFToken': csrftoken
+            'X-CSRFToken': csrftoken,
         },
-        mode: 'same-origin'
+        mode: 'same-origin',
     }
 
-    await axios.post('/api/upload/job/',
-        formData,
-        configf
-    ).then(response => {
-        messageS.value = "檔案上傳成功"
-        toggleModal_success()
-        file.value.length = 0
-    })
-    .catch(error => {
-        messageF.value = "檔案上傳失敗"
-        toggleModal_fail()
-        file.value.length = 0
-    })
+    await axios
+        .post('/api/upload/job/', formData, configf)
+        .then((response) => {
+            messageS.value = '檔案上傳成功'
+            toggleModal_success()
+            file.value.length = 0
+        })
+        .catch((error) => {
+            messageF.value = '檔案上傳失敗'
+            toggleModal_fail()
+            file.value.length = 0
+        })
 
     take_file()
 }
 /* 上傳檔案 */
 
-
 /* 獲得工作內容和權限判斷 */
-let right = ref("")
+let right = ref('')
 async function authority() {
     let user_data
     let job
     let activity_data
 
-    await axios.get("/api/userprofile/")
-        .then(response => {
-            user_data = response.data;
-        })
+    await axios.get('/api/userprofile/').then((response) => {
+        user_data = response.data
+    })
 
-    await axios.get("/api/activity/" + route.params.EventId + "/job/" + route.params.WorkId + "/")
-        .then(response => {
-            
-            job = response.data
-            let temp = new Date(job.dead_line)
-            job.dead_line = temp.toLocaleDateString()
-        })
+    await axios.get('/api/activity/' + route.params.EventId + '/job/' + route.params.WorkId + '/').then((response) => {
+        job = response.data
+        let temp = new Date(job.dead_line)
+        job.dead_line = temp.toLocaleDateString()
+    })
 
-    await axios.get("/api/activity/" + route.params.EventId + "/")
-        .then(response => {
-            activity_data = response.data
-        })
+    await axios.get('/api/activity/' + route.params.EventId + '/').then((response) => {
+        activity_data = response.data
+    })
 
     if (user_data.user_email == job.person_in_charge_email || user_data.user_email == activity_data.owner) {
         right.value = true
-    }
-    else {
+    } else {
         right.value = false
     }
 }
 
 /* 獲得工作內容和權限判斷 */
 
-
 /* 獲得檔案或協作者 */
 const take_colla = () => {
-    axios.get("/api/activity/" + route.params.EventId + "/collaborator/")
-        .then(response => {
-            data.value = response.data
-        })
+    axios.get('/api/activity/' + route.params.EventId + '/collaborator/').then((response) => {
+        data.value = response.data
+    })
 }
 
-const take_file = async() => {
-    await axios.get("/api/file/job/" + route.params.WorkId + "/")
-        .then(response => {
-            data.value = response.data
-        })
+const take_file = async () => {
+    await axios.get('/api/file/job/' + route.params.WorkId + '/').then((response) => {
+        data.value = response.data
+    })
     authority()
 }
 
 const take_activity = async () => {
-    await axios.get("/api/activity/" + route.params.EventId + "/")
-        .then(response => {
-            activity.value = response.data
-        })
+    await axios.get('/api/activity/' + route.params.EventId + '/').then((response) => {
+        activity.value = response.data
+    })
 }
 take_activity()
 
@@ -143,35 +128,43 @@ const toggleModal_success = () => {
 const toggleModal_fail = () => {
     showModal_fail.value = !showModal_fail.value
 }
-let messageS = ref("")
-let messageF = ref("")
+let messageS = ref('')
+let messageF = ref('')
 </script>
 
 <template>
     <div class="bg-white flex flex-col file-sec-wrapper w-80 items-center p-4 w-1/4 ml-2 round_border">
-
-
-        <div v-if="mode === 1">
-            邀請碼：{{ activity.invitation_code }}
-        </div>
+        <div v-if="mode === 1">邀請碼：{{ activity.invitation_code }}</div>
 
         <div v-else class="w-full">
-            <label v-if="right"
+            <label
+                v-if="right"
                 class="py-2 inline-block w-full text-center rounded text-white border border-[#3056d3] bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold"
-                for="file_upload">上傳檔案
+                for="file_upload"
+                >上傳檔案
             </label>
             <input ref="file" @change="upload" type="file" id="file_upload" class="hidden" />
         </div>
 
         <div class="file w-full overflow-auto">
             <div v-if="mode === 1">
-                <Invite v-for="user in data" :key="user.email" :email="user.user_email"
-                    :picture_path="user.picture_path"></Invite>
+                <Invite
+                    v-for="user in data"
+                    :email="user.user_email"
+                    :name="user.user_name"
+                    :picture_path="user.picture_path"
+                ></Invite>
             </div>
 
             <div v-else>
-                <File v-for="workFile in data" :key="workFile.id" :fname="workFile.file_path" :right="right" @deleteFile="take_file()" 
-                    :upload_time="workFile.file_uploaded_time" />
+                <File
+                    v-for="workFile in data"
+                    :key="workFile.id"
+                    :fname="workFile.file_path"
+                    :right="right"
+                    @deleteFile="take_file()"
+                    :upload_time="workFile.file_uploaded_time"
+                />
             </div>
         </div>
     </div>
@@ -191,7 +184,8 @@ let messageF = ref("")
                 <div class="overflow-y-auto max-h-96 pr-4">
                     <div class="flex-col justify-between space-y-3">
                         <button
-                            class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                            class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
+                        >
                             新增檔案
                         </button>
                     </div>
@@ -199,16 +193,16 @@ let messageF = ref("")
             </template>
 
             <template #footer>
-
                 <button
-                    class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
+                >
                     新增
                 </button>
                 <button
-                    class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
+                    class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold"
+                >
                     取消
                 </button>
-
             </template>
         </modal>
     </Teleport>
@@ -225,11 +219,12 @@ let messageF = ref("")
                 {{ messageS }}
             </template>
             <template #footer>
-                <button @click="toggleModal_success()"
-                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                <button
+                    @click="toggleModal_success()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
+                >
                     確定
                 </button>
-
             </template>
         </modal>
     </Teleport>
@@ -247,21 +242,21 @@ let messageF = ref("")
                 {{ messageF }}
             </template>
             <template #footer>
-                <button @click="toggleModal_fail()"
-                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                <button
+                    @click="toggleModal_fail()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
+                >
                     確定
                 </button>
             </template>
         </modal>
     </Teleport>
     <!-- 錯誤訊息視窗 -->
-
-
 </template>
 
 <style scoped>
 .file-sec-wrapper {
-    background: #FFFFFF;
+    background: #ffffff;
     border: 1px solid #d1d5db;
     border-radius: 2px;
 }
