@@ -16,13 +16,7 @@ axios.get('/api/social/' + route.params.PostId).then(function (response) {
 <template>
     <div class="wrapper px-12">
         <div class="bookmark h-12 flex px-8 mt-8 mb-4">
-            <div class="w-full flex text-center items-center justify-between">
-                <router-link
-                    :to="{ name: 'post' }"
-                    class="w-fit px-4 py-2 rounded-full bg-slate-200 text-base text-black main-switch"
-                >
-                    <div id="title" class="w-half px-4 h-full flex items-center mask_p">{{ activity }}</div>
-                </router-link>
+            <div class="w-full flex flex-row-reverse text-center items-center">
                 <router-link :to="{ name: 'main-default' }" class="flex items-center">
                     <img src="/src/assets/images/home.svg" class="h-8" />
                 </router-link>
