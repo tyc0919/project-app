@@ -194,7 +194,10 @@ const cleanErrorMessage = () => {
         errorMessage[key].value = ''
     }
 }
-
+const clearFileList = () => {
+    fileList.value = [];
+    fileName.value = "file_name"
+}
 
 const uploadExpenditure = async () => {
     cleanErrorMessage()
@@ -204,7 +207,7 @@ const uploadExpenditure = async () => {
     let jobEl = document.querySelector('#job-el');
 
     try {
-        // append data of POST api 
+        // append data for POST api 
         let formData = new FormData();
         formData.append('file', fileList.value[fileList.value.length - 1]);
         formData.append('job_id', jobEl.value) //工作序號
@@ -217,9 +220,9 @@ const uploadExpenditure = async () => {
             })
         getData();
         toggleModal('uploadFileModal')
-        fileList.value = [];
-        fileName.value = "file_name"
+        clearFileList()
     } catch (error) {
+
         let expense = expenseEl.value
 
         // expense error
@@ -244,6 +247,8 @@ const uploadExpenditure = async () => {
         if (jobEl.value == "null") {
             errorMessage.jobErrorMessage.value = '請選擇一項工作'
         }
+        fileList.value = [];
+        fileName.value = "file_name"
     }
 
 }
@@ -325,7 +330,7 @@ const deleteExpenditure = async (fileName, jobId) => {
                         <div class="text-base font-bold">支出金額</div>
                         <div class="flex items-center justify-start space-x-3">
                             <span class="italic font-bold">$</span>
-                            <input id="expense-el" type="number"
+                            <input id="expense-el" type="number" value="0"
                                 class="px-1 py-1 w-full text-base border border-2 border-slate-400" placeholder="10000">
                         </div>
                         <span class="text-red-500">{{ errorMessage.expenseErrorMessage.value }}</span>
@@ -356,11 +361,11 @@ const deleteExpenditure = async (fileName, jobId) => {
 
             <template #footer>
                 <div class="border-t-2 pt-2">
-                    <button @click="[uploadExpenditure()]"
+                    <button @click="uploadExpenditure()"
                         class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
                         新增
                     </button>
-                    <button @click="toggleModal('uploadFileModal')"
+                    <button @click="toggleModal('uploadFileModal'), clearFileList()"
                         class="btnCancelCreateActivity  py-2 px-4 rounded text-blue-500  bg-transparent  border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold ">
                         取消
                     </button>
