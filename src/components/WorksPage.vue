@@ -173,18 +173,18 @@ async function job_take() {
             })
     }
 
-    let collaboratorData = ref([])
     await axios.get("/api/activity/" + route.params.EventId + "/collaborator/")
         .then(response => {
-            collaboratorData.value = response.data
-            for (let job of A_job_data.value) {
-                for (let colla of collaboratorData.value) {
-                    if (job.person_in_charge_email == colla.user_email) {
-                        job["user_name"] = colla.user_name
-                    }
-                }
-            }
+            A_job_data.value['collaborators'] = response.data
         })
+    for (let job of A_job_data.value) {
+        for (let collaborator of A_job_data.value.collaborators) {
+            if (job.person_in_charge_email == collaborator.user_email) {
+                job["user_name"] = collaborator.user_name
+            }
+        }
+    }
+    console.log(A_job_data.value)
 }
 
 job_take()
@@ -212,10 +212,12 @@ let nworkBudget = ref('')
 let nworkContent = ref('')
 
 async function newWork() {
-    get_responGmail()
+    // get_responGmail()
+    let inputSelectUserEl = document.querySelector("#inputSelectUserEl")
+
     await axios.post("/api/job/create/", {
         "activity_id": route.params.EventId,
-        "person_in_charge_email": respon_gmail,
+        "person_in_charge_email": inputSelectUserEl.value,
         "title": nworkName.value,
         "dead_line": nworkDate.value,
         "content": nworkContent.value,
@@ -281,20 +283,21 @@ const toggleModal_fail = () => {
 
                     <div id="optionsRight" class="flex justify-end align-center">
                         <button id="addNewWorkButton" @click="toggleModal()"
-                        class="text-white border border-[#3056d3] bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded">
+                            class="text-white border border-[#3056d3] bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded">
                             新增工作
                         </button>
                     </div>
 
                 </div>
 
-                <div id="workContainer" class="grid grid-col3 grid-gap-1rem py-8 px-8 rounded-2xl bg-white border border-[#d1d5db]">
+                <div id="workContainer"
+                    class="grid grid-col3 grid-gap-1rem py-8 px-8 rounded-2xl bg-white border border-[#d1d5db]">
                     <router-link :to="{ name: 'event-work-detail', params: { WorkId: item.id } }"
                         class="work card h-22rem border-[#2b6cb0] px-2 py-2 flex flex-column justify-between rounded-2xl relative"
                         v-for="(item) in A_job_data" :key="item.id" @click="trans_tab(item.id)">
                         <div class="workTop flex flex-column justify-between">
                             <div class="flex align-center mb-2 items-center">
-                                <div v-if="item.status==1" class="avatar">
+                                <div v-if="item.status == 1" class="avatar">
                                 </div>
                                 <div v-else class="avatar2">
 
@@ -406,9 +409,12 @@ const toggleModal_fail = () => {
                         placeholder="這次的活動，我們將要帶領大家..." v-model="nworkContent"></textarea>
 
                     <div class="text-base font-bold ">負責人</div>
-                    <select class="px-1 py-1 w-full font-bold border border-2 border-slate-500" name="responsibility"
-                        @change="get_responGmail()">
-                        <option v-for="c_email in colla">{{ c_email.user_email }}</option>
+                    <select id="inputSelectUserEl" class="px-1 py-1 w-full font-bold border border-2 border-slate-500"
+                        name="responsibility" @change="get_responGmail()">
+                        <option v-for="collaborator in A_job_data.collaborators" :value="collaborator.user_email">{{
+                                collaborator.user_name
+                        }}
+                        </option>
                     </select>
                 </div>
             </div>
@@ -647,11 +653,10 @@ body {
     background: #52708f;
 }
 
-.bg{
+.bg {
     background-color: white;
     border-left: 1px rgb(209, 213, 219) solid;
     border-right: 1px rgb(209, 213, 219) solid;
     border-bottom: 1px rgb(209, 213, 219) solid;
 }
-
 </style>

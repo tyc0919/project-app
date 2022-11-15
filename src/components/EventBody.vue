@@ -63,7 +63,6 @@ async function take_activity() {
     else {
         publicStatus.value = false
     }
-    console.log(activity_data.value)
 
 }
 
