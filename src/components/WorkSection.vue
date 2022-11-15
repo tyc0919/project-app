@@ -64,12 +64,6 @@ let jobPath = ref('')
 let messageS = ref('')
 let messageF = ref('')
 
-/* 取得活動協作者 */
-axios.get('/api/activity/' + route.params.EventId + '/collaborator/').then((response) => {
-    colla.value = response.data
-})
-/* 取得活動協作者 */
-
 /* 獲得工作內容和權限判斷 */
 async function take_work() {
     let user_data = ''
@@ -90,6 +84,20 @@ async function take_work() {
         activity_data = response.data
     })
 
+    // 串入協作者，並找尋工作負責人
+    let collaboratorData = []
+    await axios.get('/api/activity/' + route.params.EventId + '/collaborator/').then((response) => {
+        job.value['collaborators'] = response.data
+    })
+
+    for (let collaborator of job.value.collaborators) {
+        if (collaborator.user_email == job.value.person_in_charge_email) {
+            job.value['user_name'] = collaborator.user_name
+        }
+    }
+
+    console.log(job.value)
+
     if (user_data.user_email == job.value.person_in_charge_email || user_data.user_email == activity_data.owner) {
         right.value = true
     } else {
@@ -99,24 +107,29 @@ async function take_work() {
 
 take_work()
 /* 獲得工作內容和權限判斷 */
-
-/* 更新工作 */
-function get_responGmail() {
-    const select_res = document.querySelector("select[name='responsibility']")
-    respon_gmail = select_res.options[select_res.selectedIndex].text
+let formPerson = ref()
+function getDefault() {
+    uworkName.value = job.value.title
+    uworkDate.value = job.value.dead_line.replaceAll('/', '-')
+    uworkBudget.value = job.value.job_budget
+    uworkContent.value = job.value.content
 }
 
 async function updateWork() {
-    get_responGmail()
+    // get_responGmail()
+    // 取得api所需的元素
+    let userEl = document.querySelector('#userEl')
+    console.log(userEl.value)
+    // 建立參數
     let data = {
         job_id: route.params.WorkId, //1
-        person_in_charge_email: respon_gmail,
+        person_in_charge_email: userEl.value,
         title: uworkName.value,
         dead_line: uworkDate.value,
         content: uworkContent.value,
         job_budget: uworkBudget.value,
     }
-
+    // 執行post api
     await axios
         .post('/api/job/update/', data, config)
         .then(function (response) {
@@ -315,20 +328,17 @@ const notFinishWork = () => {
                 <div>
                     <button
                         class="mx-2 text-white bg-[#3056d3] border border-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded"
-                        @click="toggleModal1()"
-                    >
+                        @click="toggleModal1(), getDefault()">
                         編輯工作
                     </button>
                     <button
                         class="mx-2 text-white bg-[#ff0000] border border-[#ff0000] hover:text-[#ff0000] hover:border hover:border-[#ff0000] hover:bg-transparent font-semibold py-2 px-4 rounded"
-                        @click="toggleModal_delete()"
-                    >
+                        @click="toggleModal_delete()">
                         刪除工作
                     </button>
                     <button
                         class="mx-2 text-white bg-[#ff0000] border border-[#ff0000] hover:text-[#ff0000] hover:border hover:border-[#ff0000] hover:bg-transparent font-semibold py-2 px-4 rounded"
-                        @click="closePage()"
-                    >
+                        @click="closePage()">
                         關閉分頁
                     </button>
                 </div>
@@ -337,18 +347,15 @@ const notFinishWork = () => {
             <div v-else class="w-[50%] py-[px] inline-flex flex-wrap justify-end">
                 <div class="ml-">
                     <button
-                        class="mx-2 text-white border border-[#3056d380] bg-[#3056d380] font-semibold py-2 px-4 rounded"
-                    >
+                        class="mx-2 text-white border border-[#3056d380] bg-[#3056d380] font-semibold py-2 px-4 rounded">
                         編輯工作
                     </button>
                     <button
-                        class="mx-2 text-white border border-[#ff000080] bg-[#ff000080] font-semibold py-2 px-4 rounded"
-                    >
+                        class="mx-2 text-white border border-[#ff000080] bg-[#ff000080] font-semibold py-2 px-4 rounded">
                         刪除工作
                     </button>
                     <button
-                        class="mx-2 text-white border border-[#ff000080] bg-[#ff000080] font-semibold py-2 px-4 rounded"
-                    >
+                        class="mx-2 text-white border border-[#ff000080] bg-[#ff000080] font-semibold py-2 px-4 rounded">
                         關閉分頁
                     </button>
                 </div>
@@ -380,7 +387,7 @@ const notFinishWork = () => {
                                 <img class="circle mr-2 border" v-bind:src="jobPath" />
                             </div>
                             <div class="mr-4">負責人</div>
-                            <div class="text-[#3491d9]">{{ job.person_in_charge_email }}</div>
+                            <div class="text-[#3491d9]">{{ job.user_name }}</div>
                         </div>
                         <!--負責人-->
                     </div>
@@ -398,38 +405,32 @@ const notFinishWork = () => {
                     <div v-if="right">
                         <button
                             class="mb-2 w-full text-white bg-[#3056d3] border-[#3056d3] border hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded"
-                            @click="toggleModal_new_job_detail()"
-                        >
+                            @click="toggleModal_new_job_detail()">
                             新增細項 +
                         </button>
                         <button
                             class="mb-2 w-full text-white bg-[#22c55e] border-[#22c55e] border hover:text-[#22c55e] hover:border hover:border-[#22c55e] hover:bg-transparent font-semibold py-2 px-4 rounded"
-                            @click="finishWork"
-                        >
+                            @click="finishWork">
                             完成
                         </button>
                         <button
                             class="mb-2 w-full text-white bg-[#ff0000] border-[#ff0000] border hover:text-[#ff0000] hover:border hover:border-[#ff0000] hover:bg-transparent font-semibold py-2 px-4 rounded"
-                            @click="notFinishWork"
-                        >
+                            @click="notFinishWork">
                             取消完成
                         </button>
                     </div>
 
                     <div v-else>
                         <button
-                            class="mb-2 w-full text-white bg-[#3056d380] border-[#3056d380] border font-semibold py-2 px-4 rounded"
-                        >
+                            class="mb-2 w-full text-white bg-[#3056d380] border-[#3056d380] border font-semibold py-2 px-4 rounded">
                             新增細項 +
                         </button>
                         <button
-                            class="mb-2 w-full text-white bg-[#22c55e80] border-[#22c55e80] border font-semibold py-2 px-4 rounded"
-                        >
+                            class="mb-2 w-full text-white bg-[#22c55e80] border-[#22c55e80] border font-semibold py-2 px-4 rounded">
                             完成
                         </button>
                         <button
-                            class="mb-2 w-full text-white bg-[#ff000080] border-[#ff000080] border font-semibold py-2 px-4 rounded"
-                        >
+                            class="mb-2 w-full text-white bg-[#ff000080] border-[#ff000080] border font-semibold py-2 px-4 rounded">
                             取消完成
                         </button>
                     </div>
@@ -438,32 +439,22 @@ const notFinishWork = () => {
 
                     <!-- 工作細項 -->
                     <template v-for="item in job_detail_Y" :key="item.job_detail_id">
-                        <JobDetail
-                            :jobDetail="item"
-                            :jright="right"
-                            @refresh="take_job_detail"
-                            @refresh2="
-                                (msg) => {
-                                    Okstatus = msg
-                                    take_job_detail_test(Okstatus)
-                                }
-                            "
-                        >
+                        <JobDetail :jobDetail="item" :jright="right" @refresh="take_job_detail" @refresh2="
+                            (msg) => {
+                                Okstatus = msg
+                                take_job_detail_test(Okstatus)
+                            }
+                        ">
                         </JobDetail>
                     </template>
 
                     <template v-for="item in job_detail_N" :key="item.job_detail_id">
-                        <JobDetail
-                            :jobDetail="item"
-                            :jright="right"
-                            @refresh="take_job_detail"
-                            @refresh2="
-                                (msg) => {
-                                    Okstatus = msg
-                                    take_job_detail_test(Okstatus)
-                                }
-                            "
-                            >>
+                        <JobDetail :jobDetail="item" :jright="right" @refresh="take_job_detail" @refresh2="
+                            (msg) => {
+                                Okstatus = msg
+                                take_job_detail_test(Okstatus)
+                            }
+                        ">>
                         </JobDetail>
                     </template>
                     <!-- 工作細項 -->
@@ -489,43 +480,27 @@ const notFinishWork = () => {
                 <div class="overflow-y-auto max-h-96 pr-4">
                     <div class="flex-row justify-between space-y-3">
                         <div class="text-base font-bold">工作名稱</div>
-                        <input
-                            type="text"
-                            class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                            placeholder="超棒的活動"
-                            v-model="uworkName"
-                        />
+                        <input type="text" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                            placeholder="超棒的活動" v-model="uworkName" />
                         <div class="text-base font-bold">工作日期</div>
-                        <input
-                            type="date"
-                            class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                            placeholder="超棒的活動"
-                            v-model="uworkDate"
-                        />
+                        <input type="date" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                            placeholder="超棒的活動" v-model="uworkDate" />
                         <div class="text-base font-bold">分配工作預算</div>
                         <div class="flex items-center justify-start space-x-3">
                             <span class="italic font-bold">$</span>
-                            <input
-                                type="number"
-                                class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                                placeholder="10000"
-                                v-model="uworkBudget"
-                            />
+                            <input type="number" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                                placeholder="10000" v-model="uworkBudget" />
                         </div>
                         <div class="text-base font-bold">工作說明</div>
-                        <textarea
-                            class="px-1 py-1 text-base border border-2 border-slate-400 w-full"
-                            placeholder="這次的活動，我們將要帶領大家..."
-                            v-model="uworkContent"
-                        ></textarea>
+                        <textarea class="px-1 py-1 text-base border border-2 border-slate-400 w-full"
+                            placeholder="這次的活動，我們將要帶領大家..." v-model="uworkContent"></textarea>
 
                         <div class="text-base font-bold">負責人</div>
-                        <select
-                            class="px-1 py-1 w-full font-bold border border-2 border-slate-500"
-                            name="responsibility"
-                            @change="get_responGmail()"
-                        >
-                            <option v-for="c_email in colla">{{ c_email.user_email }}</option>
+                        <select id="userEl" :value="job.user_name"
+                            class="px-1 py-1 w-full font-bold border border-2 border-slate-500">
+                            <option v-for="item in job.collaborators" :value="item.user_email">
+                                {{ item.user_name }}
+                            </option>
                         </select>
                     </div>
                 </div>
@@ -533,16 +508,12 @@ const notFinishWork = () => {
 
             <template #footer>
                 <div class="border-t-2 pt-2">
-                    <button
-                        @click="toggleModal1(), updateWork()"
-                        class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
-                    >
+                    <button @click="toggleModal1(), updateWork()"
+                        class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold">
                         新增
                     </button>
-                    <button
-                        @click="toggleModal1()"
-                        class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold"
-                    >
+                    <button @click="toggleModal1()"
+                        class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold">
                         取消
                     </button>
                 </div>
@@ -561,16 +532,12 @@ const notFinishWork = () => {
             </template>
             <template #body> 你確定要刪除此工作嗎，按下確定後就不能返回了 </template>
             <template #footer>
-                <button
-                    @click="toggleModal_delete(), deleteWork()"
-                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
-                >
+                <button @click="toggleModal_delete(), deleteWork()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold">
                     確定
                 </button>
-                <button
-                    @click="toggleModal_delete()"
-                    class="py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold"
-                >
+                <button @click="toggleModal_delete()"
+                    class="py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold">
                     取消
                 </button>
             </template>
@@ -591,17 +558,12 @@ const notFinishWork = () => {
                 <div class="overflow-y-auto max-h-96 pr-4">
                     <div class="flex-row justify-between space-y-3">
                         <div class="text-base font-bold">工作細項名稱</div>
-                        <input
-                            type="text"
-                            class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                            v-model="njob_detailName"
-                        />
+                        <input type="text" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                            v-model="njob_detailName" />
 
                         <div class="text-base font-bold">工作細項內容</div>
-                        <textarea
-                            class="px-1 py-1 text-base border border-2 border-slate-400 w-full"
-                            v-model="njob_detailContent"
-                        >
+                        <textarea class="px-1 py-1 text-base border border-2 border-slate-400 w-full"
+                            v-model="njob_detailContent">
                         </textarea>
                     </div>
                 </div>
@@ -609,16 +571,12 @@ const notFinishWork = () => {
 
             <template #footer>
                 <div class="border-t-2 pt-2">
-                    <button
-                        @click="toggleModal_new_job_detail(), newJobDetail()"
-                        class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
-                    >
+                    <button @click="toggleModal_new_job_detail(), newJobDetail()"
+                        class="btnComfirmCreateActivity mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold">
                         新增
                     </button>
-                    <button
-                        @click="toggleModal_new_job_detail()"
-                        class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold"
-                    >
+                    <button @click="toggleModal_new_job_detail()"
+                        class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold">
                         取消
                     </button>
                 </div>
@@ -639,10 +597,8 @@ const notFinishWork = () => {
                 {{ messageS }}
             </template>
             <template #footer>
-                <button
-                    @click="toggleModal_success()"
-                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
-                >
+                <button @click="toggleModal_success()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold">
                     確定
                 </button>
             </template>
@@ -662,10 +618,8 @@ const notFinishWork = () => {
                 {{ messageF }}
             </template>
             <template #footer>
-                <button
-                    @click="toggleModal_fail()"
-                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
-                >
+                <button @click="toggleModal_fail()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold">
                     確定
                 </button>
             </template>
@@ -742,7 +696,7 @@ const notFinishWork = () => {
     border-right: 1px solid #52708f;
 }
 
-.radioInput:checked + .radioLable {
+.radioInput:checked+.radioLable {
     background: #52708f;
 }
 

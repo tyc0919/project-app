@@ -63,6 +63,7 @@ async function take_activity() {
     else {
         publicStatus.value = false
     }
+    console.log(activity_data.value)
 
 }
 
@@ -418,11 +419,13 @@ const toggleModal_fail = () => {
                 <div class="overflow-y-auto max-h-96 pr-4">
                     <div class="flex-row justify-between space-y-3">
                         <div class="text-base font-bold">活動名稱</div>
-                        <input type="text" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                            placeholder="原本的活動名稱" id="test1">
+                        <input :value="activity_data.activity_name" type="text"
+                            class="px-1 py-1 w-full text-base border border-2 border-slate-400" placeholder="原本的活動名稱"
+                            id="test1">
                         <div class="text-base font-bold ">活動簡介</div>
-                        <textarea class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                            placeholder="原本的活動簡介" id="test2"></textarea>
+                        <textarea :value="activity_data.activity_description"
+                            class="px-1 py-1 w-full text-base border border-2 border-slate-400" placeholder="原本的活動簡介"
+                            id="test2"></textarea>
                     </div>
                 </div>
             </template>

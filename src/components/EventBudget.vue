@@ -129,7 +129,6 @@ const getData = async () => {
 }
 getData()
 
-
 // 更新預算
 let isSuccessUpdateBudget = ref(false);
 const updateActivityBudget = async () => {
@@ -160,31 +159,6 @@ const updateActivityBudget = async () => {
     getData();
 }
 
-
-// 上傳檔案
-let fileEl = ref(null);
-let fileList = ref([])
-let fileName = ref("file_name")
-//偵測上傳檔名
-let isImage = ref(false)
-
-
-const changeFile = () => {
-    errorMessage.fileErrorMessage.value = ""
-    if (fileEl.value.files[0].type.search('image') == -1) {
-        // file 不變
-        isImage.value = false
-        errorMessage.fileErrorMessage.value = '檔案格式錯誤(只接受jpg, png...等圖片格式)'
-    } else {
-        // 更新fileList
-        isImage.value = true
-        let files = fileEl.value.files
-        files = Array.prototype.slice.call(files);
-        fileList.value = fileList.value.concat(files);
-        fileName.value = fileList.value[fileList.value.length - 1].name
-    }
-}
-
 // 錯誤訊息
 let errorMessage = {
     expenseErrorMessage: ref(),
@@ -202,6 +176,29 @@ const clearFileList = () => {
     fileName.value = "file_name"
 }
 
+// 收據圖片處理
+let fileEl = ref(null);
+let fileList = ref([])
+let fileName = ref("file_name")
+//偵測上傳檔名
+let isImage = ref(false)
+const changeFile = () => {
+    errorMessage.fileErrorMessage.value = ""
+    if (fileEl.value.files[0].type.search('image') == -1) {
+        // file 不變
+        isImage.value = false
+        errorMessage.fileErrorMessage.value = '檔案格式錯誤(只接受jpg, png...等圖片格式)'
+    } else {
+        // 更新fileList
+        isImage.value = true
+        let files = fileEl.value.files
+        files = Array.prototype.slice.call(files);
+        fileList.value = fileList.value.concat(files);
+        fileName.value = fileList.value[fileList.value.length - 1].name
+    }
+}
+
+// 上傳收據
 const uploadExpenditure = async () => {
     cleanErrorMessage()
 
