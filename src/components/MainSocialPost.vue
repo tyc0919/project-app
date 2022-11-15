@@ -4,6 +4,7 @@ const props = defineProps({
     owner: String,
     rating: String,
     content: String,
+    postTime: String,
 })
 </script>
 <template>
@@ -11,11 +12,8 @@ const props = defineProps({
         <div class="flex px-[10px] py-4">
             <!--貼文圖片-->
             <div class="w-1/5 mr-4 my-1">
-                <img
-                    src="../assets/images/FirstPart.png"
-                    class="img-social"
-                    onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg';this.onerror=null ;"
-                />
+                <img src="../assets/images/FirstPart.png" class="img-social"
+                    onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg';this.onerror=null ;" />
             </div>
             <!--貼文圖片-->
 
@@ -24,12 +22,13 @@ const props = defineProps({
                 <div class="font-bold text-2xl pb-4 underline">{{ title }}</div>
                 <!--By作者、星級-->
                 <div>
-                    <div class="inline-flex text-sm pb-4 mr-4">By</div>
-                    <div class="inline-flex text-sm italic mr-4 text-blue">{{ owner }}</div>
-                    <div class="star_ratings">
+                    <div class="inline-flex text-sm pb-4 mr-2">By</div>
+                    <div class="inline-flex text-sm italic mr-4  text-blue">{{ owner }}</div>
+                    <div class="star_ratings mr-2">
                         <div class="empty_star">★★★★★</div>
                         <div :style="{ width: rating }" class="full_star absolute text-yellow-400">★★★★★</div>
                     </div>
+                    <div class="inline-flex">{{ postTime.substring(0, 10) }}</div>
                 </div>
                 <!--By作者、星級-->
 
@@ -79,9 +78,11 @@ const props = defineProps({
 .text-blue {
     color: rgb(60, 60, 240);
 }
+
 .cardBottom {
     border-color: #000000;
 }
+
 .card {
     border-radius: 20px;
     border-width: 1px;

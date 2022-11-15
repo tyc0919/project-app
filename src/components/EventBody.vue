@@ -39,8 +39,8 @@ async function take_activity() {
     await axios.get("/api/activity/" + route.params.EventId + "/")
         .then(response => {
             activity_data.value = response.data
-            let temp = new Date(activity_data.value.post_time)
-            activity_data.value.post_time = temp.toLocaleDateString()
+            let temp = new Date(activity_data.value.create_time)
+            activity_data.value.create_time = temp.toLocaleDateString()
         })
         .catch(error => {
             console.log(error)
@@ -176,7 +176,7 @@ async function fileUpload() {
             messageF.value = "圖片上傳失敗"
             toggleModal_fail()
         })
-        
+
     file.value.lenght = 0
     take_activity()
 }
@@ -293,7 +293,7 @@ const toggleModal_fail = () => {
                 </p>
                 <div class="absolute bottom-down w-full">
                     <hr class="m-1.5 border-3">
-                    <p class="text-base m-1.5 text-[696969]">建立日期 {{ activity_data.post_time }}</p>
+                    <p class="text-base m-1.5 text-[696969]">建立日期 {{ activity_data.create_time }}</p>
                 </div>
             </div>
         </div>
@@ -591,11 +591,11 @@ const toggleModal_fail = () => {
     margin: 0 auto;
 }
 
-.event-object{
+.event-object {
     object-fit: contain;
     margin: auto;
-    width:100%; 
-    height:100%;
+    width: 100%;
+    height: 100%;
 }
 
 .button1 {

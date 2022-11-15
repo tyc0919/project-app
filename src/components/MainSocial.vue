@@ -87,16 +87,10 @@ getData()
             <!--主要內容-->
 
             <div class="bg-white border border-[#d1d5db] rounded-2xl p-8 my-4">
-                <router-link
-                    v-for="(item, index) of pages[pageNumber - 1]"
-                    :to="{ name: 'post', params: { PostId: item.id } }"
-                >
-                    <MainSocialPost
-                        :title="item.activity_name"
-                        :owner="item.user_name"
-                        :rating="item.star_percent"
-                        :content="item.content"
-                    ></MainSocialPost>
+                <router-link v-for="(item, index) of pages[pageNumber - 1]"
+                    :to="{ name: 'post', params: { PostId: item.id } }">
+                    <MainSocialPost :title="item.activity_name" :owner="item.user_name" :rating="item.star_percent"
+                        :content="item.content" :postTime="item.post_time"></MainSocialPost>
                 </router-link>
             </div>
 
