@@ -51,7 +51,7 @@ const changeFilter = async (status) => {
     }
 }
 
-const trans_tab = (id,title) => {
+const trans_tab = (id, title) => {
     let temp = {
         id: id,
         title: title
@@ -90,18 +90,13 @@ getData()
 
         <div class="bg-white border border-[#d1d5db] rounded-2xl p-8 my-4">
             <div class="grid grid-cols-3 grid-gap-1rem items-center justify-center">
-                <router-link
-                    v-for="(item, index) of pages[pageNumber - 1]"
-                    :to="{ name: 'event-work-detail', params: { EventId: item.activity, WorkId: item.id } } " @click="trans_tab(item.id,item.title)"
-                >
-                    <MainWorksCard
-                        :work-title="item.title"
-                        :activity="item.activity_name"
-                        :content="item.content"
-                        :tracePercentage="100"
-                        :costMoney="item.job_expenditure"
-                        :budgetMoney="item.job_budget"
-                    >
+                <div v-if="pages.length == 0" class="text-[#F87171] font-bold text-2xl my-4">目前沒有任何你負責的工作喔
+                </div>
+                <router-link v-for="(item, index) of pages[pageNumber - 1]"
+                    :to="{ name: 'event-work-detail', params: { EventId: item.activity, WorkId: item.id } }"
+                    @click="trans_tab(item.id, item.title)">
+                    <MainWorksCard :work-title="item.title" :activity="item.activity_name" :content="item.content"
+                        :tracePercentage="100" :costMoney="item.job_expenditure" :budgetMoney="item.job_budget">
                     </MainWorksCard>
                 </router-link>
             </div>
