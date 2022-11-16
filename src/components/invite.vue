@@ -9,9 +9,9 @@ userPicPath.value = '/api/serve-file/avatar/' + props.email
 </script>
 
 <template>
-    <div class="flex items-center p-2 mt-4 border-2 border-[#2b6cb0] rounded-md file-shadow">
+    <div class="flex items-center p-2 mt-4 border-2 border-[#2b6cb0] rounded-md">
         <div class="rounded-full">
-            <img v-bind:src="userPicPath" class="w-12 h-12 rounded-full mr-2" />
+            <img v-bind:src="userPicPath" class="w-12 h-12 rounded-full mr-2" onerror="this.src='https://i.imgur.com/LOEKh9R.jpg'"/>
         </div>
 
         <div class="flex">

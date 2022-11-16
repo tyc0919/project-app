@@ -107,12 +107,12 @@ async function take_work() {
 
 take_work()
 /* 獲得工作內容和權限判斷 */
-let formPerson = ref()
 function getDefault() {
     uworkName.value = job.value.title
     uworkDate.value = job.value.dead_line.replaceAll('/', '-')
     uworkBudget.value = job.value.job_budget
     uworkContent.value = job.value.content
+
 }
 
 async function updateWork() {
@@ -372,7 +372,9 @@ const notFinishWork = () => {
                             <div class="text-[#696969] font-bold">預算</div>
 
                             <div class="ml-4 font-bold">${{ job.job_expenditure }}</div>
+
                             /
+                            
                             <div class="font-bold">${{ job.job_budget }}</div>
 
                             <div class="ml-4 text-[#696969] font-bold">到期日期</div>
@@ -384,7 +386,7 @@ const notFinishWork = () => {
                         <!--負責人-->
                         <div class="w-2/4 inline-flex justify-end pr-[20px] items-center">
                             <div>
-                                <img class="circle mr-2 border" v-bind:src="jobPath" />
+                                <img class="circle mr-2" v-bind:src="jobPath" onerror="this.src='https://i.imgur.com/LOEKh9R.jpg'"/>
                             </div>
                             <div class="mr-4">負責人</div>
                             <div class="text-[#3491d9]">{{ job.user_name }}</div>
@@ -496,10 +498,11 @@ const notFinishWork = () => {
                             placeholder="這次的活動，我們將要帶領大家..." v-model="uworkContent"></textarea>
 
                         <div class="text-base font-bold">負責人</div>
-                        <select id="userEl" :value="job.user_name"
+                        <select 
                             class="px-1 py-1 w-full font-bold border border-2 border-slate-500">
-                            <option v-for="item in job.collaborators" :value="item.user_email">
-                                {{ item.user_name }}
+                            <option v-for="item in job.collaborators" :value="item.user_email" 
+                            :selected="item.user_email==job.person_in_charge_email?'selected':false">
+                                {{ item.user_name }} ({{item.user_email}})
                             </option>
                         </select>
                     </div>

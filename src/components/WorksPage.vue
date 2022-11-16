@@ -184,6 +184,18 @@ async function job_take() {
             }
         }
     }
+    await axios.get("/api/activity/"+ route.params.EventId +"/").then((response)=>{
+        A_job_data.value['activity'] = response.data
+    })
+    await axios.get("/api/userprofile/").then((response) =>{
+        A_job_data.value['user'] = response.data
+    })
+    if(A_job_data.value.activity.owner == A_job_data.value.user.user_email){
+        A_job_data.value['is_owner'] = true
+    }else{
+        A_job_data.value['is_owner'] = false
+    }
+    
     console.log(A_job_data.value)
 }
 
@@ -282,10 +294,17 @@ const toggleModal_fail = () => {
                     </div>
 
                     <div id="optionsRight" class="flex justify-end align-center">
-                        <button id="addNewWorkButton" @click="toggleModal()"
+                        
+                        <button v-if="A_job_data.is_owner" id="addNewWorkButton" @click="toggleModal()"
                             class="text-white border border-[#3056d3] bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded">
                             新增工作
                         </button>
+
+                        <button v-else id="addNewWorkButton"
+                            class="text-white border border-[#3056d380] bg-[#3056d380] font-semibold py-2 px-4 rounded">
+                            新增工作
+                        </button>
+                        
                     </div>
 
                 </div>
@@ -411,9 +430,10 @@ const toggleModal_fail = () => {
                     <div class="text-base font-bold ">負責人</div>
                     <select id="inputSelectUserEl" class="px-1 py-1 w-full font-bold border border-2 border-slate-500"
                         name="responsibility" @change="get_responGmail()">
-                        <option v-for="collaborator in A_job_data.collaborators" :value="collaborator.user_email">{{
+                        <option v-for="collaborator in A_job_data.collaborators" :value="collaborator.user_email">
+                        {{
                                 collaborator.user_name
-                        }}
+                        }}({{ collaborator.user_email }})
                         </option>
                     </select>
                 </div>
