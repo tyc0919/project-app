@@ -23,11 +23,12 @@ const data = ref([])
 const c_email = ref([])
 const file = ref(null)
 let activity = ref('')
-let formData = new FormData()
+
 
 /* 上傳檔案 */
 
 const upload = async () => {
+    let formData = new FormData()
     formData.append('file', file.value.files[0])
     formData.append('job_id', route.params.WorkId)
 
