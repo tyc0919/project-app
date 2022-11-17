@@ -17,6 +17,14 @@ const takeUserPic = async () => {
     
 }
 
+function logout(){
+    axios.get("/api/logout/")
+    .then((response) => {
+        window.location.href = "http://www.ace.project";
+    })
+
+}
+
 takeUserPic()
 </script>
 
@@ -50,9 +58,10 @@ takeUserPic()
                         >
                             個人檔案
                         </router-link>
-                        <a href="../tailwind/index.html" class="hover:bg-blue-600 hover:text-white rounded-lg">
+                        <div class="hover:bg-blue-600 hover:text-white rounded-lg cursor-pointer" @click="logout()">
                             登出
-                        </a>
+                        </div>
+
                     </div>
                 </div>
             </div>
