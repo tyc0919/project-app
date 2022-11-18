@@ -5,6 +5,7 @@ const props = defineProps({
     rating: String,
     content: String,
     postTime: String,
+    picturePath: String,
 })
 </script>
 <template>
@@ -12,8 +13,7 @@ const props = defineProps({
         <div class="flex px-[10px] py-4">
             <!--貼文圖片-->
             <div class="w-1/5 mr-4 my-1">
-                <img src="../assets/images/FirstPart.png" class="img-social"
-                    onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg';this.onerror=null ;" />
+                <img :src="props.picturePath" class="img-social" onerror="this.src='https://i.imgur.com/fAgK9sl.jpg'" />
             </div>
             <!--貼文圖片-->
 

@@ -32,7 +32,7 @@ const modalController = {
     updateBudgetModal: ref(false),
 }
 const toggleModal = (modalName) => {
-    cleanErrorMessage()
+    clearErrorMessage()
     modalController[modalName].value = !modalController[modalName].value
 }
 
@@ -121,8 +121,6 @@ const getData = async () => {
             expenditure["download_path"] = "/api/serve-file/" + activityId + "/" + expenditure.expenditure_receipt_path
         }
         budget.value.activity_expense = budget.value.activity_expense.toLocaleString();
-
-        console.log(budget.value)
     } catch (error) {
         throw new Error(error);
     }
@@ -165,7 +163,7 @@ let errorMessage = {
     fileErrorMessage: ref(),
     jobErrorMessage: ref(),
 }
-const cleanErrorMessage = () => {
+const clearErrorMessage = () => {
     //  清空錯誤訊息
     for (let key of Object.keys(errorMessage)) {
         errorMessage[key].value = ''
@@ -200,12 +198,11 @@ const changeFile = () => {
 
 // 上傳收據
 const uploadExpenditure = async () => {
-    cleanErrorMessage()
+    clearErrorMessage()
 
     // 抓取api所需參數
     let expenseEl = document.querySelector('#expense-el');
     let jobEl = document.querySelector('#job-el');
-
     try {
         // append data for POST api 
         let formData = new FormData();
@@ -216,7 +213,7 @@ const uploadExpenditure = async () => {
         // do POST api
         await axios.post('/api/upload/expenditure/', formData, config)
             .then(function (response) {
-                console.log(response.data);
+
             })
         getData();
         toggleModal('uploadFileModal')
@@ -234,12 +231,11 @@ const uploadExpenditure = async () => {
         }
 
         // file error
-
         let errorStatus = error.response.status
         if (errorStatus == 413) {
             errorMessage.fileErrorMessage.value = '檔案過大'
         }
-        if (fileEl.value.files[0] == null) {
+        if (fileList.value.length == 0) {
             errorMessage.fileErrorMessage.value = '請選取一個檔案'
         }
 
@@ -247,10 +243,7 @@ const uploadExpenditure = async () => {
         if (jobEl.value == "null") {
             errorMessage.jobErrorMessage.value = '請選擇一項工作'
         }
-        fileList.value = [];
-        fileName.value = "file_name"
     }
-
 }
 
 // ? 刪除檔案
