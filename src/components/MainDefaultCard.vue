@@ -5,6 +5,7 @@ const props = defineProps({
     tracePercentage: Number,
     costMoney: Number,
     budgetMoney: Number,
+    picturePath: String,
 })
 
 let costPercentage = 0
@@ -18,7 +19,7 @@ if (costPercentage > 100) {
 }
 
 </script>
-
+<!-- src="src/assets/images/FirstPart.png" -->
 
 <template>
     <!-- card1 -->
@@ -27,7 +28,8 @@ if (costPercentage > 100) {
         <div>
             <div class="cardTop mb-8">
                 <div class="mb-2 text-center flex flex-col justify-start items-center">
-                    <img class="h-64 w-96" src="src/assets/images/FirstPart.png" />
+                    <img class="h-64 w-96" :src="picturePath" onerror="this.src='https://i.imgur.com/fAgK9sl.jpg'" />
+                    <img>
                 </div>
                 <div class="text-2xl font-bold title ellipsis-2">{{ name }}</div>
                 <div class="inline-flex justify-start w-full text-sm italic person">

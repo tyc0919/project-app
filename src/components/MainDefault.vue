@@ -156,7 +156,6 @@ const getData = async () => {
     // calculate progressbars' percent
     for (let activity of activityData.value) {
         await axios.get('/api/activity/' + activity.id + '/job/').then((response) => {
-            console.log(response.data)
             let allJobStatus = []
             for (let job of response.data) {
                 allJobStatus.push(job.status)
@@ -168,6 +167,7 @@ const getData = async () => {
                 activity['finish_percentage'] = Math.round((finishedJobs.length / allJobStatus.length) * 100)
             }
         })
+        activity["activity_picture"] = "/api/serve-file/activity-pic/" + activity.activity_picture
     }
 
     //add user_name into data
@@ -176,6 +176,7 @@ const getData = async () => {
             activity['user_name'] = response.data.user_name
         })
     }
+
     changeFilter(999)
 }
 
@@ -358,7 +359,7 @@ const closePage = () => {
                     @click="closePage()">
                     <MainDeFaultCard :name="item.activity_name" :owner="item.user_name"
                         :tracePercentage="item.finish_percentage" :costMoney="item.activity_expenditure"
-                        :budgetMoney="item.activity_budget"></MainDeFaultCard>
+                        :budgetMoney="item.activity_budget" :picturePath="item.activity_picture"></MainDeFaultCard>
                 </router-link>
 
                 <!-- cards end -->

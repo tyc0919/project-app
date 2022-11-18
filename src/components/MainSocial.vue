@@ -16,25 +16,25 @@ const getData = async () => {
     // add social data
     await axios.get('/api/social/').then(async function (response) {
         socialData.value = response.data
-        console.log(socialData.value)
     })
 
     // add total starCount into each activity
-    for (let s of socialData.value) {
+    for (let activity of socialData.value) {
         let stars = []
-        s['total_star'] = 0
-        s['star_percent'] = '0%'
-        await axios.get('/api/social/' + s.id + '/review/').then(function (response) {
+        activity['total_star'] = 0
+        activity['star_percent'] = '0%'
+        await axios.get('/api/social/' + activity.id + '/review/').then(function (response) {
             if (response.data.length > 0) {
                 let total = 0
                 for (let rv of response.data) {
                     stars.push(rv.review_star)
                     total += rv.review_star
                 }
-                s['total_star'] = total / stars.length
-                s['star_percent'] = (s['total_star'] * 20).toString() + '%'
+                activity['total_star'] = total / stars.length
+                activity['star_percent'] = (activity['total_star'] * 20).toString() + '%'
             }
         })
+        activity['activity_picture'] = "/api/serve-file/activity-pic/" + activity.activity_picture
     }
     changeFilter(999)
 }
@@ -90,7 +90,8 @@ getData()
                 <router-link v-for="(item, index) of pages[pageNumber - 1]"
                     :to="{ name: 'post', params: { PostId: item.id } }">
                     <MainSocialPost :title="item.activity_name" :owner="item.user_name" :rating="item.star_percent"
-                        :content="item.content" :postTime="item.post_time"></MainSocialPost>
+                        :content="item.content" :postTime="item.post_time" :picturePath="item.activity_picture">
+                    </MainSocialPost>
                 </router-link>
             </div>
 
