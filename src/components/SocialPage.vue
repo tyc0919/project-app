@@ -55,9 +55,6 @@ const getData = async () => {
     await axios.get('/api/activity/' + route.params.PostId + '/collaborator/').then(function (response) {
         collabData.value = response.data
     })
-    for (let activity of socialData.value) {
-        activity['activity_picture'] = "/api/serve-file/activity-pic/" + activity.activity_picture
-    }
 }
 
 const toggleModal_add = () => {
@@ -184,8 +181,10 @@ cleanErrorMessage()
             </template>
             <template #body> 送出成功！ </template>
             <template #footer>
-                <button @click="toggleModal_add(), reload()"
-                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold">
+                <button
+                    @click="toggleModal_add(), reload()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
+                >
                     確定
                 </button>
             </template>
@@ -203,12 +202,16 @@ cleanErrorMessage()
             </template>
             <template #body> 確定要修改目前的評論嗎？ </template>
             <template #footer>
-                <button @click="editReview(), toggleModal_add()"
-                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold">
+                <button
+                    @click="editReview(), toggleModal_add()"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold"
+                >
                     確定
                 </button>
-                <button @click="toggleModal_edit()"
-                    class="py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold">
+                <button
+                    @click="toggleModal_edit()"
+                    class="py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold"
+                >
                     取消
                 </button>
             </template>
@@ -220,8 +223,11 @@ cleanErrorMessage()
         <div class="top-container flex justify-center bg-white border border-[#D1D5DB]">
             <!--? banner -->
             <div class="inline-flex justify-center w-3/4 my-8">
-                <img :src="socialData.activity_picture" class="event_main_img w-3/4"
-                    onerror="this.src='https://i.imgur.com/fAgK9sl.jpg'" />
+                <img
+                    :src="'/api/serve-file/activity-pic/' + socialData.activity_picture"
+                    class="event_main_img w-3/4"
+                    onerror="this.src='https://i.imgur.com/fAgK9sl.jpg'"
+                />
             </div>
         </div>
 
@@ -255,7 +261,8 @@ cleanErrorMessage()
                     <div class="bookmark2-box text-2xl bg-white">所有人員</div>
                 </div>
                 <div
-                    class="invite h-full flex flex-col items-center p-4 overflow-y-auto border border-[#D1D5DB] bg-white">
+                    class="invite h-full flex flex-col items-center p-4 overflow-y-auto border border-[#D1D5DB] bg-white"
+                >
                     <Invite v-for="item of collabData" :email="item.user_email" :name="item.user_name"></Invite>
                 </div>
             </div>
@@ -292,20 +299,30 @@ cleanErrorMessage()
                         <!-- 星號 -->
 
                         <div class="mt-8">
-                            <textarea id="comment" placeholder="寫下你的評論 (最多500字)"
+                            <textarea
+                                id="comment"
+                                placeholder="寫下你的評論 (最多500字)"
                                 class="p-2 w-full h-48 border border-2 border-black rounded"
-                                maxlength="500">{{ userComment }}</textarea>
+                                maxlength="500"
+                                >{{ userComment }}</textarea
+                            >
                             <span class="text-red-500">{{ errorMessage.commentErrorMessage.value }}</span>
                         </div>
                         <div class="flex justify-center">
-                            <button v-if="userComment == ''" @click="addReview()"
+                            <button
+                                v-if="userComment == ''"
+                                @click="addReview()"
                                 class="my-4 py-2 px-4 rounded hover:text-[#2b6cb0] border border-[#2b6cb0] hover:bg-transparent text-white bg-sky-700 font-semibold"
-                                id="commentBtn">
+                                id="commentBtn"
+                            >
                                 送出評論
                             </button>
-                            <button v-else @click="toggleModal_edit()"
+                            <button
+                                v-else
+                                @click="toggleModal_edit()"
                                 class="my-4 py-2 px-4 rounded hover:text-[#2b6cb0] border border-[#2b6cb0] hover:bg-transparent text-white bg-sky-700 font-semibold"
-                                id="commentBtn">
+                                id="commentBtn"
+                            >
                                 修改評論
                             </button>
                         </div>
@@ -319,8 +336,14 @@ cleanErrorMessage()
             <div class="bookmark2-box text-2xl bg-white">評論</div>
         </div>
         <div class="flex flex-col-reverse px-10 py-8 bg-white border border-[#D1D5DB]">
-            <SocialPageReviewCard v-for="(item, index) of reviewData" :email="item.reviewer" :reviewer="item.user_name"
-                :rating="reviewPercentage[index]" :content="item.content" :date="item.review_time">
+            <SocialPageReviewCard
+                v-for="(item, index) of reviewData"
+                :email="item.reviewer"
+                :reviewer="item.user_name"
+                :rating="reviewPercentage[index]"
+                :content="item.content"
+                :date="item.review_time"
+            >
             </SocialPageReviewCard>
         </div>
         <!-- 評論區 -->
@@ -338,11 +361,11 @@ cleanErrorMessage()
     flex-direction: row-reverse;
 }
 
-.rating>input {
+.rating > input {
     display: none;
 }
 
-.rating>label {
+.rating > label {
     position: relative;
     width: 40px;
     font-size: 45px;
@@ -350,22 +373,22 @@ cleanErrorMessage()
     cursor: pointer;
 }
 
-.rating>label::before {
+.rating > label::before {
     content: '\2605';
     position: absolute;
     opacity: 0;
 }
 
-.rating>label:hover:before,
-.rating>label:hover~label:before {
+.rating > label:hover:before,
+.rating > label:hover ~ label:before {
     opacity: 1 !important;
 }
 
-.rating>input:checked~label:before {
+.rating > input:checked ~ label:before {
     opacity: 1;
 }
 
-.rating:hover>input:checked~label:before {
+.rating:hover > input:checked ~ label:before {
     opacity: 0.4;
 }
 
