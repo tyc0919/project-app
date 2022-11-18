@@ -124,6 +124,8 @@ async function update_Activity() {
 
     const activity_n = document.getElementById("test1")
     const activity_t = document.getElementById("test2")
+    console.log(activity_n.value)
+    console.log(activity_t.value)
 
     let testS1 = false
 
@@ -288,7 +290,7 @@ const toggleModal_fail = () => {
             <div class="w-1/3 border border-[#d1d5db] m-1.5 mr-10 bg-white relative">
                 <p class="text-base2x m-1.5 text-[696969]"> {{ activity_data.activity_name }} </p>
                 <p class="text-base m-1.5 text-[696969]">提案人 {{ activity_data.user_name }} </p>
-                <p class="text-base m-1.5 text-[696969] overflow-y intro2">
+                <p class="text-base m-1.5 text-[696969] overflow-auto break-all intro2">
                     {{ activity_data.activity_description }}
                 </p>
                 <div class="absolute bottom-down w-full">
@@ -312,14 +314,6 @@ const toggleModal_fail = () => {
             :to="{ name: 'event-work-detail', params: { WorkId: work.id } }">
             {{ work.title }}
         </router-link>
-
-        <!-- <a class="bookmark2-menu">
-            <svg width="9" height="31" viewBox="0 0 9 31" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M8.25 4.25C8.25 5.24456 7.85491 6.19839 7.15165 6.90165C6.44839 7.60491 5.49456 8 4.5 8C3.50544 8 2.55161 7.60491 1.84835 6.90165C1.14509 6.19839 0.75 5.24456 0.75 4.25C0.75 3.25544 1.14509 2.30161 1.84835 1.59835C2.55161 0.895088 3.50544 0.5 4.5 0.5C5.49456 0.5 6.44839 0.895088 7.15165 1.59835C7.85491 2.30161 8.25 3.25544 8.25 4.25ZM8.25 15.5C8.25 16.4946 7.85491 17.4484 7.15165 18.1516C6.44839 18.8549 5.49456 19.25 4.5 19.25C3.50544 19.25 2.55161 18.8549 1.84835 18.1516C1.14509 17.4484 0.75 16.4946 0.75 15.5C0.75 14.5054 1.14509 13.5516 1.84835 12.8484C2.55161 12.1451 3.50544 11.75 4.5 11.75C5.49456 11.75 6.44839 12.1451 7.15165 12.8484C7.85491 13.5516 8.25 14.5054 8.25 15.5ZM8.25 26.75C8.25 27.7446 7.85491 28.6984 7.15165 29.4016C6.44839 30.1049 5.49456 30.5 4.5 30.5C3.50544 30.5 2.55161 30.1049 1.84835 29.4016C1.14509 28.6984 0.75 27.7446 0.75 26.75C0.75 25.7554 1.14509 24.8016 1.84835 24.0984C2.55161 23.3951 3.50544 23 4.5 23C5.49456 23 6.44839 23.3951 7.15165 24.0984C7.85491 24.8016 8.25 25.7554 8.25 26.75Z"
-                    fill="#A2A0A0" />
-            </svg>
-        </a> -->
 
     </div>
 
@@ -420,11 +414,11 @@ const toggleModal_fail = () => {
                         <div class="text-base font-bold">活動名稱</div>
                         <input :value="activity_data.activity_name" type="text"
                             class="px-1 py-1 w-full text-base border border-2 border-slate-400" placeholder="原本的活動名稱"
-                            id="test1">
+                            id="test1" maxlength="7">
                         <div class="text-base font-bold ">活動簡介</div>
                         <textarea :value="activity_data.activity_description"
                             class="px-1 py-1 w-full text-base border border-2 border-slate-400" placeholder="原本的活動簡介"
-                            id="test2"></textarea>
+                            id="test2" maxlength="21"></textarea>
                     </div>
                 </div>
             </template>
@@ -582,7 +576,7 @@ const toggleModal_fail = () => {
 }
 
 .overflow-y {
-    overflow-y: auto;
+    overflow: auto;
 }
 
 .event_main_img {
@@ -696,7 +690,7 @@ const toggleModal_fail = () => {
 }
 
 .intro2 {
-    height: 300px;
+    height: 350px;
 }
 
 .check input {

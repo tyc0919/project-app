@@ -412,7 +412,7 @@ const toggleModal_fail = () => {
                 <div class="flex-row justify-between space-y-3">
                     <div class="text-base font-bold">工作名稱</div>
                     <input type="text" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                        placeholder="超棒的活動" v-model="nworkName" />
+                        placeholder="超棒的活動" v-model="nworkName" maxlength="15"/>
                     <div class="text-base font-bold">工作日期</div>
                     <input type="date" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
                         placeholder="超棒的活動" v-model="nworkDate" />
@@ -425,8 +425,8 @@ const toggleModal_fail = () => {
 
                     <div class="text-base font-bold">工作說明</div>
                     <textarea class=" px-1 py-1 text-base border border-2 border-slate-400 w-full"
-                        placeholder="這次的活動，我們將要帶領大家..." v-model="nworkContent"></textarea>
-
+                        placeholder="這次的活動，我們將要帶領大家..." v-model="nworkContent" maxlength="15">
+                    </textarea>
                     <div class="text-base font-bold ">負責人</div>
                     <select id="inputSelectUserEl" class="px-1 py-1 w-full font-bold border border-2 border-slate-500"
                         name="responsibility" @change="get_responGmail()">

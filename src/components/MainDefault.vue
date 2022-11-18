@@ -337,13 +337,13 @@ const closePage = () => {
             <div class="inline-flex">
                 <div class="mr-4">
                     <button @click="toggleModal('joinActivityModal')"
-                        class="text-white bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded">
+                        class="text-white border border-[#3056d3] bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded">
                         加入活動
                     </button>
                 </div>
                 <div class="ml-4">
                     <button @click="toggleModal('addActivityModal')"
-                        class="text-white bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded">
+                        class="text-white border border-[#3056d3] bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold py-2 px-4 rounded">
                         新增活動
                     </button>
                 </div>

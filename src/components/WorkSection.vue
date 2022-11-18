@@ -96,8 +96,7 @@ async function take_work() {
         }
     }
 
-    console.log(job.value)
-
+ 
     if (user_data.user_email == job.value.person_in_charge_email || user_data.user_email == activity_data.owner) {
         right.value = true
     } else {
@@ -107,23 +106,22 @@ async function take_work() {
 
 take_work()
 /* 獲得工作內容和權限判斷 */
+
 function getDefault() {
     uworkName.value = job.value.title
     uworkDate.value = job.value.dead_line.replaceAll('/', '-')
     uworkBudget.value = job.value.job_budget
     uworkContent.value = job.value.content
-
 }
 
 async function updateWork() {
     // get_responGmail()
     // 取得api所需的元素
     let userEl = document.querySelector('#userEl')
-    console.log(userEl.value)
     // 建立參數
     let data = {
         job_id: route.params.WorkId, //1
-        person_in_charge_email: userEl.value,
+        person_in_charge_email: userEl.value,   
         title: uworkName.value,
         dead_line: uworkDate.value,
         content: uworkContent.value,
@@ -483,7 +481,7 @@ const notFinishWork = () => {
                     <div class="flex-row justify-between space-y-3">
                         <div class="text-base font-bold">工作名稱</div>
                         <input type="text" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
-                            placeholder="超棒的活動" v-model="uworkName" />
+                            placeholder="超棒的活動" v-model="uworkName" maxlength="15"/>
                         <div class="text-base font-bold">工作日期</div>
                         <input type="date" class="px-1 py-1 w-full text-base border border-2 border-slate-400"
                             placeholder="超棒的活動" v-model="uworkDate" />
@@ -495,13 +493,14 @@ const notFinishWork = () => {
                         </div>
                         <div class="text-base font-bold">工作說明</div>
                         <textarea class="px-1 py-1 text-base border border-2 border-slate-400 w-full"
-                            placeholder="這次的活動，我們將要帶領大家..." v-model="uworkContent"></textarea>
+                            placeholder="這次的活動，我們將要帶領大家..." v-model="uworkContent" maxlength="15"></textarea>
 
                         <div class="text-base font-bold">負責人</div>
                         <select 
                             class="px-1 py-1 w-full font-bold border border-2 border-slate-500">
                             <option v-for="item in job.collaborators" :value="item.user_email" 
-                            :selected="item.user_email==job.person_in_charge_email?'selected':false">
+                            :selected="item.user_email==job.person_in_charge_email?'selected':false"
+                            id="userEl">
                                 {{ item.user_name }} ({{item.user_email}})
                             </option>
                         </select>

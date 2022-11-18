@@ -38,7 +38,14 @@ const toggleModal_success = () => {
 const toggleModal_fail = () => {
     showModal_fail.value = !showModal_fail.value
 }
+
+const showModal_success2 = ref(false)
+const toggleModal_success2 = () => {
+    showModal_success2.value = !showModal_success2.value
+}
+
 let messageS = ref("")
+let messageS2 = ref("")
 let messageF = ref("")
 
 let csrftoken = getCookie('csrftoken')
@@ -53,6 +60,7 @@ let config = {
 /* 取得使用者資料 */
 let data = ref("")
 let userPic = ref("")
+
 async function take_userfile() {
     await axios.get("/api/userprofile/")
         .then(response => {
@@ -83,13 +91,17 @@ async function fileUpload() {
         formData,
         configf
     ).then(response => {
-        messageS.value = "修改頭像成功"
-        toggleModal_success()
+        messageS2.value = "修改頭像成功"
+        toggleModal_success2()
     }).catch(error => {
         messageF.value = "修改頭像失敗"
         toggleModal_fail()
     })
-    take_userfile()
+
+}
+
+function refresh(){
+    window.location.reload();
 }
 /* 更改使用者頭像 */
 
@@ -145,13 +157,11 @@ const post_passwd = () => {
     <div class="bg-[CEE5F2]">
         <div class="grid_wrapper">
             <div class="pic">
-                <picture>
-                    <label for="image">
-                        <input @change="fileUpload()" ref="file" type="file" id="image" class="file_img"
-                            accept="image/*" />
-                        <img v-bind:src="userPic" class="cursor-pointer" onerror="this.src='https://i.imgur.com/LOEKh9R.jpg'">
-                    </label>
-                </picture>
+                <label for="image">
+                    <input @change="fileUpload()" ref="file" type="file" id="image" class="file_img" accept="image/*" />
+                    <img v-bind:src="userPic" class="cursor-pointer"
+                        onerror="this.src='https://i.imgur.com/LOEKh9R.jpg'">
+                </label>
             </div>
             <div class="name">暱稱: {{ data.user_name }}</div>
             <div class="acc">帳號: {{ data.user_email }}</div>
@@ -228,6 +238,28 @@ const post_passwd = () => {
         </modal>
     </Teleport>
     <!-- 正確訊息視窗 -->
+
+    <!-- 正確訊息視窗2 -->
+    <Teleport to="body">
+        <modal :show="showModal_success2">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">成功視窗</div>
+                </div>
+            </template>
+            <template #body>
+                {{ messageS2 }}
+            </template>
+            <template #footer>
+                <button @click="toggleModal_success2(), refresh()" 
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
+                    確定
+                </button>
+
+            </template>
+        </modal>
+    </Teleport>
+    <!-- 正確訊息視窗2 -->
 
     <!-- 錯誤訊息視窗 -->
     <Teleport to="body">
