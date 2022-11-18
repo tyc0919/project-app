@@ -27,7 +27,10 @@ const props = defineProps({
     >
         <div class="review-card w-full h-fit">
             <div class="reviewer flex justify-start items-center mb-2">
-                <div><img id="reviewImage" src="" class="reviewer-img mr-2" /></div>
+                <div>
+                    <img id="reviewImage" src="" class="reviewer-img mr-2" 
+                        onerror="this.src='https://i.imgur.com/LOEKh9R.jpg'"/>
+                </div>
                 <div class="reviewer-name text-xl cursor-text">{{ reviewer }}</div>
             </div>
             <div class="flex justify-start items-end mb-2">

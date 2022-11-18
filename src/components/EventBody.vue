@@ -622,7 +622,7 @@ const toggleModal_fail = () => {
     width: 250px;
     height: 45px;
     line-height: 45px;
-    background-color: rgb(34 197 94);
+    background-color: #22c55e80;
     margin: 1.5rem;
     color: white;
     text-align: center;
