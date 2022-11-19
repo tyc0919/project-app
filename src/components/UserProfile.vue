@@ -47,6 +47,8 @@ const toggleModal_success2 = () => {
 let messageS = ref("")
 let messageS2 = ref("")
 let messageF = ref("")
+let passwordOld = ref("")
+let passwordNew = ref("")
 
 let csrftoken = getCookie('csrftoken')
 let config = {
@@ -100,7 +102,7 @@ async function fileUpload() {
 
 }
 
-function refresh(){
+function refresh() {
     window.location.reload();
 }
 /* 更改使用者頭像 */
@@ -129,23 +131,15 @@ async function post_userfile() {
 
 /* 更改使用者密碼 */
 const post_passwd = () => {
-    let passwd1 = document.getElementById("3").value
-    let passwd2 = document.getElementById("4").value
     axios.post("/api/userprofile/resetpassword/", {
-        "password": passwd1,
-        "new_password": passwd2
+        "password": passwordOld.value,
+        "new_password": passwordNew.value
     }, config).then(response => {
         messageS.value = "修改密碼成功"
         toggleModal_success()
-        document.getElementById("3").value = ""
-        document.getElementById("4").value = ""
-        document.getElementById("5").value = ""
     }).catch(error => {
         messageF.value = "修改密碼失敗"
         toggleModal_fail()
-        document.getElementById("3").value = ""
-        document.getElementById("4").value = ""
-        document.getElementById("5").value = ""
     })
     take_userfile()
 }
@@ -196,21 +190,22 @@ const post_passwd = () => {
 
         <hr>
 
-        <div class="alter_password">
-            <div class="normal">
-                <span class="fix">舊密碼</span>
-                <input id="3" type="text">
-            </div>
-            <div class="normal">
-                <span class="fix">新密碼</span>
-                <input id="4" type="text">
-            </div>
-            <div class="normal">
-                <span class="fix">確認新密碼</span>
-                <input type="text">
-            </div>
-
-            <button class="sub_btn" @click="post_passwd">確定</button>
+        <div class="alter_password" auto>
+            <form>
+                <div class="normal">
+                    <span class="fix">舊密碼</span>
+                    <input type="password" v-model="passwordOld" autocomplete="off">
+                </div>
+                <div class="normal">
+                    <span class="fix">新密碼</span>
+                    <input type="password" v-model="passwordNew" autocomplete="off">
+                </div>
+                <div class="normal">
+                    <span class="fix">確認新密碼</span>
+                    <input type="password" autocomplete="off">
+                </div>
+                <input class="sub_btn" type="button" value="提交" @click="post_passwd">
+            </form>
         </div>
 
     </div>
@@ -251,7 +246,7 @@ const post_passwd = () => {
                 {{ messageS2 }}
             </template>
             <template #footer>
-                <button @click="toggleModal_success2(), refresh()" 
+                <button @click="toggleModal_success2(), refresh()"
                     class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold ">
                     確定
                 </button>
@@ -464,15 +459,19 @@ hr {
 .normal input[type=text] {
     height: 2rem;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;}
+.normal input[type=password] {
+    height: 2rem;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
 }
 
 .sub_btn {
     width: 6rem;
     height: 2.5rem;
-    margin-top: 1rem;
+    margin-top: 2rem;
     margin-bottom: 1rem;
-    margin-left: auto;
+    margin-left: 25%;
     text-align: center;
     line-height: 2.5rem;
     background-color: white;
