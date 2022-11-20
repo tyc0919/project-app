@@ -25,8 +25,7 @@ function logout(){
 
 }
 
-onMounted(() => {
-    (() => {
+(() => {
         let name = 'jwt'
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -43,8 +42,7 @@ onMounted(() => {
         if (cookieValue === null){
             window.location.href = "https://www.project-ace.site";
         }
-    })()
-})
+})()
 
 takeUserPic()
 </script>
