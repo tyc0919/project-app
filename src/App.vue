@@ -1,6 +1,6 @@
 <script setup>
 import axios from 'axios'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const showUserMenu = ref(false)
 const toggleUserMenu = () => {
@@ -20,10 +20,31 @@ const takeUserPic = async () => {
 function logout(){
     axios.get("/api/logout/")
     .then((response) => {
-        window.location.href = "http://www.ace.project";
+        window.location.href = "https://www.project-ace.site";
     })
 
 }
+
+onMounted(() => {
+    (() => {
+        let name = 'jwt'
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        if (cookieValue === null){
+            window.location.href = "https://www.project-ace.site";
+        }
+    })()
+})
 
 takeUserPic()
 </script>
