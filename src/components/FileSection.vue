@@ -210,7 +210,7 @@ let messageF = ref('')
             <div v-if="leaveORcode">
                 <span>邀請碼：{{ activity.invitation_code }}</span>
                 <button class="py-2 mt-2 inline-block w-full text-center rounded text-white border border-[#3056d3] bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold"
-                @click=""
+                @click="toggleModal_invite"
                 >
                     邀請
                 </button>
