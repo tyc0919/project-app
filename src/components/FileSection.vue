@@ -179,6 +179,27 @@ const toggleModal_leave = () => {
     showModal_leave.value = !showModal_leave.value
 }
 
+
+const showModal_invite = ref(false)
+const receiver_email = ref('')
+const toggleModal_invite = () => {
+    showModal_invite.value = !showModal_invite.value
+}
+const send_invite = () => {
+    axios.post('/api/send-invite/',
+        {
+            "activity_id": route.params.EventId,
+            "receiver_email": receiver_email.value
+        }
+        , config)
+        .then(function (response) {
+            console.log(response.data)
+        }).catch(function (response){
+            console.log(response.data)
+        })
+    toggleModal_invite()
+}
+
 let messageS = ref('')
 let messageF = ref('')
 </script>
@@ -186,9 +207,15 @@ let messageF = ref('')
 <template>
     <div class="bg-white flex flex-col file-sec-wrapper w-80 items-center p-4 w-1/4 ml-2 round_border">
         <div v-if="mode === 1">
-            <p v-if="leaveORcode">
-                邀請碼：{{ activity.invitation_code }}
-            </p>
+            <div v-if="leaveORcode">
+                <span>邀請碼：{{ activity.invitation_code }}</span>
+                <button class="py-2 mt-2 inline-block w-full text-center rounded text-white border border-[#3056d3] bg-[#3056d3] hover:text-[#3056d3] hover:border hover:border-[#3056d3] hover:bg-transparent font-semibold"
+                @click=""
+                >
+                    邀請
+                </button>
+            </div>
+        
             <p v-else>
                 <button class="leave-activity" @click="toggleModal_leave()">離開活動</button>
 
@@ -248,6 +275,36 @@ let messageF = ref('')
                 <button
                     class="btnCancelCreateActivity py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold">
                     取消
+                </button>
+            </template>
+        </modal>
+    </Teleport>
+
+    <Teleport to="body">
+        <modal :show="showModal_invite">
+            <template #header>
+                <div class="border-b-4 w-full px-4 py-4">
+                    <div class="font-bold text-2xl">邀請人員</div>
+                </div>
+            </template>
+            <template #body>
+                <div class="overflow-y-auto max-h-96 pr-4">
+                    <div class="flex-row justify-between space-y-3">
+                        <div class="text-base font-bold">受邀人員信箱</div>
+                        <input id="receiver_email" v-model="receiver_email" type="text"
+                            class="px-1 py-1 w-full text-base border border-2 border-slate-400"
+                        />
+                    </div>
+                </div>
+            </template>
+            <template #footer>
+                <button @click="send_invite"
+                    class="mr-2 py-2 px-4 rounded text-green-500 border border-green-500 bg-transparent hover:text-white hover:bg-green-500 hover:font-semibold">
+                    送出
+                </button>
+                <button @click="toggleModal_invite()"
+                    class="py-2 px-4 rounded text-blue-500 bg-transparent border border-blue-500 hover:text-white hover:bg-blue-500 hover:font-semibold">
+                    關閉
                 </button>
             </template>
         </modal>
