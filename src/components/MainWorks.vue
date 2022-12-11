@@ -19,7 +19,24 @@ const getData = async () => {
         workData.value = response.data
     })
 
+
     for (let work of workData.value) {
+        await axios.get('/api/activity/' + work.activity + '/job/' + work.id +'/job_detail/').then(res=>{
+            let job_detail_list = res.data
+            let count = 0
+            for (jd of job_detail_list){
+                if (jd.status == 1){
+                    count += 1
+                }
+            }
+            if (count == 0 || job_detail_list.length == 0){
+                work.tracePercentage = 0
+            }else{
+                work.tracePercentage = Math.round((count / job_detail_list.length) * 100)
+            }
+        })
+
+
         await axios.get('/api/activity/' + work.activity + '/').then((response) => {
             work['activity_name'] = response.data.activity_name
         })
@@ -96,7 +113,7 @@ getData()
                     :to="{ name: 'event-work-detail', params: { EventId: item.activity, WorkId: item.id } }"
                     @click="trans_tab(item.id, item.title)">
                     <MainWorksCard :work-title="item.title" :activity="item.activity_name" :content="item.content"
-                        :tracePercentage="100" :costMoney="item.job_expenditure" :budgetMoney="item.job_budget">
+                        :tracePercentage="item.tracePercentage" :costMoney="item.job_expenditure" :budgetMoney="item.job_budget">
                     </MainWorksCard>
                 </router-link>
             </div>
