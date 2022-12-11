@@ -24,7 +24,7 @@ const getData = async () => {
         await axios.get('/api/activity/' + work.activity + '/job/' + work.id +'/job_detail/').then(res=>{
             let job_detail_list = res.data
             let count = 0
-            for (jd of job_detail_list){
+            for (let jd of job_detail_list){
                 if (jd.status == 1){
                     count += 1
                 }
